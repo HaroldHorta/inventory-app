@@ -1,0 +1,54 @@
+package com.company.storeapi.repositories.tickey.facade.impl;
+
+import com.company.storeapi.core.constants.MessageError;
+import com.company.storeapi.core.exceptions.enums.LogRefServices;
+import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
+import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
+import com.company.storeapi.model.entity.Ticket;
+import com.company.storeapi.repositories.tickey.TicketRepository;
+import com.company.storeapi.repositories.tickey.facade.TicketRepositoryFacade;
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+@Component
+@RequiredArgsConstructor
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
+public class TicketRepositoryFacadeImpl implements TicketRepositoryFacade {
+
+    private final TicketRepository ticketRepository;
+
+    @Override
+    public List<Ticket> getAllTicket() {
+       try {
+           return Optional.of(ticketRepository.findAll())
+                   .orElseThrow(()-> new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO,"No se encontraron registros de ticket"));
+       }catch (IllegalArgumentException ie){
+           throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+       }catch (DataAccessException er){
+           throw new DataNotFoundPersistenceException(LogRefServices.ERROR_GENERAL_SERVICIO, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+       }
+    }
+
+    @Override
+    public Ticket validateAndGetTicketById(String id) {
+        return ticketRepository.findById(id).orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO, "NO se encontraron productos con el id " + id));
+
+    }
+
+    @Override
+    public Ticket saveTicket(Ticket ticket) {
+        try {
+            return ticketRepository.save(ticket);
+        }catch (IllegalArgumentException ie){
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"Error al guardar el producto");
+        }catch (DataAccessException er){
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_GENERAL_SERVICIO, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+        }
+    }
+}
