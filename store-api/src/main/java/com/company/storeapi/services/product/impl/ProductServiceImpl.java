@@ -16,6 +16,7 @@ import com.company.storeapi.services.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryRepositoryFacade.validateAndGetCategoryById(requestUpdateCustomerDTO.getCategoryId());
         product.setCategory(category);
         product.setUnit(requestUpdateCustomerDTO.getUnit());
-        product.setUpdateAt(DateUtil.getDateActual());
+        product.setUpdateAt(new Date());
         productMapper.updateProductFromDto(requestUpdateCustomerDTO, product);
         return productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
     }

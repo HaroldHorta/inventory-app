@@ -4,8 +4,10 @@ package com.company.storeapi.model.entity;
 import com.company.storeapi.model.enums.Status;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Document(collection = "product")
 public class Product {
@@ -22,15 +24,19 @@ public class Product {
 
     private Status status;
 
-    private String createAt;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private Date createAt;
 
-    private String updateAt;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private Date updateAt;
 
     private Double priceBuy;
 
     private Double priceSell;
 
     private int unit;
+
+    private String photo;
 
     public Product() {
 
@@ -76,11 +82,11 @@ public class Product {
         this.status = status;
     }
 
-    public String getCreateAt() {
+    public Date getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(String createAt) {
+    public void setCreateAt(Date createAt) {
         this.createAt = createAt;
     }
 
@@ -108,11 +114,11 @@ public class Product {
         this.unit = unit;
     }
 
-    public String getUpdateAt() {
+    public Date getUpdateAt() {
         return updateAt;
     }
 
-    public void setUpdateAt(String updateAt) {
+    public void setUpdateAt(Date updateAt) {
         this.updateAt = updateAt;
     }
 }

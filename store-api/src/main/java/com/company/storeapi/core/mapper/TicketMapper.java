@@ -17,6 +17,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
+
 @Mapper(
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
@@ -63,7 +65,7 @@ public abstract class TicketMapper {
                 }
         );
 
-        ticket.setCreateAt(DateUtil.getDateActual());
+        ticket.setCreateAt(new Date());
         ticket.setOrder(orderMapper.toResponseDto(order));
 
         return ticket;

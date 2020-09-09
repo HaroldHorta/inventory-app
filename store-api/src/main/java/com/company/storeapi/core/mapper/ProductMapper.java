@@ -14,6 +14,8 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
+
 @Mapper(
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
@@ -43,8 +45,8 @@ public abstract class ProductMapper {
         Category category =categoryMapper.toCategory(categoryService.validateAndGetCategoryById(requestAddProductDTO.getCategoryId()));
         product.setCategory(category);
         product.setStatus(Status.ACTIVE);
-        product.setCreateAt(DateUtil.getDateActual());
-        product.setUpdateAt(DateUtil.getDateActual());
+        product.setCreateAt(new Date());
+        product.setUpdateAt(new Date());
         product.setPriceBuy(requestAddProductDTO.getPriceBuy());
         product.setPriceSell(requestAddProductDTO.getPriceSell());
         product.setUnit(requestAddProductDTO.getUnit());
