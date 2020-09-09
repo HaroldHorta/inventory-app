@@ -19,7 +19,7 @@ public class RequestUpdateProductDTO {
     private String description;
 
     @Schema
-    private String categoryId;
+    private RequestAddCategoryDTO categoryId;
 
     @Schema
     private Status status;
@@ -29,7 +29,4 @@ public class RequestUpdateProductDTO {
 
     @Schema(example = "21500")
     private Double priceSell;
-
-    @Schema(example = "1")
-    private int unit;
 }

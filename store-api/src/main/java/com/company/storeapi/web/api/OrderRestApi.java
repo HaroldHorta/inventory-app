@@ -37,7 +37,7 @@ public class OrderRestApi {
         return new ResponseEntity<>(newOrder, new HttpHeaders(), HttpStatus.OK);
     }
 
-   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseOrderDTO> readById(@PathVariable("id") String id)
             throws ServiceException {
         ResponseOrderDTO entity = orderService.validateAndGetOrderById(id);
