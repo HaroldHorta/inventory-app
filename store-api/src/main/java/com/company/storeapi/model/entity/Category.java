@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 
-@Document(collection = "category")
+@Document(collection = "categories")
 public class Category {
 
     @Id
