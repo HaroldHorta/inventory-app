@@ -1,5 +1,7 @@
 package com.company.storeapi.core.mapper;
 
+import com.company.storeapi.core.exceptions.enums.LogRefServices;
+import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
 import com.company.storeapi.model.dto.request.order.RequestAddOrderDTO;
 import com.company.storeapi.model.dto.request.order.RequestUpdateOrderDTO;
 import com.company.storeapi.model.dto.request.product.RequestOrderProductItemsDTO;
@@ -45,10 +47,11 @@ public abstract class OrderMapper {
 
     public abstract Order toResponseDto(ResponseOrderDTO responseOrderDTO);
 
+    public abstract RequestUpdateOrderDTO toResponseAddDto(ResponseOrderDTO responseOrderDTO);
+
     public abstract Set<ResponseOrderProductItemsDTO> responseOrderProductItemsDTO(List<RequestOrderProductItemsDTO> order);
 
     public abstract RequestAddOrderDTO toRequestAdd (RequestUpdateOrderDTO requestUpdateOrderDTO);
-   // public abstract void updateOrderFromDto(RequestUpdateOrderDTO updateOrderDto, @MappingTarget Order order);
 
     public void updateOrderFromDto(RequestUpdateOrderDTO updateOrderDto, Order order){
 
@@ -79,13 +82,21 @@ public abstract class OrderMapper {
         Set<ResponseOrderProductItemsDTO> listOrder = new LinkedHashSet<>();
         createOrderDto.getProducts().forEach(p -> {
             Product product = productMapper.toProduct(productService.validateAndGetProductById(p.getId()));
-            ResponseOrderProductItemsDTO requestOrderProductItemsDTO = new ResponseOrderProductItemsDTO();
+            if(product.getUnit()==0){
+                throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"Producto " + product.getName() + " Agotado");
+            }else if(product.getUnit()<p.getUnit()){
+                throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"La cantidad requerida del producto " + product.getName() + " es mayor a la cantidad existente en el inventario");
+           } else if(p.getUnit()<=0){
+               throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"La cantidad solicitada del producto " + product.getName() + " no puede ser 0 o menor");
+           }else{
+               ResponseOrderProductItemsDTO requestOrderProductItemsDTO = new ResponseOrderProductItemsDTO();
 
-            requestOrderProductItemsDTO.setId(product.getId());
-            requestOrderProductItemsDTO.setUnit(p.getUnit());
-            requestOrderProductItemsDTO.setTotal(product.getPriceSell() * p.getUnit());
+               requestOrderProductItemsDTO.setId(product.getId());
+               requestOrderProductItemsDTO.setUnit(p.getUnit());
+               requestOrderProductItemsDTO.setTotal(product.getPriceSell() * p.getUnit());
 
-            listOrder.add(requestOrderProductItemsDTO);
+               listOrder.add(requestOrderProductItemsDTO);
+           }
 
         });
         return listOrder;

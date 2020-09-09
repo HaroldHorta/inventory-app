@@ -41,7 +41,7 @@ public class CategoryRestApi {
         return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{id}")
+   @DeleteMapping(value = "/{id}")
     public void delete(@PathVariable String id) throws ServiceException{
       service.deleteById(id);
     }
