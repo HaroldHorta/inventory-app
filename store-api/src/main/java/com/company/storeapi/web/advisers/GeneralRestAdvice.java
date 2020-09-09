@@ -1,7 +1,10 @@
 package com.company.storeapi.web.advisers;
 
 import com.company.storeapi.web.advisers.base.BaseRestAdviser;
-import com.company.storeapi.web.api.*;
+import com.company.storeapi.web.api.CategoryRestApi;
+import com.company.storeapi.web.api.CustomerRestApi;
+import com.company.storeapi.web.api.OrderRestApi;
+import com.company.storeapi.web.api.ProductRestApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
@@ -14,8 +17,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
         CategoryRestApi.class,
         ProductRestApi.class,
         OrderRestApi.class,
-        CustomerRestApi.class,
-        TicketRestApi.class
+        CustomerRestApi.class
 
 })
 public class GeneralRestAdvice extends BaseRestAdviser {

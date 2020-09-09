@@ -2,33 +2,31 @@ package com.company.storeapi.core.persistence;
 
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.PortalPersistenceException;
-//import com.mongodb.MongoClient;
-//import com.mongodb.MongoClientOptions;
-//import com.mongodb.MongoClientURI;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
 import com.mongodb.ServerAddress;
-import com.mongodb.client.MongoDatabase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
-//import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
-//@Slf4j
-//@Configuration
+@Slf4j
+@Configuration
 public class MongoConfiguration {
 
-  /*  @Value("${spring.data.mongodb.database}")
+    @Value("${spring.data.mongodb.database}")
     private String name;
 
     @Value("${spring.data.mongodb.host}")
     private String host;
 
     @Value("${spring.data.mongodb.port}")
-    private String port;*/
+    private String port;
 
-  /* @Bean
+   @Bean
     public MongoDbFactory mongoDbFactory() {
         try {
             MongoClientOptions.Builder mongoOperations = MongoClientOptions.builder();
@@ -49,12 +47,5 @@ public class MongoConfiguration {
 
         return new MongoTemplate(mongoDbFactory());
 
-    }*/
-
-  /*  MongoClientURI uri = new MongoClientURI(
-            "mongodb+srv://HaroldHorta:kiTIGYhufyRVkMq8@inventory-app.fkb4q.azure.mongodb.net/test");
-
-    MongoClient mongoClient = new MongoClient(uri);
-    MongoDatabase database = mongoClient.getDatabase("test");*/
-
+    }
 }
