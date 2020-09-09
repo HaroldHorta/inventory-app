@@ -40,7 +40,7 @@ public class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
         return orderRepository.save(order);
     }
 
-     @Override
+    @Override
     public Order validateAndGetOrderById(String id) {
             return orderRepository.findById(id)
                     .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO,"No se encontraron ordenes con el " + id));

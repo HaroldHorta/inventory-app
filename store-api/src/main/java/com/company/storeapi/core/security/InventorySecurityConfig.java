@@ -33,7 +33,7 @@ public class InventorySecurityConfig extends WebSecurityConfigurerAdapter  {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/**").hasRole("USER")
-                .antMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/category").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PATCH, "/api/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")

@@ -51,12 +51,6 @@ public class ProductRestApi {
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @PatchMapping(value="/{id}/unit/{unit}")
-    public ResponseEntity<ResponseProductDTO> addUnitProduct(@PathVariable String id, @PathVariable int unit) throws ServiceException{
-        ResponseProductDTO addUnit = service.addUnitProduct(id,unit);
-        return new ResponseEntity<>(addUnit, new HttpHeaders(), HttpStatus.OK);
-    }
-
     @GetMapping("/{id}/unit/{unit}")
     public ResponseOrderProductItemsDTO details(@PathVariable String id, @PathVariable int unit) throws ServiceException {
         return service.getItemsTotal(id, unit);
