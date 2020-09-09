@@ -63,12 +63,14 @@ public class ProductServiceImpl implements ProductService {
     public ResponseOrderProductItemsDTO getItemsTotal(String id, int unit) {
         Product prod = productRepositoryFacade.validateAndGetProductById(id);
         ResponseOrderProductItemsDTO orderProduct = new ResponseOrderProductItemsDTO();
-       if(unit>0){
+       if(unit<=0){
+           throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"la cantidad a ingresar no puede ser 0 o menor a 0");
+       }else if(unit>prod.getUnit()){
+           throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"la cantidad de " + prod.getName() + " es mayor a la cantidad del presente en el inventario");
+       }else{
            orderProduct.setId(id);
            orderProduct.setUnit(unit);
            orderProduct.setTotal(prod.getPriceSell()*unit);
-       }else{
-           throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"la cantidad a ingresar no puede ser 0 o menor a 0");
        }
         return orderProduct;
     }
