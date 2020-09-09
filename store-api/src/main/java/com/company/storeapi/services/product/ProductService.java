@@ -21,6 +21,4 @@ public interface ProductService {
 
     ResponseOrderProductItemsDTO getItemsTotal(String id, int unit);
 
-    ResponseProductDTO addUnitProduct(String id, int unit);
-
     }
