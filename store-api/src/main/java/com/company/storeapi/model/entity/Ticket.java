@@ -5,6 +5,8 @@ import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
 @Data
 @Document(collection = "ticket")
 public class Ticket {
@@ -13,7 +15,7 @@ public class Ticket {
     private String id;
     @NonNull
     private Order order;
-    private String createAt;
+    private Date createAt;
 
     public Ticket() {
 
