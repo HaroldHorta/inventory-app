@@ -10,6 +10,7 @@ import com.company.storeapi.model.dto.response.product.ResponseOrderProductItems
 import com.company.storeapi.model.entity.Customer;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.entity.Product;
+import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.services.customer.CustomerService;
 import com.company.storeapi.services.product.ProductService;
 import org.mapstruct.Mapper;
@@ -82,8 +83,8 @@ public abstract class OrderMapper {
         Set<ResponseOrderProductItemsDTO> listOrder = new LinkedHashSet<>();
         createOrderDto.getProducts().forEach(p -> {
             Product product = productMapper.toProduct(productService.validateAndGetProductById(p.getId()));
-            if(product.getUnit()==0){
-                throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"Producto " + product.getName() + " Agotado");
+            if(product.getUnit()==0 || product.getStatus() == Status.INACTIVE){
+                throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"Producto " + product.getName() + " Agotado o Inactivo");
             }else if(product.getUnit()<p.getUnit()){
                 throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"La cantidad requerida del producto " + product.getName() + " es mayor a la cantidad existente en el inventario");
            } else if(p.getUnit()<=0){

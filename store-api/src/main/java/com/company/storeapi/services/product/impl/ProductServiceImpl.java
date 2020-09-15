@@ -3,19 +3,24 @@ package com.company.storeapi.services.product.impl;
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
 import com.company.storeapi.core.mapper.ProductMapper;
-import com.company.storeapi.core.util.DateUtil;
 import com.company.storeapi.model.dto.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.dto.request.product.RequestUpdateProductDTO;
 import com.company.storeapi.model.dto.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.dto.response.product.ResponseProductDTO;
 import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.model.entity.Product;
+import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.repositories.category.facade.CategoryRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import com.company.storeapi.services.product.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +33,11 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepositoryFacade categoryRepositoryFacade;
     private final ProductMapper productMapper;
 
+    @Value("${config.uploads.path}")
+    private String path;
+
+    private final HttpServletRequest request;
+
     @Override
     public List<ResponseProductDTO> getAllProducts() {
         List<Product> products = productRepositoryFacade.getAllProduct();
@@ -35,11 +45,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO) {
+    public ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO, MultipartFile file) {
+        if (!file.isEmpty()) {
+            try {
+                String uploadsDir = path;
+                String realPathToUploads = request.getServletContext().getRealPath(uploadsDir);
+                if (!new File(realPathToUploads).exists()) {
+                    new File(realPathToUploads);
+                }
+
+                String orgName = file.getOriginalFilename();
+                String filePath = realPathToUploads + orgName;
+
+                requestAddProductDTO.setPhoto(filePath);
+                File dest = new File(filePath);
+                file.transferTo(dest);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return productMapper.toProductDto(productRepositoryFacade.saveProduct(productMapper.toProduct(requestAddProductDTO)));
     }
-
-    @Override
+            @Override
     public void deleteProduct(String id) {
         productRepositoryFacade.deleteProduct(id);
     }
@@ -81,10 +108,19 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepositoryFacade.validateAndGetProductById(id);
         if(unit>0){
             int unitNew = product.getUnit()+unit;
+            product.setStatus(Status.ACTIVE);
             product.setUnit(unitNew);
         }else{
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"la cantidad a ingresar no puede ser 0 o menor a 0");
         }
+        return productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
+
+    }
+
+    @Override
+    public ResponseProductDTO updateStatus(String id, Status status) {
+        Product product = productRepositoryFacade.validateAndGetProductById(id);
+        product.setStatus(status);
         return productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
 
     }

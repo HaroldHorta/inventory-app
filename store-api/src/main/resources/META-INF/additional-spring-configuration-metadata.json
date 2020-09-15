@@ -4,5 +4,15 @@
       "name": "spring.data.mongodb.repositories.enabled",
       "type": "java.lang.String",
       "description": "Description for spring.data.mongodb.repositories.enabled."
-  }
-] }
+    },
+    {
+      "name": "config.uploads.path",
+      "type": "java.lang.String",
+      "description": "Description for config.uploads.path."
+    },
+    {
+      "name": "application-description",
+      "type": "java.lang.String",
+      "description": "Description for application-description."
+    }
+  ] }

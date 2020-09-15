@@ -2,7 +2,6 @@ package com.company.storeapi.core.mapper;
 
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
-import com.company.storeapi.core.util.DateUtil;
 import com.company.storeapi.model.dto.request.product.RequestUpdateProductDTO;
 import com.company.storeapi.model.dto.request.ticket.RequestAddTicketDTO;
 import com.company.storeapi.model.dto.response.order.ResponseOrderDTO;
@@ -10,6 +9,7 @@ import com.company.storeapi.model.dto.response.ticket.ResponseTicketDTO;
 import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.entity.Ticket;
 import com.company.storeapi.model.enums.OrderStatus;
+import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.services.order.OrderService;
 import com.company.storeapi.services.product.ProductService;
 import org.mapstruct.Mapper;
@@ -56,6 +56,7 @@ public abstract class TicketMapper {
                             int unitNew= product.getUnit()-p.getUnit();
                             if(unitNew<=0){
                                 unitNew=0;
+                                product.setStatus(Status.INACTIVE);
                             }
                         product.setUnit(unitNew);
                         RequestUpdateProductDTO productDTO = productMapper.toProductUpdate(product);
