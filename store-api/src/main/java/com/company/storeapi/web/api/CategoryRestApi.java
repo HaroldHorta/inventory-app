@@ -1,8 +1,8 @@
 package com.company.storeapi.web.api;
 
 import com.company.storeapi.core.exceptions.base.ServiceException;
-import com.company.storeapi.model.dto.request.category.RequestAddCategoryDTO;
-import com.company.storeapi.model.dto.response.category.ResponseCategoryDTO;
+import com.company.storeapi.model.payload.request.category.RequestAddCategoryDTO;
+import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.services.category.CategoryService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

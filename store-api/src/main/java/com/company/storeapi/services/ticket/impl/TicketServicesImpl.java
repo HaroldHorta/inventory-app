@@ -1,8 +1,8 @@
 package com.company.storeapi.services.ticket.impl;
 
 import com.company.storeapi.core.mapper.TicketMapper;
-import com.company.storeapi.model.dto.request.ticket.RequestAddTicketDTO;
-import com.company.storeapi.model.dto.response.ticket.ResponseTicketDTO;
+import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
+import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
 import com.company.storeapi.repositories.tickey.facade.TicketRepositoryFacade;
 import com.company.storeapi.services.ticket.TicketServices;
 import lombok.RequiredArgsConstructor;

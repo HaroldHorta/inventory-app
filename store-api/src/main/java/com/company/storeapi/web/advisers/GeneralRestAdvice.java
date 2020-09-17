@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
         ProductRestApi.class,
         OrderRestApi.class,
         CustomerRestApi.class,
-        TicketRestApi.class
+        TicketRestApi.class,
+        UserRestApi.class
 
 })
 public class GeneralRestAdvice extends BaseRestAdviser {

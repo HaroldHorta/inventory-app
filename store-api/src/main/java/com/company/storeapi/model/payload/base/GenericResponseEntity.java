@@ -1,9 +1,9 @@
-package com.company.storeapi.model.dto.base;
+package com.company.storeapi.model.payload.base;
 
 import com.company.storeapi.core.exceptions.base.PortalException;
 import com.company.storeapi.core.exceptions.base.ServiceException;
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
-import com.company.storeapi.model.dto.response.base.StatusDTO;
+import com.company.storeapi.model.payload.response.base.StatusDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;

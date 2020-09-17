@@ -1,7 +1,7 @@
 package com.company.storeapi.services.ticket;
 
-import com.company.storeapi.model.dto.request.ticket.RequestAddTicketDTO;
-import com.company.storeapi.model.dto.response.ticket.ResponseTicketDTO;
+import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
+import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
 
 import java.util.List;
 

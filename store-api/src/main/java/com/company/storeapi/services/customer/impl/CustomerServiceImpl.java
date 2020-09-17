@@ -1,9 +1,9 @@
 package com.company.storeapi.services.customer.impl;
 
 import com.company.storeapi.core.mapper.CustomerMapper;
-import com.company.storeapi.model.dto.request.customer.RequestAddCustomerDTO;
-import com.company.storeapi.model.dto.request.customer.RequestUpdateCustomerDTO;
-import com.company.storeapi.model.dto.response.customer.ResponseCustomerDTO;
+import com.company.storeapi.model.payload.request.customer.RequestAddCustomerDTO;
+import com.company.storeapi.model.payload.request.customer.RequestUpdateCustomerDTO;
+import com.company.storeapi.model.payload.response.customer.ResponseCustomerDTO;
 import com.company.storeapi.model.entity.Customer;
 import com.company.storeapi.repositories.customer.facade.CustomerRepositoryFacade;
 import com.company.storeapi.services.customer.CustomerService;

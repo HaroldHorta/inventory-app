@@ -1,8 +1,8 @@
 package com.company.storeapi.services.order;
 
-import com.company.storeapi.model.dto.request.order.RequestAddOrderDTO;
-import com.company.storeapi.model.dto.request.order.RequestUpdateOrderDTO;
-import com.company.storeapi.model.dto.response.order.ResponseOrderDTO;
+import com.company.storeapi.model.payload.request.order.RequestAddOrderDTO;
+import com.company.storeapi.model.payload.request.order.RequestUpdateOrderDTO;
+import com.company.storeapi.model.payload.response.order.ResponseOrderDTO;
 
 import java.util.List;
 

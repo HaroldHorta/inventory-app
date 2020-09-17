@@ -1,8 +1,8 @@
 package com.company.storeapi.services.customer;
 
-import com.company.storeapi.model.dto.request.customer.RequestAddCustomerDTO;
-import com.company.storeapi.model.dto.request.customer.RequestUpdateCustomerDTO;
-import com.company.storeapi.model.dto.response.customer.ResponseCustomerDTO;
+import com.company.storeapi.model.payload.request.customer.RequestAddCustomerDTO;
+import com.company.storeapi.model.payload.request.customer.RequestUpdateCustomerDTO;
+import com.company.storeapi.model.payload.response.customer.ResponseCustomerDTO;
 
 import java.util.List;
 

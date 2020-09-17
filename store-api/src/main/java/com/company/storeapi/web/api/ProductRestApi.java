@@ -2,10 +2,10 @@ package com.company.storeapi.web.api;
 
 
 import com.company.storeapi.core.exceptions.base.ServiceException;
-import com.company.storeapi.model.dto.request.product.RequestAddProductDTO;
-import com.company.storeapi.model.dto.request.product.RequestUpdateProductDTO;
-import com.company.storeapi.model.dto.response.product.ResponseOrderProductItemsDTO;
-import com.company.storeapi.model.dto.response.product.ResponseProductDTO;
+import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
+import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
+import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
+import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.services.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController

@@ -1,7 +1,6 @@
 package com.company.storeapi.model.entity;
 
-import com.company.storeapi.model.dto.request.product.RequestOrderProductItemsDTO;
-import com.company.storeapi.model.dto.response.product.ResponseOrderProductItemsDTO;
+import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.enums.OrderStatus;
 import com.company.storeapi.model.enums.PaymentType;
 import lombok.*;

@@ -1,9 +1,8 @@
 package com.company.storeapi.core.mapper;
 
-import com.company.storeapi.core.util.DateUtil;
-import com.company.storeapi.model.dto.request.product.RequestAddProductDTO;
-import com.company.storeapi.model.dto.request.product.RequestUpdateProductDTO;
-import com.company.storeapi.model.dto.response.product.ResponseProductDTO;
+import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
+import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
+import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.enums.Status;

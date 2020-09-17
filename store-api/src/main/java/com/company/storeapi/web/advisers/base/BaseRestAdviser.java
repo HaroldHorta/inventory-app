@@ -8,7 +8,7 @@ import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceE
 import com.company.storeapi.core.exceptions.persistence.PortalPersistenceException;
 import com.company.storeapi.core.exceptions.service.DataCorruptedServiceException;
 import com.company.storeapi.core.exceptions.service.DataNotFoundServiceException;
-import com.company.storeapi.model.dto.base.GenericResponseEntity;
+import com.company.storeapi.model.payload.base.GenericResponseEntity;
 import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.TransactionException;

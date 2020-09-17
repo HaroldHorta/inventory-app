@@ -1,8 +1,8 @@
 package com.company.storeapi.web.api;
 
 import com.company.storeapi.core.exceptions.base.ServiceException;
-import com.company.storeapi.model.dto.request.ticket.RequestAddTicketDTO;
-import com.company.storeapi.model.dto.response.ticket.ResponseTicketDTO;
+import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
+import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
 import com.company.storeapi.services.ticket.TicketServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/ticket")
+@RequestMapping("/api/ticket")
 @CrossOrigin({"*"})
 @RequiredArgsConstructor
 public class TicketRestApi {
@@ -26,7 +26,7 @@ public class TicketRestApi {
         return ticketServices.getAllTicket();
     }
 
-    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseTicketDTO> getTicketById(@PathVariable String id) throws ServiceException{
         ResponseTicketDTO responseTicketDTO = ticketServices.validateAndGetTicketById(id);
         return new ResponseEntity<>(responseTicketDTO,new HttpHeaders(), HttpStatus.OK);

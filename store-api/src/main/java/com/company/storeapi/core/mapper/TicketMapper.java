@@ -2,10 +2,10 @@ package com.company.storeapi.core.mapper;
 
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
-import com.company.storeapi.model.dto.request.product.RequestUpdateProductDTO;
-import com.company.storeapi.model.dto.request.ticket.RequestAddTicketDTO;
-import com.company.storeapi.model.dto.response.order.ResponseOrderDTO;
-import com.company.storeapi.model.dto.response.ticket.ResponseTicketDTO;
+import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
+import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
+import com.company.storeapi.model.payload.response.order.ResponseOrderDTO;
+import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
 import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.entity.Ticket;
 import com.company.storeapi.model.enums.OrderStatus;

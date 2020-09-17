@@ -1,7 +1,7 @@
 package com.company.storeapi.core.mapper;
 
-import com.company.storeapi.model.dto.request.category.RequestAddCategoryDTO;
-import com.company.storeapi.model.dto.response.category.ResponseCategoryDTO;
+import com.company.storeapi.model.payload.request.category.RequestAddCategoryDTO;
+import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.entity.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
