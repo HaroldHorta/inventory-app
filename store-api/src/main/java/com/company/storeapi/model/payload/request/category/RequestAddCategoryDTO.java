@@ -1,4 +1,4 @@
-package com.company.storeapi.model.dto.request.category;
+package com.company.storeapi.model.payload.request.category;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

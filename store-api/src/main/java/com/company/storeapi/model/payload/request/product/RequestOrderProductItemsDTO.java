@@ -1,4 +1,4 @@
-package com.company.storeapi.model.dto.response.product;
+package com.company.storeapi.model.payload.request.product;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -7,9 +7,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 @Data
-public class ResponseOrderProductItemsDTO {
+public class RequestOrderProductItemsDTO {
 
-    @Schema(example = "15")
+    @Schema(example = "5f4d93ab0d70a908c47d3045")
     @NotNull
     private String id;
 
@@ -17,7 +17,5 @@ public class ResponseOrderProductItemsDTO {
     @NotNull
     @Positive
     private Integer unit;
-
-    private Double total;
 
 }

@@ -1,4 +1,4 @@
-package com.company.storeapi.model.dto.response.customer;
+package com.company.storeapi.model.payload.response.customer;
 
 import lombok.Data;
 

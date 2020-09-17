@@ -1,4 +1,4 @@
-package com.company.storeapi.model.dto.request.customer;
+package com.company.storeapi.model.payload.request.customer;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

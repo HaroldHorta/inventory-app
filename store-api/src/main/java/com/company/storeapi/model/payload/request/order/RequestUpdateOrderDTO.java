@@ -1,6 +1,6 @@
-package com.company.storeapi.model.dto.request.order;
+package com.company.storeapi.model.payload.request.order;
 
-import com.company.storeapi.model.dto.request.product.RequestOrderProductItemsDTO;
+import com.company.storeapi.model.payload.request.product.RequestOrderProductItemsDTO;
 import com.company.storeapi.model.enums.OrderStatus;
 import com.company.storeapi.model.enums.PaymentType;
 import io.swagger.v3.oas.annotations.media.Schema;

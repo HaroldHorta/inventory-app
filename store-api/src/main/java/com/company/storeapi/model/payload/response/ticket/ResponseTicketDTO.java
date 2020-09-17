@@ -1,4 +1,4 @@
-package com.company.storeapi.model.dto.response.ticket;
+package com.company.storeapi.model.payload.response.ticket;
 
 import com.company.storeapi.model.entity.Order;
 import lombok.Data;

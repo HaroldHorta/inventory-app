@@ -1,4 +1,4 @@
-package com.company.storeapi.model.dto.response.category;
+package com.company.storeapi.model.payload.response.category;
 
 import lombok.Data;
 

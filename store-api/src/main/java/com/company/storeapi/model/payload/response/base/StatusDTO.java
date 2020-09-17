@@ -1,4 +1,4 @@
-package com.company.storeapi.model.dto.response.base;
+package com.company.storeapi.model.payload.response.base;
 
 import lombok.*;
 

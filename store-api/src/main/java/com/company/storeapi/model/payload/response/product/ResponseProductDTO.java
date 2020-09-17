@@ -1,6 +1,6 @@
-package com.company.storeapi.model.dto.response.product;
+package com.company.storeapi.model.payload.response.product;
 
-import com.company.storeapi.model.dto.response.category.ResponseCategoryDTO;
+import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.enums.Status;
 import lombok.Data;
 
