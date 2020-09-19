@@ -14,5 +14,15 @@
       "name": "application-description",
       "type": "java.lang.String",
       "description": "Description for application-description."
+    },
+    {
+      "name": "inventory.app.jwtSecret",
+      "type": "java.lang.String",
+      "description": "Description for inventory.app.jwtSecret."
+    },
+    {
+      "name": "application-version",
+      "type": "java.lang.String",
+      "description": "Description for application-version."
     }
   ] }

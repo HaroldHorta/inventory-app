@@ -29,12 +29,12 @@ public class ProductRepositoryFacadeImpl implements ProductRepositoryFacade {
     public List<Product> getAllProduct() {
         try {
             return Optional.of(repository.findAll())
-                    .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO,"No se encontraron productos registrados"));
+                    .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND,"No se encontraron productos registrados"));
 
         }catch (IllegalArgumentException ie){
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
         }catch (DataAccessException er){
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_GENERAL_SERVICIO, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
         }
     }
 
@@ -43,9 +43,9 @@ public class ProductRepositoryFacadeImpl implements ProductRepositoryFacade {
         try {
             return repository.save(product);
         }catch (IllegalArgumentException ie){
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"Error al guardar el producto");
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Error al guardar el producto");
         }catch (DataAccessException er){
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_GENERAL_SERVICIO, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
         }
     }
 
@@ -55,12 +55,12 @@ public class ProductRepositoryFacadeImpl implements ProductRepositoryFacade {
         if(product.isPresent()){
             repository.deleteById(id);
         }else {
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO,"No se encontraron datos a eliminar con el id" + id);
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND,"No se encontraron datos a eliminar con el id" + id);
         }
     }
 
     @Override
     public Product validateAndGetProductById(String id) {
-            return repository.findById(id).orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO, "NO se encontraron productos con el id " + id));
+            return repository.findById(id).orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "NO se encontraron productos con el id " + id));
     }
 }

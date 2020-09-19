@@ -48,7 +48,7 @@ public class GenericResponseEntity {
         } else if (exception instanceof PortalException) {
             this.errorType = ((PortalException) exception).getLogRefServices();
         } else {
-            this.errorType = LogRefServices.ERROR_GENERAL_SERVICIO;
+            this.errorType = LogRefServices.LOG_REF_SERVICES;
         }
         return this;
     }

@@ -44,7 +44,7 @@ public class DateUtil {
         try {
             return DatatypeFactory.newInstance().newXMLGregorianCalendar(dateSource.format(DateTimeFormatter.ISO_DATE_TIME));
         } catch (DatatypeConfigurationException e) {
-            throw new DataCorruptedServiceException(LogRefServices.ERROR_CONVERSION_FECHA, "No se ha podido realizar la conversión de la fecha", e);
+            throw new DataCorruptedServiceException(LogRefServices.ERROR_CONVERSION_DATE, "No se ha podido realizar la conversión de la fecha", e);
         }
     }
 

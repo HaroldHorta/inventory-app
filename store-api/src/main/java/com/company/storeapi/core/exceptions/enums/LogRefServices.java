@@ -13,24 +13,35 @@ public enum LogRefServices {
     /**
      * Error general servicio log ref servicios.
      */
-    ERROR_GENERAL_SERVICIO("ERROR_GENERAL_SERVICIO", "/ayuda/error_general_servicio.html"),
+    LOG_REF_SERVICES("LOG_REF_SERVICES", "/ayuda/error_general_servicio.html"),
     /**
      * Error persistencia log ref servicios.
      */
-    ERROR_PERSISTENCIA("ERROR_PERSISTENCIA", "/ayuda/error_persistencia.html"),
+    ERROR_PERSISTENCE("ERROR_PERSISTENCE", "/ayuda/error_persistencia.html"),
     /**
      * Error dato corrupto log ref servicios.
      */
-    ERROR_DATO_CORRUPTO("ERROR_DATO_CORRUPTO", "/ayuda/error_dato_corrupto.html"),
-    ERROR_DATO_NO_ENCONTRADO("ERROR_DATO_NO_ENCONTRADO", "/ayuda/error_general_servicio.html"),
+    ERROR_DATA_CORRUPT("ERROR_DATA_CORRUPT", "/ayuda/error_dato_corrupto.html"),
+    ERROR_DATA_NOT_FOUND("ERROR_DATA_NOT_FOUND", "/ayuda/error_general_servicio.html"),
     /**
      * Error conversion fecha log ref servicios.
      */
-    ERROR_CONVERSION_FECHA("ERROR_CONVERSION_FECHA", "/ayuda/error_general/error_conversion_fecha.html"),
+    ERROR_CONVERSION_DATE("ERROR_CONVERSION_DATE", "/ayuda/error_general/error_conversion_fecha.html"),
     /**
      * Error llave parametro no encontrado log ref servicios.
      */
-    ERROR_GUARDAR_SOLICITUD("ERROR_GUARDAR_SOLICITUD", "/ayuda/error_general/error_guardar_solicitud.html");
+    ERROR_SAVE("ERROR_SAVE", "/ayuda/error_general/error_guardar_solicitud.html"),
+
+    ERROR_AUTHENTICATION("ERROR_AUTHENTICATION","/ayuda/error_general/error_athentication.html"),
+
+    ERROR_TOKEN_INVALID("ERROR_TOKEN_INVALID","/ayuda/error_general/error_athentication.html"),
+
+    ERROR_NO_SUPPORTED("ERROR_NO_SUPPORTED","/ayuda/error_general/error_athentication.html"),
+
+    ERROR_JWT_EMPTY("ERROR_JWT_EMPTY","/ayuda/error_general/error_athentication.html"),
+
+    ERROR_EXPIRED("ERROR_EXPIRED","/ayuda/error_general/error_athentication.html");
+
 
     /**
      * Codigo del error

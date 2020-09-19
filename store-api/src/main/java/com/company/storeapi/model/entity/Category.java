@@ -13,13 +13,9 @@ public class Category {
     @NotNull
     private String description;
 
-
-
-
     public Category() {
 
     }
-
 
     public String getId() {
         return id;

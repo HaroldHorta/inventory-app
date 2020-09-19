@@ -32,11 +32,11 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
     public List<Category> getAllCategory() throws ServiceException {
         try {
             return Optional.of(repository.findAll())
-                    .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO, "No se encontraron registros de categorias"));
+                    .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de categorias"));
         }catch (EmptyResultDataAccessException er){
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
         }catch (DataAccessException er){
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_GENERAL_SERVICIO, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
         }
     }
 
@@ -44,7 +44,7 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
     public Category validateAndGetCategoryById(String id) throws ServiceException {
 
             return  repository.findById(id)
-                    .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO, "Categoria con el id: "+ id + " no encontrada" ));
+                    .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "Categoria con el id: "+ id + " no encontrada" ));
 
     }
 
@@ -53,9 +53,9 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
         try {
             return  repository.findCategoryById(description);
         }catch (EmptyResultDataAccessException er){
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
         }catch (DataAccessException er){
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_GENERAL_SERVICIO, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
         }
     }
 
@@ -70,7 +70,7 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
         if(category.isPresent()){
             repository.deleteById(id);
         }else {
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
         }
 
     }

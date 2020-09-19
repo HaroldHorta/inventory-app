@@ -92,9 +92,9 @@ public class ProductServiceImpl implements ProductService {
         Product prod = productRepositoryFacade.validateAndGetProductById(id);
         ResponseOrderProductItemsDTO orderProduct = new ResponseOrderProductItemsDTO();
        if(unit<=0){
-           throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"la cantidad a ingresar no puede ser 0 o menor a 0");
+           throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"la cantidad a ingresar no puede ser 0 o menor a 0");
        }else if(unit>prod.getUnit()){
-           throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"la cantidad de " + prod.getName() + " es mayor a la cantidad del presente en el inventario");
+           throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"la cantidad de " + prod.getName() + " es mayor a la cantidad del presente en el inventario");
        }else{
            orderProduct.setId(id);
            orderProduct.setUnit(unit);
@@ -111,7 +111,7 @@ public class ProductServiceImpl implements ProductService {
             product.setStatus(Status.ACTIVE);
             product.setUnit(unitNew);
         }else{
-            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"la cantidad a ingresar no puede ser 0 o menor a 0");
+            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"la cantidad a ingresar no puede ser 0 o menor a 0");
         }
         return productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
 

@@ -25,11 +25,11 @@ public class CustomerRepositoryFacadeImpl implements CustomerRepositoryFacade {
     public List<Customer> getAllCustomers() {
         try {
             return Optional.of(customerRepository.findAll())
-                    .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO, "No se encontraron registros de clientes"));
+                    .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de clientes"));
         }catch (EmptyResultDataAccessException er){
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
         }catch (DataAccessException er){
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_GENERAL_SERVICIO, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
         }
     }
 
@@ -43,14 +43,14 @@ public class CustomerRepositoryFacadeImpl implements CustomerRepositoryFacade {
         try {
         customerRepository.deleteById(id);
         }catch (EmptyResultDataAccessException er){
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
         }catch (DataAccessException er){
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_GENERAL_SERVICIO, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
         }
     }
 
     @Override
     public Customer validateAndGetCustomerById(String  id) {
-        return customerRepository.findById(id).orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATO_NO_ENCONTRADO, "No se encontraron registros de clientes"));
+        return customerRepository.findById(id).orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de clientes"));
     }
 }

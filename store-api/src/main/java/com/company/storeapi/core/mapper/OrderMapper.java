@@ -84,11 +84,11 @@ public abstract class OrderMapper {
         createOrderDto.getProducts().forEach(p -> {
             Product product = productMapper.toProduct(productService.validateAndGetProductById(p.getId()));
             if(product.getUnit()==0 || product.getStatus() == Status.INACTIVE){
-                throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"Producto " + product.getName() + " Agotado o Inactivo");
+                throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Producto " + product.getName() + " Agotado o Inactivo");
             }else if(product.getUnit()<p.getUnit()){
-                throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"La cantidad requerida del producto " + product.getName() + " es mayor a la cantidad existente en el inventario");
+                throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"La cantidad requerida del producto " + product.getName() + " es mayor a la cantidad existente en el inventario");
            } else if(p.getUnit()<=0){
-               throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATO_CORRUPTO,"La cantidad solicitada del producto " + product.getName() + " no puede ser 0 o menor");
+               throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"La cantidad solicitada del producto " + product.getName() + " no puede ser 0 o menor");
            }else{
                ResponseOrderProductItemsDTO requestOrderProductItemsDTO = new ResponseOrderProductItemsDTO();
 
