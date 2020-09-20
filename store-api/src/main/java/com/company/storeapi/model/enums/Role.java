@@ -6,11 +6,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum  Role {
 
-    SUPER_ADMINISTRATOR(1),
-    ADMINISTRATOR(2),
-    SELLER(3),
-    VETERINARY(4);
+    SUPER_ADMINISTRATOR,
+    ADMINISTRATOR,
+    SELLER,
+    VETERINARY
 
-    @Getter
-        private final Integer id;
+
 }

@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.Set;
 
 @Data
@@ -22,6 +24,7 @@ public class User {
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
 

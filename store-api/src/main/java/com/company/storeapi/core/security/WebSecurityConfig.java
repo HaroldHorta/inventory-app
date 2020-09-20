@@ -3,7 +3,6 @@ package com.company.storeapi.core.security;
 import com.company.storeapi.core.security.jwt.AuthEntryPointJwt;
 import com.company.storeapi.core.security.jwt.AuthTokenFilter;
 import com.company.storeapi.core.security.service.UserDetailsServiceImpl;
-import com.company.storeapi.model.enums.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,8 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-		prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private final UserDetailsServiceImpl userDetailsService;
 
@@ -60,8 +58,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests()
 				.antMatchers(HttpMethod.POST,"/api/user/**").permitAll()
-				.antMatchers(HttpMethod.GET,"/api/category/**").hasRole("SELLER")
-				.antMatchers(HttpMethod.POST,"/api/category/**").hasRole("ADMINISTRATOR")
+				.antMatchers(HttpMethod.GET,"/api/category").hasAnyAuthority("ADMINISTRATOR","VETERINARY")
+				.antMatchers(HttpMethod.POST,"/api/category/**").hasAnyAuthority("ADMINISTRATOR")
 			.anyRequest().authenticated();
 
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
