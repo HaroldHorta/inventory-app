@@ -14,7 +14,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>app-inventory</name>
-    <description>Demo project for Spring Boot</description>
+    <description>App Inventory whit sSpring Boot an Mongo DB</description>
 
     <properties>
         <java.version>11</java.version>
