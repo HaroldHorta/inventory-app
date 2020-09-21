@@ -3,12 +3,12 @@ package com.company.storeapi.core.security;
 import com.company.storeapi.core.security.jwt.AuthEntryPointJwt;
 import com.company.storeapi.core.security.jwt.AuthTokenFilter;
 import com.company.storeapi.core.security.service.UserDetailsServiceImpl;
+import com.company.storeapi.model.enums.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private final UserDetailsServiceImpl userDetailsService;
 
@@ -57,10 +56,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests()
+				.antMatchers("/v3/api-docs", "/swagger-ui.html","/swagger-ui.html/**", "/configuration/**",  "/swagger-ui/**",  "/webjars/**").permitAll()
+
+				//create user and login
 				.antMatchers(HttpMethod.POST,"/api/user/**").permitAll()
-				.antMatchers(HttpMethod.GET,"/api/category").hasAnyAuthority("ADMINISTRATOR","VETERINARY")
-				.antMatchers(HttpMethod.POST,"/api/category/**").hasAnyAuthority("ADMINISTRATOR")
-			.anyRequest().authenticated();
+				//category
+				.antMatchers(HttpMethod.GET,"/api/category/**").permitAll()
+				.antMatchers(HttpMethod.POST,"/api/category/**").hasAnyAuthority(String.valueOf(Role.ADMINISTRATOR),String.valueOf(Role.SUPER_ADMINISTRATOR))
+				.antMatchers(HttpMethod.PUT,"/api/category/**").hasAnyAuthority(String.valueOf(Role.ADMINISTRATOR),String.valueOf(Role.SUPER_ADMINISTRATOR))
+				.antMatchers(HttpMethod.DELETE,"/api/category/**").hasAnyAuthority(String.valueOf(Role.SUPER_ADMINISTRATOR))
+
+				//customer
+
+				.anyRequest().authenticated();
 
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}

@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Mapper(
         componentModel = "spring",
@@ -19,14 +21,26 @@ import java.util.Set;
 )
 public abstract class UserMapper {
 
+    Pattern pattern = Pattern
+            .compile("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@"
+                    + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+
     public User toUser(RequestAddUserDTO requestAddUserDTO){
+
         User user = new User();
         user.setUsername(requestAddUserDTO.getUsername());
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12); // Strength set as 12
         String encodedPassword = encoder.encode(requestAddUserDTO.getPassword());
         user.setPassword(encodedPassword);
-        user.setEmail(requestAddUserDTO.getEmail());
+        Matcher mather = pattern.matcher(requestAddUserDTO.getEmail());
+
+        if (mather.find()) {
+            user.setEmail(requestAddUserDTO.getEmail());
+        } else {
+            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Email no valido");
+        }
+
 
         Set<String> strRoles = requestAddUserDTO.getRole();
         Set<Role> roles = new HashSet<>();

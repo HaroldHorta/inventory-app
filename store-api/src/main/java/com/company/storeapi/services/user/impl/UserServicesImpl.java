@@ -43,12 +43,14 @@ public class UserServicesImpl implements UserServices {
     public ResponseUserDTO saveUser(RequestAddUserDTO requestAddUserDTO) {
         if(userRepositoryFacade.existsByUsername(requestAddUserDTO.getUsername())){
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"El nombre de usuario ya esta en uso");
-        }else if(userRepositoryFacade.existsByEmail(requestAddUserDTO.getEmail())){
+        }
+
+        if(userRepositoryFacade.existsByEmail(requestAddUserDTO.getEmail())){
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"El email ya esta en uso");
         }
-        else{
-            return userMapper.toUserDto(userRepositoryFacade.saveUser(userMapper.toUser(requestAddUserDTO)));
-        }
+
+      return userMapper.toUserDto(userRepositoryFacade.saveUser(userMapper.toUser(requestAddUserDTO)));
+
 
     }
 
