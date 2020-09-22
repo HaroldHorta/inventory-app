@@ -66,7 +66,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.PUT,"/api/category/**").hasAnyAuthority(String.valueOf(Role.ADMINISTRATOR),String.valueOf(Role.SUPER_ADMINISTRATOR))
 				.antMatchers(HttpMethod.DELETE,"/api/category/**").hasAnyAuthority(String.valueOf(Role.SUPER_ADMINISTRATOR))
 
-				//customer
+				//prodcut
+				.antMatchers(HttpMethod.GET,"/api/product/**").permitAll()
+				.antMatchers(HttpMethod.POST,"/api/product/**").hasAnyAuthority(String.valueOf(Role.ADMINISTRATOR),String.valueOf(Role.SUPER_ADMINISTRATOR))
+				.antMatchers(HttpMethod.PUT,"/api/product/**").hasAnyAuthority(String.valueOf(Role.ADMINISTRATOR),String.valueOf(Role.SUPER_ADMINISTRATOR))
+				.antMatchers(HttpMethod.DELETE,"/api/product/**").hasAnyAuthority(String.valueOf(Role.SUPER_ADMINISTRATOR))
+
 
 				.anyRequest().authenticated();
 

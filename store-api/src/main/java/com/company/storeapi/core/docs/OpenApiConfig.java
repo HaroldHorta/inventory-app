@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 /**
  * The type Open api config.
@@ -23,11 +24,17 @@ public class OpenApiConfig {
      * @return the open api
      */
 
+     @Bean(name = "multipartResolver")
+     public CommonsMultipartResolver commonsMultipartResolver(){
+         return new CommonsMultipartResolver();
+     }
+
     @Bean
     public OpenAPI customOpenAPI(@Value("${application-description}") String appDescription, @Value("${application-version}") String appVersion) {
         final String securitySchemeName = "bearerAuth";
 
         return new OpenAPI()
+
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(
                         new Components()
