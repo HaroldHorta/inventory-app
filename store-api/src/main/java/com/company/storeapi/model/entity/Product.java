@@ -2,6 +2,7 @@ package com.company.storeapi.model.entity;
 
 
 import com.company.storeapi.model.enums.Status;
+import com.company.storeapi.model.payload.request.user.FileInfo;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -38,7 +39,7 @@ public class Product {
 
     private int unit;
 
-    private String photo;
+    private FileInfo photo;
 
     public Product() {
 

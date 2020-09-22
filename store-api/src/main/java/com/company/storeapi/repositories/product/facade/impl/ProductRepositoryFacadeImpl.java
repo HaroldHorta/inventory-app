@@ -1,7 +1,6 @@
 package com.company.storeapi.repositories.product.facade.impl;
 
 import com.company.storeapi.core.constants.MessageError;
-import com.company.storeapi.core.exceptions.base.ServiceException;
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.model.entity.Product;
@@ -46,16 +45,6 @@ public class ProductRepositoryFacadeImpl implements ProductRepositoryFacade {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Error al guardar el producto");
         }catch (DataAccessException er){
             throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
-        }
-    }
-
-    @Override
-    public void deleteProduct(String id) throws ServiceException {
-        Optional<Product> product = repository.findById(id);
-        if(product.isPresent()){
-            repository.deleteById(id);
-        }else {
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND,"No se encontraron datos a eliminar con el id" + id);
         }
     }
 

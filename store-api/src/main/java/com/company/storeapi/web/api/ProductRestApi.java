@@ -8,13 +8,11 @@ import com.company.storeapi.model.payload.response.product.ResponseOrderProductI
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.services.product.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,8 +23,9 @@ public class ProductRestApi {
 
     private final ProductService service;
 
-    @Autowired
-    public ProductRestApi(ProductService productService){this.service=productService;}
+    public ProductRestApi(ProductService service) {
+        this.service = service;
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ResponseProductDTO> getAllProduct() throws ServiceException {
@@ -40,10 +39,9 @@ public class ProductRestApi {
         return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.OK);
     }
 
-
     @PostMapping()
-       public ResponseEntity<ResponseProductDTO> create(@RequestBody RequestAddProductDTO requestAddProductDTO, @RequestParam("file") MultipartFile file) throws ServiceException {
-        ResponseProductDTO created = service.saveProduct(requestAddProductDTO, file);
+       public ResponseEntity<ResponseProductDTO> create(@RequestBody RequestAddProductDTO requestAddProductDTO) throws ServiceException {
+        ResponseProductDTO created = service.saveProduct(requestAddProductDTO);
         return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.OK);
     }
 
