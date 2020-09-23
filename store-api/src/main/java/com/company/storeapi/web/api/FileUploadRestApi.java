@@ -1,21 +1,14 @@
 package com.company.storeapi.web.api;
 
-import com.company.storeapi.core.exceptions.message.ResponseMessage;
-import com.company.storeapi.model.payload.request.user.FileInfo;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.services.product.FilesStorageService;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/file")
