@@ -13,9 +13,7 @@ public interface ProductService {
 
     List<ResponseProductDTO> getAllProducts();
 
-    ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO, MultipartFile file);
-
-    void deleteProduct(String id);
+    ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO);
 
     ResponseProductDTO updateProduct(String id, RequestUpdateProductDTO requestUpdateCustomerDTO);
 

@@ -11,7 +11,5 @@ public interface ProductRepositoryFacade {
 
     Product saveProduct(Product product);
 
-    void deleteProduct(String id) throws ServiceException;
-
     Product validateAndGetProductById(String id);
 }

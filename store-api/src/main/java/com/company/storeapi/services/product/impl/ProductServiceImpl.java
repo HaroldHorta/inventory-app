@@ -45,30 +45,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO, MultipartFile file) {
-        if (!file.isEmpty()) {
-            try {
-                String uploadsDir = path;
-                String realPathToUploads = request.getServletContext().getRealPath(uploadsDir);
-                if (!new File(realPathToUploads).exists()) {
-                    new File(realPathToUploads);
-                }
-
-                String orgName = file.getOriginalFilename();
-                String filePath = realPathToUploads + orgName;
-
-                requestAddProductDTO.setPhoto(filePath);
-                File dest = new File(filePath);
-                file.transferTo(dest);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    public ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO) {
         return productMapper.toProductDto(productRepositoryFacade.saveProduct(productMapper.toProduct(requestAddProductDTO)));
-    }
-            @Override
-    public void deleteProduct(String id) {
-        productRepositoryFacade.deleteProduct(id);
     }
 
     @Override
@@ -107,14 +85,13 @@ public class ProductServiceImpl implements ProductService {
     public ResponseProductDTO addUnitProduct(String id, int unit) {
         Product product = productRepositoryFacade.validateAndGetProductById(id);
         if(unit>0){
-            int unitNew = product.getUnit()+unit;
+            int unitNew = product.getUnit() + unit;
             product.setStatus(Status.ACTIVE);
             product.setUnit(unitNew);
         }else{
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"la cantidad a ingresar no puede ser 0 o menor a 0");
         }
         return productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
-
     }
 
     @Override
