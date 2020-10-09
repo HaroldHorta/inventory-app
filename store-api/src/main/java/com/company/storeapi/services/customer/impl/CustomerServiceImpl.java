@@ -1,11 +1,13 @@
 package com.company.storeapi.services.customer.impl;
 
 import com.company.storeapi.core.mapper.CustomerMapper;
+import com.company.storeapi.model.entity.CountingGeneral;
 import com.company.storeapi.model.payload.request.customer.RequestAddCustomerDTO;
 import com.company.storeapi.model.payload.request.customer.RequestUpdateCustomerDTO;
 import com.company.storeapi.model.payload.response.customer.ResponseCustomerDTO;
 import com.company.storeapi.model.entity.Customer;
 import com.company.storeapi.repositories.customer.facade.CustomerRepositoryFacade;
+import com.company.storeapi.services.countingGeneral.CountingGeneralService;
 import com.company.storeapi.services.customer.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepositoryFacade customerRepositoryFacade;
     private final CustomerMapper customerMapper;
+    private final CountingGeneralService countingGeneralService;
 
 
 
@@ -30,7 +33,28 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public ResponseCustomerDTO saveCustomer(RequestAddCustomerDTO requestAddCustomerDTO) {
-        return customerMapper.toCustomerDto(customerRepositoryFacade.saveCustomer(customerMapper.toCustomer(requestAddCustomerDTO)));
+
+        ResponseCustomerDTO responseCustomerDTO =   customerMapper.toCustomerDto(customerRepositoryFacade.saveCustomer(customerMapper.toCustomer(requestAddCustomerDTO)));
+
+        List<CountingGeneral> counting = countingGeneralService.getAllCountingGeneral();
+
+        if((counting.size() ==0)){
+            CountingGeneral c = new CountingGeneral();
+
+            c.setQuantity_of_customer(1);
+            countingGeneralService.saveCountingGeneral(c);
+
+        }  else{
+            counting.forEach(p->{
+                CountingGeneral countingGeneral = countingGeneralService.validateCountingGeneral(p.getId());
+
+                countingGeneral.setQuantity_of_customer(p.getQuantity_of_customer()+1);
+
+                countingGeneralService.saveCountingGeneral(countingGeneral);
+            });
+        }
+
+        return responseCustomerDTO;
     }
 
     @Override

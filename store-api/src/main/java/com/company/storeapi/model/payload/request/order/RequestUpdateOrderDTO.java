@@ -21,10 +21,6 @@ public class RequestUpdateOrderDTO {
     @NotNull
     private PaymentType paymentType;
 
-    @Schema(example = "OPEN")
-    @NotNull
-    private OrderStatus orderStatus;
-
     @Valid
     private List<RequestOrderProductItemsDTO> products;
 }

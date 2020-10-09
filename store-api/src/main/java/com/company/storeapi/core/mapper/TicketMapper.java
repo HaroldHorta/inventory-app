@@ -10,6 +10,7 @@ import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.entity.Ticket;
 import com.company.storeapi.model.enums.OrderStatus;
 import com.company.storeapi.model.enums.Status;
+import com.company.storeapi.services.countingGeneral.CountingGeneralService;
 import com.company.storeapi.services.order.OrderService;
 import com.company.storeapi.services.product.ProductService;
 import org.mapstruct.Mapper;
@@ -37,6 +38,9 @@ public abstract class TicketMapper {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private CountingGeneralService countingGeneralService;
 
     @Mapping(source = "order",target = "order")
     public abstract ResponseTicketDTO toTicketDto(Ticket ticket);
@@ -69,6 +73,7 @@ public abstract class TicketMapper {
         ticket.setCreateAt(new Date());
         ticket.setOrder(orderMapper.toResponseDto(order));
 
+        countingGeneralService.counting(requestAddTicketDTO.getOrder(), order.getOrderStatus());
         return ticket;
     }
 }
