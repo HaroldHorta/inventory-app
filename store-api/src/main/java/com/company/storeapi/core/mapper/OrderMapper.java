@@ -2,6 +2,8 @@ package com.company.storeapi.core.mapper;
 
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
+import com.company.storeapi.model.entity.CountingGeneral;
+import com.company.storeapi.model.enums.OrderStatus;
 import com.company.storeapi.model.payload.request.order.RequestAddOrderDTO;
 import com.company.storeapi.model.payload.request.order.RequestUpdateOrderDTO;
 import com.company.storeapi.model.payload.request.product.RequestOrderProductItemsDTO;
@@ -11,6 +13,7 @@ import com.company.storeapi.model.entity.Customer;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.enums.Status;
+import com.company.storeapi.services.countingGeneral.CountingGeneralService;
 import com.company.storeapi.services.customer.CustomerService;
 import com.company.storeapi.services.product.ProductService;
 import org.mapstruct.Mapper;
@@ -37,6 +40,9 @@ public abstract class OrderMapper {
     private ProductService productService;
 
     @Autowired
+    private CountingGeneralService countingGeneralService;
+
+    @Autowired
     private CustomerMapper customerMapper;
 
     @Autowired
@@ -57,7 +63,6 @@ public abstract class OrderMapper {
     public void updateOrderFromDto(RequestUpdateOrderDTO updateOrderDto, Order order){
 
         order.setPaymentType(updateOrderDto.getPaymentType());
-        order.setOrderStatus(updateOrderDto.getOrderStatus());
 
         Set<ResponseOrderProductItemsDTO> listOrder = getResponseOrderProductItemsDTOS(toRequestAdd(updateOrderDto));
 
@@ -67,7 +72,7 @@ public abstract class OrderMapper {
     public Order toOrder(RequestAddOrderDTO createOrderDto) {
         Order order = new Order();
         order.setPaymentType(createOrderDto.getPaymentType());
-        order.setOrderStatus(createOrderDto.getOrderStatus());
+        order.setOrderStatus(OrderStatus.OPEN);
 
         Customer customer = customerMapper.toCustomer(customerService.validateAndGetCustomerById(createOrderDto.getCustomerId()));
         order.setCustomer(customer);
@@ -75,6 +80,25 @@ public abstract class OrderMapper {
         Set<ResponseOrderProductItemsDTO> listOrder = getResponseOrderProductItemsDTOS(createOrderDto);
 
         order.setProducts(listOrder);
+
+        List<CountingGeneral> counting = countingGeneralService.getAllCountingGeneral();
+
+        if((counting.size() ==0)){
+            CountingGeneral c = new CountingGeneral();
+
+            c.setQuantity_of_orders_in_open_state(1);
+            countingGeneralService.saveCountingGeneral(c);
+
+        }  else{
+            counting.forEach(p->{
+                        CountingGeneral countingGeneral = countingGeneralService.validateCountingGeneral(p.getId());
+
+                        countingGeneral.setQuantity_of_orders_in_open_state(p.getQuantity_of_orders_in_open_state()+1);
+
+                    countingGeneralService.saveCountingGeneral(countingGeneral);
+        });
+        }
+
 
         return order;
     }

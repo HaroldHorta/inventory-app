@@ -61,16 +61,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				//create user and login
 				.antMatchers(HttpMethod.POST,"/api/user/**").permitAll()
 				//category
-				.antMatchers(HttpMethod.GET,"/api/category/**").permitAll()
-				.antMatchers(HttpMethod.POST,"/api/category/**").hasAnyAuthority(String.valueOf(Role.ADMINISTRATOR),String.valueOf(Role.SUPER_ADMINISTRATOR))
-				.antMatchers(HttpMethod.PUT,"/api/category/**").hasAnyAuthority(String.valueOf(Role.ADMINISTRATOR),String.valueOf(Role.SUPER_ADMINISTRATOR))
-				.antMatchers(HttpMethod.DELETE,"/api/category/**").hasAnyAuthority(String.valueOf(Role.SUPER_ADMINISTRATOR))
+				.antMatchers(HttpMethod.GET,"/api/**").permitAll()
+				.antMatchers(HttpMethod.POST,"/api/**").permitAll()
+				.antMatchers(HttpMethod.PUT,"/api/**").permitAll()
+				.antMatchers(HttpMethod.DELETE,"/api/**").permitAll()
+				.antMatchers(HttpMethod.PATCH,"/api/**").permitAll()
 
-				//prodcut
-				.antMatchers(HttpMethod.GET,"/api/product/**").permitAll()
-				.antMatchers(HttpMethod.POST,"/api/product/**").hasAnyAuthority(String.valueOf(Role.ADMINISTRATOR),String.valueOf(Role.SUPER_ADMINISTRATOR))
-				.antMatchers(HttpMethod.PUT,"/api/product/**").hasAnyAuthority(String.valueOf(Role.ADMINISTRATOR),String.valueOf(Role.SUPER_ADMINISTRATOR))
-				.antMatchers(HttpMethod.DELETE,"/api/product/**").hasAnyAuthority(String.valueOf(Role.SUPER_ADMINISTRATOR))
+				//product
+				//.antMatchers(HttpMethod.GET,"/api/product/**").permitAll()
+				//.antMatchers(HttpMethod.POST,"/api/product/**").hasAnyAuthority(String.valueOf(Role.ADMINISTRATOR),String.valueOf(Role.SUPER_ADMINISTRATOR))
+				//.antMatchers(HttpMethod.PUT,"/api/product/**").hasAnyAuthority(String.valueOf(Role.ADMINISTRATOR),String.valueOf(Role.SUPER_ADMINISTRATOR))
+				//.antMatchers(HttpMethod.DELETE,"/api/product/**").hasAnyAuthority(String.valueOf(Role.SUPER_ADMINISTRATOR))
 
 
 				.anyRequest().authenticated();

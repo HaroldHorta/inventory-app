@@ -9,6 +9,7 @@ import com.company.storeapi.model.payload.response.order.ResponseOrderDTO;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.enums.OrderStatus;
 import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
+import com.company.storeapi.services.countingGeneral.CountingGeneralService;
 import com.company.storeapi.services.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepositoryFacade orderRepository;
     private final OrderMapper orderMapper;
+    private final CountingGeneralService countingGeneralService;
 
 
     @Override
@@ -50,6 +52,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ResponseOrderDTO validateAndGetOrderById(String id) {
         return orderMapper.toOrderDto(orderRepository.validateAndGetOrderById(id));
+    }
+
+    @Override
+    public ResponseOrderDTO changeStatusOrder(String id, OrderStatus orderStatus) {
+        Order order = orderRepository.validateAndGetOrderById(id);
+        order.setOrderStatus(orderStatus);
+        countingGeneralService.counting(id,orderStatus);
+        return orderMapper.toOrderDto(orderRepository.saveOrder(order));
     }
 
 
