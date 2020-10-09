@@ -12,11 +12,15 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 @ControllerAdvice(assignableTypes = {
 
         CategoryRestApi.class,
-        ProductRestApi.class,
-        OrderRestApi.class,
         CustomerRestApi.class,
+        FileUploadRestApi.class,
+        InventoryRestApi.class,
+        OrderRestApi.class,
+        ProductRestApi.class,
         TicketRestApi.class,
-        UserRestApi.class
+        UserRestApi.class,
+        CountingGeneralRestApi.class
+
 
 })
 public class GeneralRestAdvice extends BaseRestAdviser {
