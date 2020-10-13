@@ -3,6 +3,7 @@ package com.company.storeapi.model.entity;
 
 import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.user.FileInfo;
+import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,6 +11,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Document(collection = "product")
 @Data
@@ -23,7 +26,7 @@ public class Product {
 
     private String description;
 
-    private Category category;
+    private Set<ResponseCategoryDTO> category = new LinkedHashSet<>();
 
     private Status status;
 

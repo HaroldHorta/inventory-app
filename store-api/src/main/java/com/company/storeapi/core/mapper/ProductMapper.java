@@ -2,6 +2,8 @@ package com.company.storeapi.core.mapper;
 
 import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
+import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
+import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.model.entity.Product;
@@ -14,6 +16,8 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Mapper(
         componentModel = "spring",
@@ -27,7 +31,6 @@ public abstract class ProductMapper {
     @Autowired
     private CategoryMapper categoryMapper;
 
-    @Mapping(source = "category.id", target = "category.id")
     public abstract ResponseProductDTO toProductDto(Product product);
 
     public abstract RequestUpdateProductDTO toProductUpdate(Product product);
@@ -41,8 +44,19 @@ public abstract class ProductMapper {
         Product product = new Product();
         product.setName(requestAddProductDTO.getName());
         product.setDescription(requestAddProductDTO.getDescription());
-        Category category =categoryMapper.toCategory(categoryService.validateAndGetCategoryById(requestAddProductDTO.getCategoryId()));
-        product.setCategory(category);
+
+        Set<ResponseCategoryDTO> listCategory = new LinkedHashSet<>();
+
+        requestAddProductDTO.getCategoryId().forEach(c ->{
+            Category category =categoryMapper.toCategory(categoryService.validateAndGetCategoryById(c.getId()));
+
+            ResponseCategoryDTO cat = new ResponseCategoryDTO();
+            cat.setId(category.getId());
+            cat.setDescription(category.getDescription());
+            listCategory.add(cat);
+
+        });
+        product.setCategory(listCategory);
         product.setStatus(Status.ACTIVE);
         product.setCreateAt(new Date());
         product.setUpdateAt(new Date());

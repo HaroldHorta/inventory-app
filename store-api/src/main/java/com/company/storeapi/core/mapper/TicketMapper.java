@@ -64,7 +64,7 @@ public abstract class TicketMapper {
                             }
                         product.setUnit(unitNew);
                         RequestUpdateProductDTO productDTO = productMapper.toProductUpdate(product);
-                        productDTO.setCategoryId(product.getCategory().getId());
+                       // productDTO.setCategoryId(product.getCategory().getId());
                         productService.updateProduct(product.getId(), productDTO);
                     }
                 }

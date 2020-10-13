@@ -52,4 +52,10 @@ public class ProductRepositoryFacadeImpl implements ProductRepositoryFacade {
     public Product validateAndGetProductById(String id) {
             return repository.findById(id).orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "NO se encontraron productos con el id " + id));
     }
+
+  @Override
+    public List<Product> findProductByCategory(String id) {
+      return Optional.of(repository.findProductByCategory_Description(id))
+          .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND,"No se encontraron productos registrados con la categoria" +id));
+    }
 }
