@@ -25,4 +25,6 @@ public interface ProductService {
 
     ResponseProductDTO updateStatus(String id, Status status);
 
+    List<ResponseProductDTO> findProductByCategory (String id);
+
     }

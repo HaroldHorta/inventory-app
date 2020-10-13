@@ -1,10 +1,12 @@
 package com.company.storeapi.model.payload.request.product;
 
+import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.model.enums.Status;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 public class RequestUpdateProductDTO {
@@ -18,7 +20,7 @@ public class RequestUpdateProductDTO {
     private String description;
 
     @Schema
-    private String categoryId;
+    private List<Category> categoryId;
 
     @Schema
     private Status status;

@@ -5,6 +5,7 @@ import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistence
 import com.company.storeapi.core.mapper.ProductMapper;
 import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
+import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.model.entity.Category;
@@ -14,15 +15,12 @@ import com.company.storeapi.repositories.category.facade.CategoryRepositoryFacad
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import com.company.storeapi.services.product.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,11 +30,6 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepositoryFacade productRepositoryFacade;
     private final CategoryRepositoryFacade categoryRepositoryFacade;
     private final ProductMapper productMapper;
-
-    @Value("${config.uploads.path}")
-    private String path;
-
-    private final HttpServletRequest request;
 
     @Override
     public List<ResponseProductDTO> getAllProducts() {
@@ -52,8 +45,21 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseProductDTO updateProduct(String id, RequestUpdateProductDTO requestUpdateCustomerDTO) {
         Product product = productRepositoryFacade.validateAndGetProductById(id);
-        Category category = categoryRepositoryFacade.validateAndGetCategoryById(requestUpdateCustomerDTO.getCategoryId());
-        product.setCategory(category);
+       // Category category = categoryRepositoryFacade.validateAndGetCategoryById(requestUpdateCustomerDTO.getCategoryId());
+
+        Set<ResponseCategoryDTO> listCategory = new LinkedHashSet<>();
+
+        requestUpdateCustomerDTO.getCategoryId().forEach(c ->{
+            Category category =(categoryRepositoryFacade.validateAndGetCategoryById(c.getId()));
+
+            ResponseCategoryDTO cat = new ResponseCategoryDTO();
+            cat.setId(category.getId());
+            cat.setDescription(category.getDescription());
+            listCategory.add(cat);
+
+        });
+
+        product.setCategory(listCategory);
         product.setUnit(requestUpdateCustomerDTO.getUnit());
         product.setUpdateAt(new Date());
         productMapper.updateProductFromDto(requestUpdateCustomerDTO, product);
@@ -100,5 +106,11 @@ public class ProductServiceImpl implements ProductService {
         product.setStatus(status);
         return productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
 
+    }
+
+    @Override
+    public List<ResponseProductDTO> findProductByCategory(String id) {
+        List<Product> products = productRepositoryFacade.findProductByCategory(id);
+        return products.stream().map(productMapper::toProductDto).collect(Collectors.toList());
     }
 }

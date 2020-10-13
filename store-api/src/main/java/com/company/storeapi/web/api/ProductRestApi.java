@@ -31,6 +31,11 @@ public class ProductRestApi {
         return service.getAllProducts();
     }
 
+   @GetMapping(value = "/category/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ResponseProductDTO> getProductByCategory(@PathVariable("id") String id) throws ServiceException {
+        return service.findProductByCategory(id);
+    }
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseProductDTO> getProductById(@PathVariable("id") String  id)
             throws ServiceException {
