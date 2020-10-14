@@ -67,8 +67,7 @@ public abstract class ProductMapper {
         FileInfo file = new FileInfo();
         file.setName(ImageDefault.name);
         file.setType(ImageDefault.type);
-        byte[] data = ImageDefault.data.getBytes();
-        file.setData(data);
+        file.setData(ImageDefault.data);
         product.setPhoto(file);
         return product;
 
