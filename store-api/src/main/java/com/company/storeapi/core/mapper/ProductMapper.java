@@ -1,16 +1,16 @@
 package com.company.storeapi.core.mapper;
 
-import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
-import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
-import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
-import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
-import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
+import com.company.storeapi.core.util.ImageDefault;
 import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.enums.Status;
+import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
+import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
+import com.company.storeapi.model.payload.request.user.FileInfo;
+import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
+import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.services.category.CategoryService;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public abstract class ProductMapper {
 
     public abstract Product toProduct(ResponseProductDTO responseProductDTO);
 
-    public Product toProduct(RequestAddProductDTO requestAddProductDTO){
+    public Product toProduct(RequestAddProductDTO requestAddProductDTO) {
 
         Product product = new Product();
         product.setName(requestAddProductDTO.getName());
@@ -47,8 +47,8 @@ public abstract class ProductMapper {
 
         Set<ResponseCategoryDTO> listCategory = new LinkedHashSet<>();
 
-        requestAddProductDTO.getCategoryId().forEach(c ->{
-            Category category =categoryMapper.toCategory(categoryService.validateAndGetCategoryById(c.getId()));
+        requestAddProductDTO.getCategoryId().forEach(c -> {
+            Category category = categoryMapper.toCategory(categoryService.validateAndGetCategoryById(c.getId()));
 
             ResponseCategoryDTO cat = new ResponseCategoryDTO();
             cat.setId(category.getId());
@@ -63,6 +63,13 @@ public abstract class ProductMapper {
         product.setPriceBuy(requestAddProductDTO.getPriceBuy());
         product.setPriceSell(requestAddProductDTO.getPriceSell());
         product.setUnit(requestAddProductDTO.getUnit());
+
+        FileInfo file = new FileInfo();
+        file.setName(ImageDefault.name);
+        file.setType(ImageDefault.type);
+        byte[] data = ImageDefault.data.getBytes();
+        file.setData(data);
+        product.setPhoto(file);
         return product;
 
     }
