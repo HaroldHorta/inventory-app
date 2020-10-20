@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Customer service.
+ */
 @RequiredArgsConstructor
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -22,8 +25,6 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepositoryFacade customerRepositoryFacade;
     private final CustomerMapper customerMapper;
     private final CountingGeneralService countingGeneralService;
-
-
 
     @Override
     public List<ResponseCustomerDTO> getAllCustomers() {
