@@ -2,9 +2,8 @@ package com.company.storeapi.web.api;
 
 import com.company.storeapi.core.exceptions.base.ServiceException;
 import com.company.storeapi.model.payload.request.category.RequestAddCategoryDTO;
-import com.company.storeapi.model.payload.request.customer.RequestUpdateCustomerDTO;
+import com.company.storeapi.model.payload.request.category.RequestUpdateCategoryDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
-import com.company.storeapi.model.payload.response.customer.ResponseCustomerDTO;
 import com.company.storeapi.services.category.CategoryService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -75,14 +74,13 @@ public class CategoryRestApi {
     /**
      * Update response entity.
      *
-     * @param id                    the id
-     * @param requestAddCategoryDTO the request add category dto
+     * @param requestUpdateCategoryDTO the request add category dto
      * @return the response entity
      * @throws ServiceException the service exception
      */
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCategoryDTO> update (@PathVariable String id, @RequestBody RequestAddCategoryDTO requestAddCategoryDTO) throws ServiceException{
-        ResponseCategoryDTO update = service.updateCategory(id, requestAddCategoryDTO);
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseCategoryDTO> update (@RequestBody RequestUpdateCategoryDTO requestUpdateCategoryDTO) throws ServiceException{
+        ResponseCategoryDTO update = service.updateCategory(requestUpdateCategoryDTO);
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }
 

@@ -1,6 +1,7 @@
 package com.company.storeapi.core.mapper;
 
 import com.company.storeapi.model.payload.request.category.RequestAddCategoryDTO;
+import com.company.storeapi.model.payload.request.category.RequestUpdateCategoryDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.entity.Category;
 import org.mapstruct.Mapper;
@@ -19,6 +20,6 @@ public interface CategoryMapper {
 
     ResponseCategoryDTO toCategoryDto(Category category);
 
-    void updateCategoryFromDto(RequestAddCategoryDTO requestAddCategoryDTO, @MappingTarget Category category);
+    void updateCategoryFromDto(RequestUpdateCategoryDTO requestUpdateCategoryDTO, @MappingTarget Category category);
 
 }

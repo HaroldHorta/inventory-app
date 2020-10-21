@@ -2,6 +2,7 @@ package com.company.storeapi.services.category;
 
 import com.company.storeapi.core.exceptions.base.ServiceException;
 import com.company.storeapi.model.payload.request.category.RequestAddCategoryDTO;
+import com.company.storeapi.model.payload.request.category.RequestUpdateCategoryDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface CategoryService {
 
     ResponseCategoryDTO saveCategory(RequestAddCategoryDTO requestAddCategoryDTO) throws ServiceException;
 
-    ResponseCategoryDTO updateCategory( String id, RequestAddCategoryDTO requestAddCategoryDTO) throws ServiceException;
+    ResponseCategoryDTO updateCategory( RequestUpdateCategoryDTO requestUpdateCategoryDTO) throws ServiceException;
 
     void deleteById(String id) throws ServiceException;
 
