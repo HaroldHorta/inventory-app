@@ -2,6 +2,7 @@ package com.company.storeapi.core.mapper;
 
 import com.company.storeapi.core.util.ImageDefault;
 import com.company.storeapi.model.entity.Category;
+import com.company.storeapi.model.entity.CountingGeneral;
 import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
@@ -10,6 +11,7 @@ import com.company.storeapi.model.payload.request.user.FileInfo;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.services.category.CategoryService;
+import com.company.storeapi.services.countingGeneral.CountingGeneralService;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Mapper(
@@ -30,6 +33,8 @@ public abstract class ProductMapper {
     private CategoryService categoryService;
     @Autowired
     private CategoryMapper categoryMapper;
+    @Autowired
+    private CountingGeneralService countingGeneralService;
 
     public abstract ResponseProductDTO toProductDto(Product product);
 
@@ -67,9 +72,26 @@ public abstract class ProductMapper {
         FileInfo file = new FileInfo();
         file.setName(ImageDefault.name);
         file.setType(ImageDefault.type);
-        byte[] data = ImageDefault.data.getBytes();
-        file.setData(data);
+        file.setData(ImageDefault.data);
         product.setPhoto(file);
+
+        List<CountingGeneral> counting = countingGeneralService.getAllCountingGeneral();
+
+        if((counting.size() ==0)){
+            CountingGeneral c = new CountingGeneral();
+
+            c.setQuantity_of_product(1);
+            countingGeneralService.saveCountingGeneral(c);
+
+        }  else {
+            counting.forEach(p -> {
+                CountingGeneral countingGeneral = countingGeneralService.validateCountingGeneral(p.getId());
+
+                countingGeneral.setQuantity_of_product(p.getQuantity_of_product() + 1);
+
+                countingGeneralService.saveCountingGeneral(countingGeneral);
+            });
+        }
         return product;
 
     }

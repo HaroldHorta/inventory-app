@@ -18,4 +18,5 @@ public class CountingGeneral {
     private int quantity_of_orders_in_pending_state;
     private int quantity_of_orders_in_payed_state;
     private int quantity_of_customer;
+    private int quantity_of_product;
 }

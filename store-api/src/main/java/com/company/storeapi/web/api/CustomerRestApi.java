@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * The type Customer rest api.
+ */
 @RestController
 @RequestMapping(value = "/api/customer")
 @CrossOrigin({"*"})
@@ -20,16 +23,34 @@ public class CustomerRestApi {
 
     private final CustomerService customerService;
 
+    /**
+     * Instantiates a new Customer rest api.
+     *
+     * @param customerService the customer service
+     */
     public CustomerRestApi(CustomerService customerService) {
         this.customerService = customerService;
     }
 
+    /**
+     * Gets all product.
+     *
+     * @return the all product
+     * @throws ServiceException the service exception
+     */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ResponseCustomerDTO> getAllProduct() throws ServiceException {
         return customerService.getAllCustomers();
     }
 
 
+    /**
+     * Gets product by id.
+     *
+     * @param id the id
+     * @return the product by id
+     * @throws ServiceException the service exception
+     */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCustomerDTO> getProductById(@PathVariable("id") String  id)
             throws ServiceException {
@@ -37,12 +58,27 @@ public class CustomerRestApi {
         return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.OK);
     }
 
+    /**
+     * Create response entity.
+     *
+     * @param customerDTO the customer dto
+     * @return the response entity
+     * @throws ServiceException the service exception
+     */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCustomerDTO> create(@RequestBody RequestAddCustomerDTO customerDTO) throws ServiceException {
         ResponseCustomerDTO created = customerService.saveCustomer(customerDTO);
         return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.OK);
     }
 
+    /**
+     * Update product response entity.
+     *
+     * @param id                       the id
+     * @param requestUpdateCustomerDTO the request update customer dto
+     * @return the response entity
+     * @throws ServiceException the service exception
+     */
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCustomerDTO> updateProduct (@PathVariable String id, @RequestBody RequestUpdateCustomerDTO requestUpdateCustomerDTO) throws ServiceException{
         ResponseCustomerDTO update = customerService.updateCustomer(id, requestUpdateCustomerDTO);
