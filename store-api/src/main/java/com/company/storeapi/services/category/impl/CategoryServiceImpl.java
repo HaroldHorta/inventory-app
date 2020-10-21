@@ -2,15 +2,21 @@ package com.company.storeapi.services.category.impl;
 
 import com.company.storeapi.core.exceptions.base.ServiceException;
 import com.company.storeapi.core.mapper.CategoryMapper;
+import com.company.storeapi.core.mapper.ProductMapper;
+import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.payload.request.category.RequestAddCategoryDTO;
+import com.company.storeapi.model.payload.request.category.RequestUpdateCategoryDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.repositories.category.facade.CategoryRepositoryFacade;
+import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import com.company.storeapi.services.category.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,8 +24,10 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepositoryFacade repositoryFacade;
+    private final ProductRepositoryFacade productRepositoryFacade;
 
     private final CategoryMapper categoryMapper;
+    private final ProductMapper productMapper;
 
 
     @Override
@@ -39,9 +47,25 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseCategoryDTO updateCategory(String id, RequestAddCategoryDTO requestAddCategoryDTO) throws ServiceException {
-        Category category = repositoryFacade.validateAndGetCategoryById(id);
-        categoryMapper.updateCategoryFromDto(requestAddCategoryDTO, category);
+    public ResponseCategoryDTO updateCategory(RequestUpdateCategoryDTO requestUpdateCategoryDTO) throws ServiceException {
+        Category category = repositoryFacade.validateAndGetCategoryById(requestUpdateCategoryDTO.getId());
+        List<Product> productList =  productRepositoryFacade.findProductByCategory(requestUpdateCategoryDTO.getId());
+
+        productList.forEach(p -> {
+            Product product = productRepositoryFacade.validateAndGetProductById(p.getId());
+            Set<ResponseCategoryDTO> listCategory = new LinkedHashSet<>();
+            product.getCategory().forEach(c ->{
+                ResponseCategoryDTO cat = new ResponseCategoryDTO();
+                cat.setId(category.getId());
+                cat.setDescription(requestUpdateCategoryDTO.getDescription());
+                listCategory.add(cat);
+
+            });
+            product.setCategory(listCategory);
+            productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
+        });
+
+        categoryMapper.updateCategoryFromDto(requestUpdateCategoryDTO, category);
         return categoryMapper.toCategoryDto(repositoryFacade.saveCategory(category));
     }
 
