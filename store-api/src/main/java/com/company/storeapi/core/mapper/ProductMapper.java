@@ -40,6 +40,8 @@ public abstract class ProductMapper {
 
     public abstract RequestUpdateProductDTO toProductUpdate(Product product);
 
+    public abstract RequestAddProductDTO toProductRequestUpdate(RequestUpdateProductDTO product);
+
     public abstract void updateProductFromDto(RequestUpdateProductDTO updateOrderDto, @MappingTarget Product product);
 
     public abstract Product toProduct(ResponseProductDTO responseProductDTO);
@@ -50,17 +52,7 @@ public abstract class ProductMapper {
         product.setName(requestAddProductDTO.getName());
         product.setDescription(requestAddProductDTO.getDescription());
 
-        Set<ResponseCategoryDTO> listCategory = new LinkedHashSet<>();
-
-        requestAddProductDTO.getCategoryId().forEach(c -> {
-            Category category = categoryMapper.toCategory(categoryService.validateAndGetCategoryById(c.getId()));
-
-            ResponseCategoryDTO cat = new ResponseCategoryDTO();
-            cat.setId(category.getId());
-            cat.setDescription(category.getDescription());
-            listCategory.add(cat);
-
-        });
+        Set<ResponseCategoryDTO> listCategory = getResponseCategoryDTOS(requestAddProductDTO);
         product.setCategory(listCategory);
         product.setStatus(Status.ACTIVE);
         product.setCreateAt(new Date());
@@ -95,5 +87,21 @@ public abstract class ProductMapper {
         return product;
 
     }
+
+    public Set<ResponseCategoryDTO> getResponseCategoryDTOS(RequestAddProductDTO requestAddProductDTO) {
+        Set<ResponseCategoryDTO> listCategory = new LinkedHashSet<>();
+
+        requestAddProductDTO.getCategoryId().forEach(c -> {
+            Category category = categoryMapper.toCategory(categoryService.validateAndGetCategoryById(c.getId()));
+
+            ResponseCategoryDTO cat = new ResponseCategoryDTO();
+            cat.setId(category.getId());
+            cat.setDescription(category.getDescription());
+            listCategory.add(cat);
+
+        });
+        return listCategory;
+    }
+
 
 }

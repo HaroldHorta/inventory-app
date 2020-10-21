@@ -2,8 +2,10 @@ package com.company.storeapi.core.mapper;
 
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
+import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
+import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.payload.response.order.ResponseOrderDTO;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
 import com.company.storeapi.model.entity.Product;
@@ -19,6 +21,9 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Mapper(
         componentModel = "spring",
@@ -29,6 +34,9 @@ public abstract class TicketMapper {
 
     @Autowired
     private OrderMapper orderMapper;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     @Autowired
     private OrderService orderService;
@@ -64,7 +72,8 @@ public abstract class TicketMapper {
                             }
                         product.setUnit(unitNew);
                         RequestUpdateProductDTO productDTO = productMapper.toProductUpdate(product);
-                       // productDTO.setCategoryId(product.getCategory().getId());
+                        Set<ResponseCategoryDTO> listCategory =productMapper.getResponseCategoryDTOS(productMapper.toProductRequestUpdate(productDTO));
+                        productDTO.setCategoryId(categoryMapper.toSetCategory(listCategory));
                         productService.updateProduct(product.getId(), productDTO);
                     }
                 }
