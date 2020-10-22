@@ -1,5 +1,6 @@
 package com.company.storeapi.model.payload.request.customer;
 
+import com.company.storeapi.model.enums.Status;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -25,4 +26,7 @@ public class RequestAddCustomerDTO {
     @Schema(example = "44556677")
     @NotBlank
     private String phone;
+
+    @Schema
+    private Status status;
 }

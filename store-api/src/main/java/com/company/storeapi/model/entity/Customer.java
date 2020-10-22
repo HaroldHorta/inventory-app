@@ -1,5 +1,6 @@
 package com.company.storeapi.model.entity;
 
+import com.company.storeapi.model.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,8 @@ public class Customer {
     private String address;
 
     private String phone;
+
+    private Status status;
 
 
 }
