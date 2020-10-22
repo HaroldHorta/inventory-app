@@ -1,6 +1,7 @@
 package com.company.storeapi.web.api;
 
 import com.company.storeapi.core.exceptions.base.ServiceException;
+import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.customer.RequestAddCustomerDTO;
 import com.company.storeapi.model.payload.request.customer.RequestUpdateCustomerDTO;
 import com.company.storeapi.model.payload.response.customer.ResponseCustomerDTO;
@@ -79,8 +80,14 @@ public class CustomerRestApi {
      * @throws ServiceException the service exception
      */
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCustomerDTO> updateProduct (@RequestBody RequestUpdateCustomerDTO requestUpdateCustomerDTO) {
+    public ResponseEntity<ResponseCustomerDTO> update (@RequestBody RequestUpdateCustomerDTO requestUpdateCustomerDTO) {
         ResponseCustomerDTO update = customerService.updateCustomer(requestUpdateCustomerDTO.getId(), requestUpdateCustomerDTO);
+        return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @PatchMapping(value = "/{id}/status/{status}")
+    public  ResponseEntity<ResponseCustomerDTO> updateStatus(@PathVariable String id, @PathVariable Status status){
+        ResponseCustomerDTO update= customerService.updateStatus(id,status);
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }
 }

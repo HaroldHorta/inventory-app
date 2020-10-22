@@ -2,6 +2,7 @@ package com.company.storeapi.services.customer.impl;
 
 import com.company.storeapi.core.mapper.CustomerMapper;
 import com.company.storeapi.model.entity.CountingGeneral;
+import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.customer.RequestAddCustomerDTO;
 import com.company.storeapi.model.payload.request.customer.RequestUpdateCustomerDTO;
 import com.company.storeapi.model.payload.response.customer.ResponseCustomerDTO;
@@ -73,6 +74,13 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public ResponseCustomerDTO validateAndGetCustomerById(String  id) {
         return customerMapper.toCustomerDto(customerRepositoryFacade.validateAndGetCustomerById(id));
+    }
+
+    @Override
+    public ResponseCustomerDTO updateStatus(String id, Status status) {
+        Customer customer = customerRepositoryFacade.validateAndGetCustomerById(id);
+        customer.setStatus(status);
+        return customerMapper.toCustomerDto(customerRepositoryFacade.saveCustomer(customer));
     }
 
 
