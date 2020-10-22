@@ -2,14 +2,17 @@ package com.company.storeapi.core.mapper;
 
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
-import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
+import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
+import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.payload.response.order.ResponseOrderDTO;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
 import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.entity.Ticket;
 import com.company.storeapi.model.enums.OrderStatus;
 import com.company.storeapi.model.enums.Status;
+import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
+import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import com.company.storeapi.services.countingGeneral.CountingGeneralService;
 import com.company.storeapi.services.order.OrderService;
 import com.company.storeapi.services.product.ProductService;
@@ -19,6 +22,8 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Mapper(
         componentModel = "spring",
@@ -42,16 +47,23 @@ public abstract class TicketMapper {
     @Autowired
     private CountingGeneralService countingGeneralService;
 
+    @Autowired
+    private ProductRepositoryFacade productRepositoryFacade;
+
+    @Autowired
+    private OrderRepositoryFacade orderRepositoryFacade;
+
     @Mapping(source = "order",target = "order")
     public abstract ResponseTicketDTO toTicketDto(Ticket ticket);
 
     public Ticket toTicket (RequestAddTicketDTO requestAddTicketDTO){
 
         Ticket ticket = new Ticket();
-        ResponseOrderDTO order = orderService.validateAndGetOrderById(requestAddTicketDTO.getOrder());
+        Order order = orderRepositoryFacade.validateAndGetOrderById(requestAddTicketDTO.getOrder());
 
         order.setOrderStatus(OrderStatus.PAYED);
-        orderService.updateOrder(order.getId(),orderMapper.toResponseAddDto(order));
+
+        orderRepositoryFacade.saveOrder(order);
         order.getProducts().forEach(p->{
                     Product product = productMapper.toProduct(productService.validateAndGetProductById(p.getId()));
                     if(product.getUnit()<=0){
@@ -63,15 +75,22 @@ public abstract class TicketMapper {
                                 product.setStatus(Status.INACTIVE);
                             }
                         product.setUnit(unitNew);
-                        RequestUpdateProductDTO productDTO = productMapper.toProductUpdate(product);
-                       // productDTO.setCategoryId(product.getCategory().getId());
-                        productService.updateProduct(product.getId(), productDTO);
+
+                        Set<ResponseCategoryDTO> listCategory = new LinkedHashSet<>();
+                        product.getCategory().forEach(c ->{
+                            ResponseCategoryDTO cat = new ResponseCategoryDTO();
+                            cat.setId(c.getId());
+                            cat.setDescription(c.getDescription());
+                            listCategory.add(cat);
+                        });
+                        product.setCategory(listCategory);
+                        productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
                     }
                 }
         );
 
         ticket.setCreateAt(new Date());
-        ticket.setOrder(orderMapper.toResponseDto(order));
+        ticket.setOrder(order);
 
         countingGeneralService.counting(requestAddTicketDTO.getOrder(), order.getOrderStatus());
         return ticket;

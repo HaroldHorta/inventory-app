@@ -47,17 +47,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepositoryFacade.validateAndGetProductById(id);
        // Category category = categoryRepositoryFacade.validateAndGetCategoryById(requestUpdateCustomerDTO.getCategoryId());
 
-        Set<ResponseCategoryDTO> listCategory = new LinkedHashSet<>();
-
-        requestUpdateCustomerDTO.getCategoryId().forEach(c ->{
-            Category category =(categoryRepositoryFacade.validateAndGetCategoryById(c.getId()));
-
-            ResponseCategoryDTO cat = new ResponseCategoryDTO();
-            cat.setId(category.getId());
-            cat.setDescription(category.getDescription());
-            listCategory.add(cat);
-
-        });
+        Set<ResponseCategoryDTO> listCategory =productMapper.getResponseCategoryDTOS(productMapper.toProductRequestUpdate(requestUpdateCustomerDTO));
 
         product.setCategory(listCategory);
         product.setUnit(requestUpdateCustomerDTO.getUnit());
@@ -65,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
         productMapper.updateProductFromDto(requestUpdateCustomerDTO, product);
         return productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
     }
+
 
     @Override
     public ResponseProductDTO validateAndGetProductById(String id) {
