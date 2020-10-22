@@ -39,7 +39,7 @@ public class CustomerRestApi {
      * @throws ServiceException the service exception
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ResponseCustomerDTO> getAllProduct() throws ServiceException {
+    public List<ResponseCustomerDTO> getAllProduct() {
         return customerService.getAllCustomers();
     }
 
@@ -53,7 +53,7 @@ public class CustomerRestApi {
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCustomerDTO> getProductById(@PathVariable("id") String  id)
-            throws ServiceException {
+            {
         ResponseCustomerDTO entity = customerService.validateAndGetCustomerById(id);
         return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.OK);
     }
@@ -66,7 +66,7 @@ public class CustomerRestApi {
      * @throws ServiceException the service exception
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCustomerDTO> create(@RequestBody RequestAddCustomerDTO customerDTO) throws ServiceException {
+    public ResponseEntity<ResponseCustomerDTO> create(@RequestBody RequestAddCustomerDTO customerDTO) {
         ResponseCustomerDTO created = customerService.saveCustomer(customerDTO);
         return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.OK);
     }
@@ -74,14 +74,13 @@ public class CustomerRestApi {
     /**
      * Update product response entity.
      *
-     * @param id                       the id
      * @param requestUpdateCustomerDTO the request update customer dto
      * @return the response entity
      * @throws ServiceException the service exception
      */
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCustomerDTO> updateProduct (@PathVariable String id, @RequestBody RequestUpdateCustomerDTO requestUpdateCustomerDTO) throws ServiceException{
-        ResponseCustomerDTO update = customerService.updateCustomer(id, requestUpdateCustomerDTO);
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseCustomerDTO> updateProduct (@RequestBody RequestUpdateCustomerDTO requestUpdateCustomerDTO) {
+        ResponseCustomerDTO update = customerService.updateCustomer(requestUpdateCustomerDTO.getId(), requestUpdateCustomerDTO);
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }
 }
