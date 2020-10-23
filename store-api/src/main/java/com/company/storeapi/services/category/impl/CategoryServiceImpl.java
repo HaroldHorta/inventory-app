@@ -1,6 +1,9 @@
 package com.company.storeapi.services.category.impl;
 
+import com.company.storeapi.core.constants.MessageError;
 import com.company.storeapi.core.exceptions.base.ServiceException;
+import com.company.storeapi.core.exceptions.enums.LogRefServices;
+import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.core.mapper.CategoryMapper;
 import com.company.storeapi.core.mapper.ProductMapper;
 import com.company.storeapi.model.entity.Product;
@@ -37,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseCategoryDTO validateAndGetCategoryById(String id){
+    public ResponseCategoryDTO validateAndGetCategoryById(String id) {
         return categoryMapper.toCategoryDto(repositoryFacade.validateAndGetCategoryById(id));
     }
 
@@ -49,12 +52,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseCategoryDTO updateCategory(RequestUpdateCategoryDTO requestUpdateCategoryDTO) throws ServiceException {
         Category category = repositoryFacade.validateAndGetCategoryById(requestUpdateCategoryDTO.getId());
-        List<Product> productList =  productRepositoryFacade.findProductByCategory(requestUpdateCategoryDTO.getId());
+        List<Product> productList = productRepositoryFacade.findProductByCategory(requestUpdateCategoryDTO.getId());
 
         productList.forEach(p -> {
             Product product = productRepositoryFacade.validateAndGetProductById(p.getId());
             Set<ResponseCategoryDTO> listCategory = new LinkedHashSet<>();
-            product.getCategory().forEach(c ->{
+            product.getCategory().forEach(c -> {
                 ResponseCategoryDTO cat = new ResponseCategoryDTO();
                 cat.setId(category.getId());
                 cat.setDescription(requestUpdateCategoryDTO.getDescription());
@@ -71,7 +74,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteById(String id) throws ServiceException {
-        repositoryFacade.deleteCategory(id);
+        List<Product> productList = productRepositoryFacade.findProductByCategory(id);
+        if (productList.isEmpty()) {
+            repositoryFacade.deleteCategory(id);
+        } else {
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La categoría esta siendo usada no se puede eliminar");
+        }
+
+
     }
 
 }
