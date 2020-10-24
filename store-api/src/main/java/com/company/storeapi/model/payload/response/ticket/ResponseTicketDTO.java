@@ -7,6 +7,7 @@ import lombok.Data;
 public class ResponseTicketDTO {
 
     private String id;
+    private String customer;
     private Order order;
     private String createAt;
 }

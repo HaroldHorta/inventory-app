@@ -13,14 +13,6 @@ import java.util.List;
 @Data
 public class RequestAddOrderDTO {
 
-    @Schema(example = "5f4d93a00d70a908c47d3044")
-    @NotNull
-    private String customerId;
-
-    @Schema(example = "CASH")
-    @NotNull
-    private PaymentType paymentType;
-
     @Valid
     private List<RequestOrderProductItemsDTO> products;
 

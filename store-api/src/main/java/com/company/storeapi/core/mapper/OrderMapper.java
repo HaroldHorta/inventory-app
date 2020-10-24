@@ -4,6 +4,7 @@ import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
 import com.company.storeapi.model.entity.CountingGeneral;
 import com.company.storeapi.model.enums.OrderStatus;
+import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.payload.request.order.RequestAddOrderDTO;
 import com.company.storeapi.model.payload.request.order.RequestUpdateOrderDTO;
 import com.company.storeapi.model.payload.request.product.RequestOrderProductItemsDTO;
@@ -34,27 +35,16 @@ import java.util.Set;
 public abstract class OrderMapper {
 
     @Autowired
-    private CustomerService customerService;
-
-    @Autowired
     private ProductService productService;
 
     @Autowired
     private CountingGeneralService countingGeneralService;
 
     @Autowired
-    private CustomerMapper customerMapper;
-
-    @Autowired
     private ProductMapper productMapper;
 
-    @Mapping(source = "customer.id", target = "customerId")
     @Mapping(source = "products", target = "products")
     public abstract ResponseOrderDTO toOrderDto(Order order);
-
-    public abstract Order toResponseDto(ResponseOrderDTO responseOrderDTO);
-
-    public abstract RequestUpdateOrderDTO toResponseAddDto(ResponseOrderDTO responseOrderDTO);
 
     public abstract Set<ResponseOrderProductItemsDTO> responseOrderProductItemsDTO(List<RequestOrderProductItemsDTO> order);
 
@@ -71,11 +61,8 @@ public abstract class OrderMapper {
 
     public Order toOrder(RequestAddOrderDTO createOrderDto) {
         Order order = new Order();
-        order.setPaymentType(createOrderDto.getPaymentType());
+        order.setPaymentType(PaymentType.CASH);
         order.setOrderStatus(OrderStatus.OPEN);
-
-        Customer customer = customerMapper.toCustomer(customerService.validateAndGetCustomerById(createOrderDto.getCustomerId()));
-        order.setCustomer(customer);
 
         Set<ResponseOrderProductItemsDTO> listOrder = getResponseOrderProductItemsDTOS(createOrderDto);
 

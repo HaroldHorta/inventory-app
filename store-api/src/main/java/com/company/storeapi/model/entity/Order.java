@@ -20,8 +20,6 @@ public class Order {
     @Id
     private String id;
 
-    private Customer customer;
-
     private Set<ResponseOrderProductItemsDTO> products = new LinkedHashSet<>();
 
     private PaymentType paymentType;

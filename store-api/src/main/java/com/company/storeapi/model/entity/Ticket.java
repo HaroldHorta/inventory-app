@@ -15,6 +15,7 @@ public class Ticket {
     private String id;
     @NonNull
     private Order order;
+    private Customer customer;
     private Date createAt;
 
     public Ticket() {

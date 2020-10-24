@@ -38,8 +38,6 @@ public abstract class ProductMapper {
 
     public abstract ResponseProductDTO toProductDto(Product product);
 
-    public abstract RequestUpdateProductDTO toProductUpdate(Product product);
-
     public abstract RequestAddProductDTO toProductRequestUpdate(RequestUpdateProductDTO product);
 
     public abstract void updateProductFromDto(RequestUpdateProductDTO updateOrderDto, @MappingTarget Product product);

@@ -2,10 +2,10 @@ package com.company.storeapi.core.mapper;
 
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
+import com.company.storeapi.model.entity.Customer;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
-import com.company.storeapi.model.payload.response.order.ResponseOrderDTO;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
 import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.entity.Ticket;
@@ -14,6 +14,7 @@ import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import com.company.storeapi.services.countingGeneral.CountingGeneralService;
+import com.company.storeapi.services.customer.CustomerService;
 import com.company.storeapi.services.order.OrderService;
 import com.company.storeapi.services.product.ProductService;
 import org.mapstruct.Mapper;
@@ -33,13 +34,13 @@ import java.util.Set;
 public abstract class TicketMapper {
 
     @Autowired
-    private OrderMapper orderMapper;
-
-    @Autowired
-    private OrderService orderService;
-
-    @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private CustomerMapper customerMapper;
+
+    @Autowired
+    private CustomerService customerService;
 
     @Autowired
     private ProductService productService;
@@ -53,6 +54,7 @@ public abstract class TicketMapper {
     @Autowired
     private OrderRepositoryFacade orderRepositoryFacade;
 
+    @Mapping(source = "customer.id",target = "customer")
     @Mapping(source = "order",target = "order")
     public abstract ResponseTicketDTO toTicketDto(Ticket ticket);
 
@@ -60,6 +62,10 @@ public abstract class TicketMapper {
 
         Ticket ticket = new Ticket();
         Order order = orderRepositoryFacade.validateAndGetOrderById(requestAddTicketDTO.getOrder());
+
+        Customer customer = customerMapper.toCustomer(customerService.validateAndGetCustomerById(requestAddTicketDTO.getCustomerId()));
+        ticket.setCustomer(customer);
+
 
         order.setOrderStatus(OrderStatus.PAYED);
 
@@ -76,15 +82,7 @@ public abstract class TicketMapper {
                             }
                         product.setUnit(unitNew);
 
-                        Set<ResponseCategoryDTO> listCategory = new LinkedHashSet<>();
-                        product.getCategory().forEach(c ->{
-                            ResponseCategoryDTO cat = new ResponseCategoryDTO();
-                            cat.setId(c.getId());
-                            cat.setDescription(c.getDescription());
-                            listCategory.add(cat);
-                        });
-                        product.setCategory(listCategory);
-                        productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
+                        getUpdateCategory(product);
                     }
                 }
         );
@@ -94,5 +92,17 @@ public abstract class TicketMapper {
 
         countingGeneralService.counting(requestAddTicketDTO.getOrder(), order.getOrderStatus());
         return ticket;
+    }
+
+    public void getUpdateCategory(Product product) {
+        Set<ResponseCategoryDTO> listCategory = new LinkedHashSet<>();
+        product.getCategory().forEach(c ->{
+            ResponseCategoryDTO cat = new ResponseCategoryDTO();
+            cat.setId(c.getId());
+            cat.setDescription(c.getDescription());
+            listCategory.add(cat);
+        });
+        product.setCategory(listCategory);
+        productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
     }
 }
