@@ -71,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
        }else if(unit>prod.getUnit()){
            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"la cantidad de " + prod.getName() + " es mayor a la cantidad del presente en el inventario");
        }else{
-           orderProduct.setId(id);
+           orderProduct.setProduct(productMapper.toProductDto(prod));
            orderProduct.setUnit(unit);
            orderProduct.setTotal(prod.getPriceSell()*unit);
        }

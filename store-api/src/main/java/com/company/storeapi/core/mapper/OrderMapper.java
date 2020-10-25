@@ -46,9 +46,9 @@ public abstract class OrderMapper {
     @Mapping(source = "products", target = "products")
     public abstract ResponseOrderDTO toOrderDto(Order order);
 
-    public abstract Set<ResponseOrderProductItemsDTO> responseOrderProductItemsDTO(List<RequestOrderProductItemsDTO> order);
-
     public abstract RequestAddOrderDTO toRequestAdd (RequestUpdateOrderDTO requestUpdateOrderDTO);
+
+    public abstract Set<ResponseOrderProductItemsDTO> responseOrderProductItemsDTO(List<RequestOrderProductItemsDTO> order);
 
     public void updateOrderFromDto(RequestUpdateOrderDTO updateOrderDto, Order order){
 
@@ -93,7 +93,7 @@ public abstract class OrderMapper {
     private Set<ResponseOrderProductItemsDTO> getResponseOrderProductItemsDTOS(RequestAddOrderDTO createOrderDto) {
         Set<ResponseOrderProductItemsDTO> listOrder = new LinkedHashSet<>();
         createOrderDto.getProducts().forEach(p -> {
-            Product product = productMapper.toProduct(productService.validateAndGetProductById(p.getId()));
+            Product product = productMapper.toProduct(productService.validateAndGetProductById(p.getProduct().getId()));
             if(product.getUnit()==0 || product.getStatus() == Status.INACTIVE){
                 throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Producto " + product.getName() + " Agotado o Inactivo");
             }else if(product.getUnit()<p.getUnit()){
@@ -103,7 +103,7 @@ public abstract class OrderMapper {
            }else{
                ResponseOrderProductItemsDTO requestOrderProductItemsDTO = new ResponseOrderProductItemsDTO();
 
-               requestOrderProductItemsDTO.setId(product.getId());
+               requestOrderProductItemsDTO.setProduct(productMapper.toProductDto(product));
                requestOrderProductItemsDTO.setUnit(p.getUnit());
                requestOrderProductItemsDTO.setTotal(product.getPriceSell() * p.getUnit());
 

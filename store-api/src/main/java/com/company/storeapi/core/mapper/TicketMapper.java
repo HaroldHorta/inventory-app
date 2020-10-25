@@ -71,7 +71,7 @@ public abstract class TicketMapper {
 
         orderRepositoryFacade.saveOrder(order);
         order.getProducts().forEach(p->{
-                    Product product = productMapper.toProduct(productService.validateAndGetProductById(p.getId()));
+                    Product product = productMapper.toProduct(productService.validateAndGetProductById(p.getProduct().getId()));
                     if(product.getUnit()<=0){
                         throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Producto Agotado");
                     }else if(product.getUnit()>0){
