@@ -1,6 +1,5 @@
 package com.company.storeapi.services.category.impl;
 
-import com.company.storeapi.core.constants.MessageError;
 import com.company.storeapi.core.exceptions.base.ServiceException;
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,19 +52,19 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = repositoryFacade.validateAndGetCategoryById(requestUpdateCategoryDTO.getId());
         List<Product> productList = productRepositoryFacade.findProductByCategory(requestUpdateCategoryDTO.getId());
 
-        productList.forEach(p -> {
+        for (Product p : productList) {
             Product product = productRepositoryFacade.validateAndGetProductById(p.getId());
-            Set<ResponseCategoryDTO> listCategory = new LinkedHashSet<>();
-            product.getCategory().forEach(c -> {
+            LinkedHashSet<ResponseCategoryDTO> listCategory = new LinkedHashSet<>();
+            for (ResponseCategoryDTO ignored : product.getCategory()) {
                 ResponseCategoryDTO cat = new ResponseCategoryDTO();
                 cat.setId(category.getId());
                 cat.setDescription(requestUpdateCategoryDTO.getDescription());
                 listCategory.add(cat);
 
-            });
+            }
             product.setCategory(listCategory);
             productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
-        });
+        }
 
         categoryMapper.updateCategoryFromDto(requestUpdateCategoryDTO, category);
         return categoryMapper.toCategoryDto(repositoryFacade.saveCategory(category));
