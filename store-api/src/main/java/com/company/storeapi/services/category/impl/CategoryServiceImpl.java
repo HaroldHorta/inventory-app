@@ -5,12 +5,14 @@ import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.core.mapper.CategoryMapper;
 import com.company.storeapi.core.mapper.ProductMapper;
+import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.payload.request.category.RequestAddCategoryDTO;
 import com.company.storeapi.model.payload.request.category.RequestUpdateCategoryDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.repositories.category.facade.CategoryRepositoryFacade;
+import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import com.company.storeapi.services.category.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepositoryFacade repositoryFacade;
     private final ProductRepositoryFacade productRepositoryFacade;
+    private final OrderRepositoryFacade orderRepositoryFacade;
 
     private final CategoryMapper categoryMapper;
     private final ProductMapper productMapper;
@@ -60,10 +63,18 @@ public class CategoryServiceImpl implements CategoryService {
                 cat.setId(category.getId());
                 cat.setDescription(requestUpdateCategoryDTO.getDescription());
                 listCategory.add(cat);
-
             }
             product.setCategory(listCategory);
             productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
+
+            List<Order> orderList = orderRepositoryFacade.findOrderByProducts(product.getId());
+
+            orderList.forEach(o -> {
+                Product productById = productRepositoryFacade.validateAndGetProductById(product.getId());
+        
+
+            });
+
         }
 
         categoryMapper.updateCategoryFromDto(requestUpdateCategoryDTO, category);

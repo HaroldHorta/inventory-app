@@ -45,4 +45,11 @@ public class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
             return orderRepository.findById(id)
                     .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND,"No se encontraron ordenes con el " + id));
     }
+
+    @Override
+    public List<Order> findOrderByProducts(String id) {
+        return Optional.of(orderRepository.findOrderByProduct(id))
+                .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND,"No se encontraron ordenes registrados con ese producto" +id));
+
+    }
 }

@@ -11,4 +11,6 @@ public interface OrderRepositoryFacade {
     Order saveOrder(Order order);
 
     Order validateAndGetOrderById(String id);
+
+    List<Order> findOrderByProducts(String id);
 }
