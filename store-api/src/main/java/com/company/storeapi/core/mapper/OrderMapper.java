@@ -10,12 +10,12 @@ import com.company.storeapi.model.payload.request.order.RequestUpdateOrderDTO;
 import com.company.storeapi.model.payload.request.product.RequestOrderProductItemsDTO;
 import com.company.storeapi.model.payload.response.order.ResponseOrderDTO;
 import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
-import com.company.storeapi.model.entity.Customer;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.services.countingGeneral.CountingGeneralService;
 import com.company.storeapi.services.customer.CustomerService;
+import com.company.storeapi.services.order.OrderService;
 import com.company.storeapi.services.product.ProductService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -36,6 +36,8 @@ public abstract class OrderMapper {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired OrderService orderService;
 
     @Autowired
     private CountingGeneralService countingGeneralService;
@@ -60,7 +62,9 @@ public abstract class OrderMapper {
     }
 
     public Order toOrder(RequestAddOrderDTO createOrderDto) {
+
         Order order = new Order();
+        order.setId(createOrderDto.getId());
         order.setPaymentType(PaymentType.CASH);
         order.setOrderStatus(OrderStatus.OPEN);
 

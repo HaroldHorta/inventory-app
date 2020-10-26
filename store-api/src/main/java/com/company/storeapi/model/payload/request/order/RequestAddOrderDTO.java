@@ -13,6 +13,7 @@ import java.util.List;
 @Data
 public class RequestAddOrderDTO {
 
+    private String id;
     @Valid
     private List<RequestOrderProductItemsDTO> products;
 

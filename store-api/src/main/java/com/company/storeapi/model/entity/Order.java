@@ -4,7 +4,9 @@ import com.company.storeapi.model.payload.response.product.ResponseOrderProductI
 import com.company.storeapi.model.enums.OrderStatus;
 import com.company.storeapi.model.enums.PaymentType;
 import lombok.*;
+import org.hibernate.annotations.Columns;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.LinkedHashSet;
@@ -17,7 +19,7 @@ import java.util.Set;
 
 public class Order {
 
-    @Id
+    @Indexed(unique=true, sparse=true)
     private String id;
 
     private Set<ResponseOrderProductItemsDTO> products = new LinkedHashSet<>();
