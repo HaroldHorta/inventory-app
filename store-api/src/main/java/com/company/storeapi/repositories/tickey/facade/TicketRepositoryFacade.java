@@ -12,4 +12,5 @@ public interface TicketRepositoryFacade {
 
     Ticket saveTicket(Ticket ticket);
 
+    Ticket findTicketByOrder(String id);
 }

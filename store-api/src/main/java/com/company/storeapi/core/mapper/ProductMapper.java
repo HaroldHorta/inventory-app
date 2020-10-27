@@ -9,6 +9,7 @@ import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
 import com.company.storeapi.model.payload.request.user.FileInfo;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
+import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.services.category.CategoryService;
 import com.company.storeapi.services.countingGeneral.CountingGeneralService;
@@ -37,6 +38,8 @@ public abstract class ProductMapper {
     private CountingGeneralService countingGeneralService;
 
     public abstract ResponseProductDTO toProductDto(Product product);
+
+    public abstract ResponseOrderProductItemsDTO toOrderItemsProduct(Product product);
 
     public abstract RequestAddProductDTO toProductRequestUpdate(RequestUpdateProductDTO product);
 
