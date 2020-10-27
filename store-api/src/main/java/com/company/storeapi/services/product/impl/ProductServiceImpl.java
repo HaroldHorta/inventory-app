@@ -3,6 +3,8 @@ package com.company.storeapi.services.product.impl;
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
 import com.company.storeapi.core.mapper.ProductMapper;
+import com.company.storeapi.model.entity.Order;
+import com.company.storeapi.model.entity.Ticket;
 import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
@@ -12,7 +14,9 @@ import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.repositories.category.facade.CategoryRepositoryFacade;
+import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
+import com.company.storeapi.repositories.tickey.facade.TicketRepositoryFacade;
 import com.company.storeapi.services.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +33,9 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepositoryFacade productRepositoryFacade;
     private final CategoryRepositoryFacade categoryRepositoryFacade;
+    private final OrderRepositoryFacade orderRepositoryFacade;
+    private final TicketRepositoryFacade ticketRepositoryFacade;
+
     private final ProductMapper productMapper;
 
     @Override
@@ -45,7 +52,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseProductDTO updateProduct(String id, RequestUpdateProductDTO requestUpdateCustomerDTO) {
         Product product = productRepositoryFacade.validateAndGetProductById(id);
-       // Category category = categoryRepositoryFacade.validateAndGetCategoryById(requestUpdateCustomerDTO.getCategoryId());
 
         Set<ResponseCategoryDTO> listCategory =productMapper.getResponseCategoryDTOS(productMapper.toProductRequestUpdate(requestUpdateCustomerDTO));
 
@@ -53,7 +59,31 @@ public class ProductServiceImpl implements ProductService {
         product.setUnit(requestUpdateCustomerDTO.getUnit());
         product.setUpdateAt(new Date());
         productMapper.updateProductFromDto(requestUpdateCustomerDTO, product);
-        return productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
+
+        ResponseProductDTO  responseProductDTO=  productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
+
+        List<Order> orderList = orderRepositoryFacade.findOrderByProducts(responseProductDTO.getId());
+
+        orderList.forEach(o -> {
+            LinkedHashSet<ResponseOrderProductItemsDTO> listOrderProduct = new LinkedHashSet<>();
+
+            o.getProducts().forEach(pro ->{
+                Product product1 = productRepositoryFacade.validateAndGetProductById(pro.getProduct().getId());
+                ResponseOrderProductItemsDTO responseOrderProductItemsDTO = new ResponseOrderProductItemsDTO();
+                responseOrderProductItemsDTO.setProduct(productMapper.toProductDto(product1));
+                responseOrderProductItemsDTO.setUnit(pro.getUnit());
+                responseOrderProductItemsDTO.setTotal(pro.getTotal());
+                listOrderProduct.add(responseOrderProductItemsDTO);
+            });
+            o.setProducts(listOrderProduct);
+            orderRepositoryFacade.saveOrder(o);
+
+            Ticket ticket = ticketRepositoryFacade.findTicketByOrder(o.getId());
+            ticket.setOrder(o);
+
+            ticketRepositoryFacade.saveTicket(ticket);
+        });
+        return responseProductDTO;
     }
 
 
