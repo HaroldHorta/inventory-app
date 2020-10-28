@@ -7,6 +7,7 @@ import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.model.enums.Status;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ProductService {
@@ -27,4 +28,7 @@ public interface ProductService {
 
     List<ResponseProductDTO> findProductByCategory (String id);
 
-    }
+    ResponseProductDTO updateProductWithImages(String id,RequestUpdateProductDTO requestUpdateCustomerDTO, MultipartFile file)  throws IOException;
+
+
+}

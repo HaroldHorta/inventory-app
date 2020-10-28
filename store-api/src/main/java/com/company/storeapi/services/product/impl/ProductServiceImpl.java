@@ -7,6 +7,7 @@ import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.entity.Ticket;
 import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
+import com.company.storeapi.model.payload.request.user.FileInfo;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
@@ -20,11 +21,11 @@ import com.company.storeapi.repositories.tickey.facade.TicketRepositoryFacade;
 import com.company.storeapi.services.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -133,5 +134,51 @@ public class ProductServiceImpl implements ProductService {
     public List<ResponseProductDTO> findProductByCategory(String id) {
         List<Product> products = productRepositoryFacade.findProductByCategory(id);
         return products.stream().map(productMapper::toProductDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public ResponseProductDTO updateProductWithImages(String id, RequestUpdateProductDTO requestUpdateCustomerDTO, MultipartFile file) throws IOException {
+        Product product = productRepositoryFacade.validateAndGetProductById(id);
+        String namePhoto = UUID.randomUUID().toString() + "-" + Objects.requireNonNull(file.getOriginalFilename())
+                .replace(" ", "")
+                .replace(":", "")
+                .replace("\\", "");
+
+        String fileName = StringUtils.cleanPath(namePhoto);
+
+        FileInfo fileInfo = new FileInfo(fileName, file.getContentType(), file.getBytes());
+
+        Set<ResponseCategoryDTO> listCategory =productMapper.getResponseCategoryDTOS(productMapper.toProductRequestUpdate(requestUpdateCustomerDTO));
+
+        product.setCategory(listCategory);
+        product.setUnit(requestUpdateCustomerDTO.getUnit());
+        product.setUpdateAt(new Date());
+        product.setPhoto(fileInfo);
+        productMapper.updateProductFromDto(requestUpdateCustomerDTO, product);
+
+        ResponseProductDTO  responseProductDTO=  productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
+
+        List<Order> orderList = orderRepositoryFacade.findOrderByProducts(responseProductDTO.getId());
+
+        orderList.forEach(o -> {
+            LinkedHashSet<ResponseOrderProductItemsDTO> listOrderProduct = new LinkedHashSet<>();
+
+            o.getProducts().forEach(pro ->{
+                Product product1 = productRepositoryFacade.validateAndGetProductById(pro.getProduct().getId());
+                ResponseOrderProductItemsDTO responseOrderProductItemsDTO = new ResponseOrderProductItemsDTO();
+                responseOrderProductItemsDTO.setProduct(productMapper.toProductDto(product1));
+                responseOrderProductItemsDTO.setUnit(pro.getUnit());
+                responseOrderProductItemsDTO.setTotal(pro.getTotal());
+                listOrderProduct.add(responseOrderProductItemsDTO);
+            });
+            o.setProducts(listOrderProduct);
+            orderRepositoryFacade.saveOrder(o);
+
+            Ticket ticket = ticketRepositoryFacade.findTicketByOrder(o.getId());
+            ticket.setOrder(o);
+
+            ticketRepositoryFacade.saveTicket(ticket);
+        });
+        return responseProductDTO;
     }
 }
