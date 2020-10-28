@@ -79,10 +79,10 @@ public class ProductServiceImpl implements ProductService {
             o.setProducts(listOrderProduct);
             orderRepositoryFacade.saveOrder(o);
 
-            Ticket ticket = ticketRepositoryFacade.findTicketByOrder(o.getId());
+   /*         Ticket ticket = ticketRepositoryFacade.findTicketByOrder(o.getId());
             ticket.setOrder(o);
 
-            ticketRepositoryFacade.saveTicket(ticket);
+            ticketRepositoryFacade.saveTicket(ticket);*/
         });
         return responseProductDTO;
     }

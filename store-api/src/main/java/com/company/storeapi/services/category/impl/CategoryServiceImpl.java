@@ -86,11 +86,11 @@ public class CategoryServiceImpl implements CategoryService {
                 });
                 o.setProducts(listOrderProduct);
                 orderRepositoryFacade.saveOrder(o);
-
+/*
                 Ticket ticket = ticketRepositoryFacade.findTicketByOrder(o.getId());
                 ticket.setOrder(o);
 
-               ticketRepositoryFacade.saveTicket(ticket);
+               ticketRepositoryFacade.saveTicket(ticket);*/
             });
 
 
