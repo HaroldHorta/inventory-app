@@ -18,6 +18,7 @@ import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import com.company.storeapi.repositories.tickey.facade.TicketRepositoryFacade;
 import com.company.storeapi.services.category.CategoryService;
+import com.company.storeapi.services.product.impl.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -73,26 +74,7 @@ public class CategoryServiceImpl implements CategoryService {
 
             List<Order> orderList = orderRepositoryFacade.findOrderByProducts(product.getId());
 
-            orderList.forEach(o -> {
-               LinkedHashSet<ResponseOrderProductItemsDTO> listOrderProduct = new LinkedHashSet<>();
-
-                o.getProducts().forEach(pro ->{
-                    Product product1 = productRepositoryFacade.validateAndGetProductById(pro.getProduct().getId());
-                    ResponseOrderProductItemsDTO responseOrderProductItemsDTO = new ResponseOrderProductItemsDTO();
-                    responseOrderProductItemsDTO.setProduct(productMapper.toProductDto(product1));
-                    responseOrderProductItemsDTO.setUnit(pro.getUnit());
-                    responseOrderProductItemsDTO.setTotal(pro.getTotal());
-                    listOrderProduct.add(responseOrderProductItemsDTO);
-                });
-                o.setProducts(listOrderProduct);
-                orderRepositoryFacade.saveOrder(o);
-/*
-                Ticket ticket = ticketRepositoryFacade.findTicketByOrder(o.getId());
-                ticket.setOrder(o);
-
-               ticketRepositoryFacade.saveTicket(ticket);*/
-            });
-
+            ProductServiceImpl.updateOrderProduct(orderList, productRepositoryFacade, productMapper, orderRepositoryFacade);
 
 
         }

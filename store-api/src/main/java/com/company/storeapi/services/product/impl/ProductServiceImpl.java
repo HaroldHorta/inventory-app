@@ -4,17 +4,15 @@ import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
 import com.company.storeapi.core.mapper.ProductMapper;
 import com.company.storeapi.model.entity.Order;
+import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.entity.Ticket;
+import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
 import com.company.storeapi.model.payload.request.user.FileInfo;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
-import com.company.storeapi.model.entity.Category;
-import com.company.storeapi.model.entity.Product;
-import com.company.storeapi.model.enums.Status;
-import com.company.storeapi.repositories.category.facade.CategoryRepositoryFacade;
 import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import com.company.storeapi.repositories.tickey.facade.TicketRepositoryFacade;
@@ -33,7 +31,6 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepositoryFacade productRepositoryFacade;
-    private final CategoryRepositoryFacade categoryRepositoryFacade;
     private final OrderRepositoryFacade orderRepositoryFacade;
     private final TicketRepositoryFacade ticketRepositoryFacade;
 
@@ -63,7 +60,6 @@ public class ProductServiceImpl implements ProductService {
         Set<ResponseCategoryDTO> listCategory =productMapper.getResponseCategoryDTOS(productMapper.toProductRequestUpdate(requestUpdateCustomerDTO));
 
         product.setCategory(listCategory);
-        product.setUnit(requestUpdateCustomerDTO.getUnit());
         product.setUpdateAt(new Date());
         productMapper.updateProductFromDto(requestUpdateCustomerDTO, product);
 
@@ -71,26 +67,27 @@ public class ProductServiceImpl implements ProductService {
 
         List<Order> orderList = orderRepositoryFacade.findOrderByProducts(responseProductDTO.getId());
 
-        orderList.forEach(o -> {
-            LinkedHashSet<ResponseOrderProductItemsDTO> listOrderProduct = new LinkedHashSet<>();
-
-            o.getProducts().forEach(pro ->{
-                Product product1 = productRepositoryFacade.validateAndGetProductById(pro.getProduct().getId());
-                ResponseOrderProductItemsDTO responseOrderProductItemsDTO = new ResponseOrderProductItemsDTO();
-                responseOrderProductItemsDTO.setProduct(productMapper.toProductDto(product1));
-                responseOrderProductItemsDTO.setUnit(pro.getUnit());
-                responseOrderProductItemsDTO.setTotal(pro.getTotal());
-                listOrderProduct.add(responseOrderProductItemsDTO);
-            });
-            o.setProducts(listOrderProduct);
-            orderRepositoryFacade.saveOrder(o);
-
-   /*         Ticket ticket = ticketRepositoryFacade.findTicketByOrder(o.getId());
-            ticket.setOrder(o);
-
-            ticketRepositoryFacade.saveTicket(ticket);*/
-        });
+        updateOrderProduct(orderList, productRepositoryFacade, productMapper, orderRepositoryFacade);
         return responseProductDTO;
+    }
+
+    public static void updateOrderProduct(List<Order> orderList, ProductRepositoryFacade productRepositoryFacade, ProductMapper productMapper, OrderRepositoryFacade orderRepositoryFacade) {
+        orderList.forEach(o -> getListOrderProduct(productRepositoryFacade, productMapper, orderRepositoryFacade, o));
+    }
+
+    private static void getListOrderProduct(ProductRepositoryFacade productRepositoryFacade, ProductMapper productMapper, OrderRepositoryFacade orderRepositoryFacade, Order o) {
+        LinkedHashSet<ResponseOrderProductItemsDTO> listOrderProduct = new LinkedHashSet<>();
+
+        o.getProducts().forEach(pro ->{
+            Product product1 = productRepositoryFacade.validateAndGetProductById(pro.getProduct().getId());
+            ResponseOrderProductItemsDTO responseOrderProductItemsDTO = new ResponseOrderProductItemsDTO();
+            responseOrderProductItemsDTO.setProduct(productMapper.toProductDto(product1));
+            responseOrderProductItemsDTO.setUnit(pro.getUnit());
+            responseOrderProductItemsDTO.setTotal(pro.getTotal());
+            listOrderProduct.add(responseOrderProductItemsDTO);
+        });
+        o.setProducts(listOrderProduct);
+        orderRepositoryFacade.saveOrder(o);
     }
 
 
@@ -157,7 +154,6 @@ public class ProductServiceImpl implements ProductService {
         Set<ResponseCategoryDTO> listCategory =productMapper.getResponseCategoryDTOS(productMapper.toProductRequestUpdate(requestUpdateCustomerDTO));
 
         product.setCategory(listCategory);
-        product.setUnit(requestUpdateCustomerDTO.getUnit());
         product.setUpdateAt(new Date());
         product.setPhoto(fileInfo);
         productMapper.updateProductFromDto(requestUpdateCustomerDTO, product);
@@ -167,18 +163,7 @@ public class ProductServiceImpl implements ProductService {
         List<Order> orderList = orderRepositoryFacade.findOrderByProducts(responseProductDTO.getId());
 
         orderList.forEach(o -> {
-            LinkedHashSet<ResponseOrderProductItemsDTO> listOrderProduct = new LinkedHashSet<>();
-
-            o.getProducts().forEach(pro ->{
-                Product product1 = productRepositoryFacade.validateAndGetProductById(pro.getProduct().getId());
-                ResponseOrderProductItemsDTO responseOrderProductItemsDTO = new ResponseOrderProductItemsDTO();
-                responseOrderProductItemsDTO.setProduct(productMapper.toProductDto(product1));
-                responseOrderProductItemsDTO.setUnit(pro.getUnit());
-                responseOrderProductItemsDTO.setTotal(pro.getTotal());
-                listOrderProduct.add(responseOrderProductItemsDTO);
-            });
-            o.setProducts(listOrderProduct);
-            orderRepositoryFacade.saveOrder(o);
+            getListOrderProduct(productRepositoryFacade, productMapper, orderRepositoryFacade, o);
 
             Ticket ticket = ticketRepositoryFacade.findTicketByOrder(o.getId());
             ticket.setOrder(o);

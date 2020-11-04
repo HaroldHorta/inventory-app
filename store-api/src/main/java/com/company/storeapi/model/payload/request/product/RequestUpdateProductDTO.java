@@ -27,6 +27,4 @@ public class RequestUpdateProductDTO {
     @Schema(example = "21500")
     private Double priceSell;
 
-    @Schema(example = "1")
-    private int unit;
 }
