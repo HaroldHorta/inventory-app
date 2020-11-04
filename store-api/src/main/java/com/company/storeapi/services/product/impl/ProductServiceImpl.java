@@ -6,6 +6,7 @@ import com.company.storeapi.core.mapper.ProductMapper;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.entity.Ticket;
+import com.company.storeapi.model.enums.OrderStatus;
 import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
@@ -57,13 +58,14 @@ public class ProductServiceImpl implements ProductService {
     public ResponseProductDTO updateProduct(String id, RequestUpdateProductDTO requestUpdateCustomerDTO) {
         Product product = productRepositoryFacade.validateAndGetProductById(id);
 
-        Set<ResponseCategoryDTO> listCategory =productMapper.getResponseCategoryDTOS(productMapper.toProductRequestUpdate(requestUpdateCustomerDTO));
+        Set<ResponseCategoryDTO> listCategory = productMapper.getResponseCategoryDTOS(productMapper.toProductRequestUpdate(requestUpdateCustomerDTO));
 
         product.setCategory(listCategory);
         product.setUpdateAt(new Date());
+        product.setUnit(product.getUnit());
         productMapper.updateProductFromDto(requestUpdateCustomerDTO, product);
 
-        ResponseProductDTO  responseProductDTO=  productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
+        ResponseProductDTO responseProductDTO = productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
 
         List<Order> orderList = orderRepositoryFacade.findOrderByProducts(responseProductDTO.getId());
 
@@ -72,22 +74,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public static void updateOrderProduct(List<Order> orderList, ProductRepositoryFacade productRepositoryFacade, ProductMapper productMapper, OrderRepositoryFacade orderRepositoryFacade) {
-        orderList.forEach(o -> getListOrderProduct(productRepositoryFacade, productMapper, orderRepositoryFacade, o));
+        orderList.forEach(order -> getListOrderProduct(productRepositoryFacade, productMapper, orderRepositoryFacade, order));
     }
 
-    private static void getListOrderProduct(ProductRepositoryFacade productRepositoryFacade, ProductMapper productMapper, OrderRepositoryFacade orderRepositoryFacade, Order o) {
+    private static void getListOrderProduct(ProductRepositoryFacade productRepositoryFacade, ProductMapper productMapper, OrderRepositoryFacade orderRepositoryFacade, Order order) {
         LinkedHashSet<ResponseOrderProductItemsDTO> listOrderProduct = new LinkedHashSet<>();
-
-        o.getProducts().forEach(pro ->{
-            Product product1 = productRepositoryFacade.validateAndGetProductById(pro.getProduct().getId());
-            ResponseOrderProductItemsDTO responseOrderProductItemsDTO = new ResponseOrderProductItemsDTO();
-            responseOrderProductItemsDTO.setProduct(productMapper.toProductDto(product1));
-            responseOrderProductItemsDTO.setUnit(pro.getUnit());
-            responseOrderProductItemsDTO.setTotal(pro.getTotal());
-            listOrderProduct.add(responseOrderProductItemsDTO);
-        });
-        o.setProducts(listOrderProduct);
-        orderRepositoryFacade.saveOrder(o);
+        if (order.getOrderStatus() == OrderStatus.OPEN) {
+            order.getProducts().forEach(pro -> {
+                Product productNew = productRepositoryFacade.validateAndGetProductById(pro.getProduct().getId());
+                ResponseOrderProductItemsDTO responseOrderProductItemsDTO = new ResponseOrderProductItemsDTO();
+                responseOrderProductItemsDTO.setProduct(productMapper.toProductDto(productNew));
+                responseOrderProductItemsDTO.setUnit(pro.getUnit());
+                responseOrderProductItemsDTO.setTotal(pro.getTotal());
+                listOrderProduct.add(responseOrderProductItemsDTO);
+            });
+            order.setProducts(listOrderProduct);
+            orderRepositoryFacade.saveOrder(order);
+        }
     }
 
 
@@ -100,27 +103,27 @@ public class ProductServiceImpl implements ProductService {
     public ResponseOrderProductItemsDTO getItemsTotal(String id, int unit) {
         Product prod = productRepositoryFacade.validateAndGetProductById(id);
         ResponseOrderProductItemsDTO orderProduct = new ResponseOrderProductItemsDTO();
-       if(unit<=0){
-           throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"la cantidad a ingresar no puede ser 0 o menor a 0");
-       }else if(unit>prod.getUnit()){
-           throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"la cantidad de " + prod.getName() + " es mayor a la cantidad del presente en el inventario");
-       }else{
-           orderProduct.setProduct(productMapper.toProductDto(prod));
-           orderProduct.setUnit(unit);
-           orderProduct.setTotal(prod.getPriceSell()*unit);
-       }
+        if (unit <= 0) {
+            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "la cantidad a ingresar no puede ser 0 o menor a 0");
+        } else if (unit > prod.getUnit()) {
+            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "la cantidad de " + prod.getName() + " es mayor a la cantidad del presente en el inventario");
+        } else {
+            orderProduct.setProduct(productMapper.toProductDto(prod));
+            orderProduct.setUnit(unit);
+            orderProduct.setTotal(prod.getPriceSell() * unit);
+        }
         return orderProduct;
     }
 
     @Override
     public ResponseProductDTO addUnitProduct(String id, int unit) {
         Product product = productRepositoryFacade.validateAndGetProductById(id);
-        if(unit>0){
+        if (unit > 0) {
             int unitNew = product.getUnit() + unit;
             product.setStatus(Status.ACTIVE);
             product.setUnit(unitNew);
-        }else{
-            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"la cantidad a ingresar no puede ser 0 o menor a 0");
+        } else {
+            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "la cantidad a ingresar no puede ser 0 o menor a 0");
         }
         return productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
     }
@@ -151,14 +154,14 @@ public class ProductServiceImpl implements ProductService {
 
         FileInfo fileInfo = new FileInfo(fileName, file.getContentType(), file.getBytes());
 
-        Set<ResponseCategoryDTO> listCategory =productMapper.getResponseCategoryDTOS(productMapper.toProductRequestUpdate(requestUpdateCustomerDTO));
+        Set<ResponseCategoryDTO> listCategory = productMapper.getResponseCategoryDTOS(productMapper.toProductRequestUpdate(requestUpdateCustomerDTO));
 
         product.setCategory(listCategory);
         product.setUpdateAt(new Date());
         product.setPhoto(fileInfo);
         productMapper.updateProductFromDto(requestUpdateCustomerDTO, product);
 
-        ResponseProductDTO  responseProductDTO=  productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
+        ResponseProductDTO responseProductDTO = productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
 
         List<Order> orderList = orderRepositoryFacade.findOrderByProducts(responseProductDTO.getId());
 
