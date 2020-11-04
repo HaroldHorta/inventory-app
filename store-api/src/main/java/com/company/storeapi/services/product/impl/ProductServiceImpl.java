@@ -46,6 +46,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ResponseProductDTO> getAllProductsFilters() {
+        List<Product> products = productRepositoryFacade.getAllProduct();
+        return products.stream().filter(product -> product.getUnit() != 0 && product.getStatus() == Status.ACTIVE).map(productMapper::toProductDto).collect(Collectors.toList());
+    }
+
+    @Override
     public ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO) {
         return productMapper.toProductDto(productRepositoryFacade.saveProduct(productMapper.toProduct(requestAddProductDTO)));
     }

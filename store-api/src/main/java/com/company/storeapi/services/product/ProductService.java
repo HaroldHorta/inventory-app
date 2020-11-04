@@ -14,6 +14,8 @@ public interface ProductService {
 
     List<ResponseProductDTO> getAllProducts();
 
+    List<ResponseProductDTO> getAllProductsFilters();
+
     ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO);
 
     ResponseProductDTO updateProduct(String id, RequestUpdateProductDTO requestUpdateCustomerDTO);
