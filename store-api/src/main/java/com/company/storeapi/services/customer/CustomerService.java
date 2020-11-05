@@ -52,4 +52,6 @@ public interface CustomerService {
     ResponseCustomerDTO validateAndGetCustomerById(String id);
 
     ResponseCustomerDTO updateStatus(String id, Status status);
+
+    ResponseCustomerDTO getCustomerByNroDocument(String nroDocument);
 }

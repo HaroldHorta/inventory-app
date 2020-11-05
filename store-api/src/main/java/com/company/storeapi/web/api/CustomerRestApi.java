@@ -53,9 +53,16 @@ public class CustomerRestApi {
      * @throws ServiceException the service exception
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCustomerDTO> getProductById(@PathVariable("id") String  id)
+    public ResponseEntity<ResponseCustomerDTO> getCustomerById(@PathVariable("id") String  id)
             {
         ResponseCustomerDTO entity = customerService.validateAndGetCustomerById(id);
+        return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/nroDocument/{nroDocument}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseCustomerDTO> getCustomerByNroDocument(@PathVariable("nroDocument") String  nroDocument)
+    {
+        ResponseCustomerDTO entity = customerService.getCustomerByNroDocument(nroDocument);
         return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.OK);
     }
 

@@ -1,6 +1,7 @@
 package com.company.storeapi.model.entity;
 
 import com.company.storeapi.model.enums.Status;
+import com.company.storeapi.model.enums.TypeDocument;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,8 +24,11 @@ public class Customer {
     private String id;
     @NonNull
     private String name;
-    @Email
-    @NonNull
+
+    private TypeDocument typeDocument;
+    
+    private String nroDocument;
+
     private String email;
 
     private String address;

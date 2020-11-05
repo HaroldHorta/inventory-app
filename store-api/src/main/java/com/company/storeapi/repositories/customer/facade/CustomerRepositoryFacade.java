@@ -14,4 +14,6 @@ public interface CustomerRepositoryFacade {
     void deleteCustomer(String id) throws ServiceException;
 
     Customer validateAndGetCustomerById(String id);
+
+    Customer findByNroDocument (String nroDocument);
 }

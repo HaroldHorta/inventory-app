@@ -83,5 +83,10 @@ public class CustomerServiceImpl implements CustomerService {
         return customerMapper.toCustomerDto(customerRepositoryFacade.saveCustomer(customer));
     }
 
+    @Override
+    public ResponseCustomerDTO getCustomerByNroDocument(String nroDocument) {
+        return customerMapper.toCustomerDto(customerRepositoryFacade.findByNroDocument(nroDocument));
+    }
+
 
 }
