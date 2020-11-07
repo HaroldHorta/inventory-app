@@ -7,9 +7,11 @@ import com.company.storeapi.model.payload.request.customer.RequestAddCustomerDTO
 import com.company.storeapi.model.payload.request.customer.RequestUpdateCustomerDTO;
 import com.company.storeapi.model.payload.response.customer.ResponseCustomerDTO;
 import com.company.storeapi.model.entity.Customer;
+import com.company.storeapi.repositories.customer.facade.CustomerRepositoryFacade;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,11 +22,25 @@ import java.util.regex.Pattern;
 )
 public abstract class CustomerMapper {
 
+    @Autowired
+    private CustomerRepositoryFacade customerRepositoryFacade;
+
     Pattern pattern = Pattern
             .compile("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 
     public Customer toCustomer(RequestAddCustomerDTO requestAddCustomerDTO){
+
+        Boolean existDocument = customerRepositoryFacade.validateAndGetCustomerByNroDocument(requestAddCustomerDTO.getNroDocument());
+        if(existDocument){
+            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"El numero de cedula ya existe");
+        }
+
+        Boolean existEmail = customerRepositoryFacade.validateAndGetCustomerbyEmail(requestAddCustomerDTO.getEmail());
+
+        if(existEmail){
+            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"El correo ya existe");
+        }
         Customer customer = new Customer();
         if(!requestAddCustomerDTO.getName().isEmpty() && !requestAddCustomerDTO.getTypeDocument().toString().isEmpty() && !requestAddCustomerDTO.getNroDocument().isEmpty() ) {
             customer.setName(requestAddCustomerDTO.getName());

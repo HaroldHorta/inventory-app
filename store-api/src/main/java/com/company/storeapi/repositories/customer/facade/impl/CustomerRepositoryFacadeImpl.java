@@ -54,9 +54,20 @@ public class CustomerRepositoryFacadeImpl implements CustomerRepositoryFacade {
         return customerRepository.findById(id).orElseThrow(() -> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de clientes"));
     }
 
+
     @Override
     public Customer findByNroDocument(String nroDocument) {
         return Optional.ofNullable(customerRepository.findCustomerByNroDocument(nroDocument))
                 .orElseThrow(() -> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de clientes con el numero: " + nroDocument));
+    }
+
+    @Override
+    public Boolean validateAndGetCustomerByNroDocument(String nroDocument) {
+        return customerRepository.existsCustomerByNroDocument(nroDocument);
+    }
+
+    @Override
+    public Boolean validateAndGetCustomerbyEmail(String email) {
+        return customerRepository.existsCustomerByEmail(email);
     }
 }
