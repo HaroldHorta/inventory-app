@@ -62,6 +62,7 @@ public abstract class TicketMapper {
 
         Ticket ticket = new Ticket();
         Order order = orderRepositoryFacade.validateAndGetOrderById(requestAddTicketDTO.getOrder());
+        ticket.setId(requestAddTicketDTO.getId());
 
         Customer customer = customerMapper.toCustomer(customerService.validateAndGetCustomerById(requestAddTicketDTO.getCustomerId()));
         ticket.setCustomer(customer);

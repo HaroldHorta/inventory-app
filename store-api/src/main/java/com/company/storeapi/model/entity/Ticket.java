@@ -11,7 +11,6 @@ import java.util.Date;
 @Document(collection = "ticket")
 public class Ticket {
 
-    @Id
     private String id;
     @NonNull
     private Order order;
