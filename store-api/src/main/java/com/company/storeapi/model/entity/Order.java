@@ -24,8 +24,6 @@ public class Order {
 
     private Set<ResponseOrderProductItemsDTO> products = new LinkedHashSet<>();
 
-    private PaymentType paymentType;
-
     private OrderStatus orderStatus;
 
 

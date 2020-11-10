@@ -12,10 +12,6 @@ import java.util.List;
 @Data
 public class RequestUpdateOrderDTO {
 
-    @Schema(example = "CASH")
-    @NotNull
-    private PaymentType paymentType;
-
     @Valid
     private List<RequestOrderProductItemsDTO> products;
 }

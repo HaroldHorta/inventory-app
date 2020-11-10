@@ -1,5 +1,6 @@
 package com.company.storeapi.model.entity;
 
+import com.company.storeapi.model.enums.PaymentType;
 import lombok.Data;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;
@@ -16,6 +17,7 @@ public class Ticket {
     private Order order;
     private Customer customer;
     private Date createAt;
+    private PaymentType paymentType;
 
     public Ticket() {
 

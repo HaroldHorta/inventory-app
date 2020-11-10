@@ -1,5 +1,6 @@
 package com.company.storeapi.model.payload.request.ticket;
 
+import com.company.storeapi.model.enums.PaymentType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -15,4 +16,7 @@ public class RequestAddTicketDTO {
 
     @Schema(example = "5f4eee53b88119177021b61b")
     private String order;
+
+    @Schema
+    private PaymentType paymentType;
 }

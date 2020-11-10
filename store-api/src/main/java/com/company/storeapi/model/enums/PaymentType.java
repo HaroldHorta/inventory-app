@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum PaymentType {
   CASH(1),
-  CARD(1);
+  CREDIT(2),
+  TRANSACTION(3);
 
 @Getter
 private final int id;

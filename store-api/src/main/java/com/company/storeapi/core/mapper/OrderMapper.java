@@ -4,7 +4,6 @@ import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
 import com.company.storeapi.model.entity.CountingGeneral;
 import com.company.storeapi.model.enums.OrderStatus;
-import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.payload.request.order.RequestAddOrderDTO;
 import com.company.storeapi.model.payload.request.order.RequestUpdateOrderDTO;
 import com.company.storeapi.model.payload.request.product.RequestOrderProductItemsDTO;
@@ -54,8 +53,6 @@ public abstract class OrderMapper {
 
     public void updateOrderFromDto(RequestUpdateOrderDTO updateOrderDto, Order order){
 
-        order.setPaymentType(updateOrderDto.getPaymentType());
-
         Set<ResponseOrderProductItemsDTO> listOrder = getResponseOrderProductItemsDTOS(toRequestAdd(updateOrderDto));
 
         order.setProducts(listOrder);
@@ -65,7 +62,6 @@ public abstract class OrderMapper {
 
         Order order = new Order();
         order.setId(createOrderDto.getId());
-        order.setPaymentType(PaymentType.CASH);
         order.setOrderStatus(OrderStatus.OPEN);
 
         Set<ResponseOrderProductItemsDTO> listOrder = getResponseOrderProductItemsDTOS(createOrderDto);
