@@ -19,5 +19,5 @@ public interface CustomerRepositoryFacade {
 
     Boolean validateAndGetCustomerByNroDocument(String id);
 
-    Boolean validateAndGetCustomerbyEmail(String email);
+    Boolean validateAndGetCustomerByEmail(String email);
 }

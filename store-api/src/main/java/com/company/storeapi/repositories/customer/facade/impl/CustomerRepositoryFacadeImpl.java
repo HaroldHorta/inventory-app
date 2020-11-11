@@ -67,7 +67,7 @@ public class CustomerRepositoryFacadeImpl implements CustomerRepositoryFacade {
     }
 
     @Override
-    public Boolean validateAndGetCustomerbyEmail(String email) {
+    public Boolean validateAndGetCustomerByEmail(String email) {
         return customerRepository.existsCustomerByEmail(email);
     }
 }

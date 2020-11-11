@@ -36,7 +36,7 @@ public abstract class CustomerMapper {
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"El numero de cedula ya existe");
         }
 
-        Boolean existEmail = customerRepositoryFacade.validateAndGetCustomerbyEmail(requestAddCustomerDTO.getEmail());
+        Boolean existEmail = customerRepositoryFacade.validateAndGetCustomerByEmail(requestAddCustomerDTO.getEmail());
 
         if(existEmail){
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"El correo ya existe");

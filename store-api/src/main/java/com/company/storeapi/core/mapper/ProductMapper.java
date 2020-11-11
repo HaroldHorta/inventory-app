@@ -4,13 +4,14 @@ import com.company.storeapi.core.util.ImageDefault;
 import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.model.entity.CountingGeneral;
 import com.company.storeapi.model.entity.Product;
+import com.company.storeapi.model.entity.finance.Assets;
 import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
 import com.company.storeapi.model.payload.request.user.FileInfo;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
-import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
+import com.company.storeapi.repositories.finances.assets.facade.AssetRepositoryFacade;
 import com.company.storeapi.services.category.CategoryService;
 import com.company.storeapi.services.countingGeneral.CountingGeneralService;
 import org.mapstruct.Mapper;
@@ -36,16 +37,34 @@ public abstract class ProductMapper {
     private CategoryMapper categoryMapper;
     @Autowired
     private CountingGeneralService countingGeneralService;
+    @Autowired
+    private AssetRepositoryFacade assetRepositoryFacade;
+
 
     public abstract ResponseProductDTO toProductDto(Product product);
-
-    public abstract ResponseOrderProductItemsDTO toOrderItemsProduct(Product product);
 
     public abstract RequestAddProductDTO toProductRequestUpdate(RequestUpdateProductDTO product);
 
     public abstract void updateProductFromDto(RequestUpdateProductDTO updateOrderDto, @MappingTarget Product product);
 
     public abstract Product toProduct(ResponseProductDTO responseProductDTO);
+
+    public Product toProductResponse(ResponseProductDTO responseProductDTO){
+        Product product = new Product();
+        product.setId(responseProductDTO.getId());
+        product.setName(responseProductDTO.getName());
+        product.setDescription(responseProductDTO.getDescription());
+
+        product.setCategory(responseProductDTO.getCategory());
+        product.setStatus(Status.ACTIVE);
+        product.setCreateAt(new Date());
+        product.setUpdateAt(new Date());
+        product.setPriceBuy(responseProductDTO.getPriceBuy());
+        product.setPriceSell(responseProductDTO.getPriceSell());
+        product.setUnit(responseProductDTO.getUnit());
+
+        return product;
+    }
 
     public Product toProduct(RequestAddProductDTO requestAddProductDTO) {
 
@@ -67,6 +86,14 @@ public abstract class ProductMapper {
         file.setType(ImageDefault.type);
         file.setData(ImageDefault.data);
         product.setPhoto(file);
+
+        List<Assets> assets = assetRepositoryFacade.getAllCustomers();
+        assets.forEach(asset -> {
+            Double productQuantity = requestAddProductDTO.getPriceSell() * requestAddProductDTO.getUnit();
+            Double investment = asset.getInvestment() + productQuantity;
+            asset.setEarnings(investment);
+        });
+
 
         List<CountingGeneral> counting = countingGeneralService.getAllCountingGeneral();
 

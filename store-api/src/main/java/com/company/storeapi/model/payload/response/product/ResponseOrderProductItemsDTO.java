@@ -1,6 +1,5 @@
 package com.company.storeapi.model.payload.response.product;
 
-import com.company.storeapi.model.entity.Product;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

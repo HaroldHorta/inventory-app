@@ -1,9 +1,13 @@
 package com.company.storeapi.core.mapper;
 
+import com.company.storeapi.core.constants.MessageError;
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
+import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.model.entity.Customer;
 import com.company.storeapi.model.entity.Order;
+import com.company.storeapi.model.enums.PaymentType;
+import com.company.storeapi.model.enums.TicketStatus;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
@@ -67,29 +71,39 @@ public abstract class TicketMapper {
         Customer customer = customerMapper.toCustomer(customerService.validateAndGetCustomerById(requestAddTicketDTO.getCustomerId()));
         ticket.setCustomer(customer);
 
+       if(order.getOrderStatus() == OrderStatus.OPEN){
+           order.setOrderStatus(OrderStatus.PAYED);
 
-        order.setOrderStatus(OrderStatus.PAYED);
+           orderRepositoryFacade.saveOrder(order);
+           order.getProducts().forEach(p->{
+                       Product product = productMapper.toProductResponse(productService.validateAndGetProductById(p.getProduct().getId()));
+                       if(product.getUnit()<=0){
+                           throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Producto Agotado");
+                       }else if(product.getUnit()>0){
+                           int unitNew= product.getUnit()-p.getUnit();
+                           if(unitNew<=0){
+                               unitNew=0;
+                               product.setStatus(Status.INACTIVE);
+                           }
+                           product.setUnit(unitNew);
 
-        orderRepositoryFacade.saveOrder(order);
-        order.getProducts().forEach(p->{
-                    Product product = productMapper.toProduct(productService.validateAndGetProductById(p.getProduct().getId()));
-                    if(product.getUnit()<=0){
-                        throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Producto Agotado");
-                    }else if(product.getUnit()>0){
-                            int unitNew= product.getUnit()-p.getUnit();
-                            if(unitNew<=0){
-                                unitNew=0;
-                                product.setStatus(Status.INACTIVE);
-                            }
-                        product.setUnit(unitNew);
-
-                        getUpdateCategory(product);
-                    }
-                }
-        );
+                           getUpdateCategory(product);
+                       }
+                   }
+           );
+           ticket.setOrder(order);
+       }else{
+           throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "La orden ya esta pagada, no se puede generar ticket");
+       }
 
         ticket.setCreateAt(new Date());
-        ticket.setOrder(order);
+        ticket.setPaymentType(requestAddTicketDTO.getPaymentType());
+
+        if(requestAddTicketDTO.getPaymentType() == PaymentType.CASH || requestAddTicketDTO.getPaymentType() == PaymentType.TRANSACTION){
+            ticket.setTicketStatus(TicketStatus.PAYED);
+        }else {
+            ticket.setTicketStatus(TicketStatus.CREDIT);
+        }
 
         countingGeneralService.counting(requestAddTicketDTO.getOrder(), order.getOrderStatus());
         return ticket;
