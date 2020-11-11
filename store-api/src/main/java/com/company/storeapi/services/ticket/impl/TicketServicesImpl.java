@@ -32,4 +32,9 @@ public class TicketServicesImpl implements TicketServices {
     public ResponseTicketDTO saveTicket(RequestAddTicketDTO requestAddTicketDTO) {
         return ticketMapper.toTicketDto(ticketRepositoryFacade.saveTicket(ticketMapper.toTicket(requestAddTicketDTO)));
     }
+
+    @Override
+    public List<ResponseTicketDTO> findTicketByCustomer_NroDocument(String nroDocument) {
+        return ticketRepositoryFacade.findTicketByCustomer_NroDocument(nroDocument).stream().map(ticketMapper::toTicketDto).collect(Collectors.toList());
+    }
 }

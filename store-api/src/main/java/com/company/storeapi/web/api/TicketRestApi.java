@@ -32,6 +32,11 @@ public class TicketRestApi {
         return new ResponseEntity<>(responseTicketDTO,new HttpHeaders(), HttpStatus.OK);
     }
 
+    @GetMapping(value = "nroDocument/{nroDocument}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ResponseTicketDTO> findTicketByCustomerNroDocument(@PathVariable String nroDocument) throws ServiceException{
+        return ticketServices.findTicketByCustomer_NroDocument(nroDocument);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseTicketDTO> saveTicket(@RequestBody RequestAddTicketDTO requestAddTicketDTO) throws ServiceException{
         ResponseTicketDTO entity = ticketServices.saveTicket(requestAddTicketDTO);

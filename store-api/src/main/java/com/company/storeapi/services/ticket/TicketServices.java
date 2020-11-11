@@ -13,4 +13,6 @@ public interface TicketServices {
 
     ResponseTicketDTO saveTicket(RequestAddTicketDTO requestAddTicketDTO);
 
+    List<ResponseTicketDTO> findTicketByCustomer_NroDocument (String nroDocument);
+
 }

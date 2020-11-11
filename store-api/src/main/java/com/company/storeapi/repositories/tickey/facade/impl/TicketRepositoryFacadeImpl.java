@@ -56,4 +56,16 @@ public class TicketRepositoryFacadeImpl implements TicketRepositoryFacade {
     public Ticket findTicketByOrder(String id) {
         return ticketRepository.findTicketByOrder(id);
     }
+
+    @Override
+    public List<Ticket> findTicketByCustomer_NroDocument(String nroDocument) {
+        try {
+            return Optional.of(ticketRepository.findTicketByCustomer_NroDocument(nroDocument))
+                    .orElseThrow(()-> new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND,"El cliente no tiene ticket asosiados"));
+        }catch (IllegalArgumentException ie){
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+        }catch (DataAccessException er){
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+        }
+    }
 }
