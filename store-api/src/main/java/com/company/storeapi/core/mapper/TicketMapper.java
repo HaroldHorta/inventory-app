@@ -75,23 +75,7 @@ public abstract class TicketMapper {
            order.setOrderStatus(OrderStatus.PAYED);
 
            orderRepositoryFacade.saveOrder(order);
-           order.getProducts().forEach(p->{
-                       Product product = productMapper.toProductResponse(productService.validateAndGetProductById(p.getProduct().getId()));
-                       if(product.getUnit()<=0){
-                           throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Producto Agotado");
-                       }else if(product.getUnit()>0){
-                           int unitNew= product.getUnit()-p.getUnit();
-                           if(unitNew<=0){
-                               unitNew=0;
-                               product.setStatus(Status.INACTIVE);
-                           }
-                           product.setUnit(unitNew);
-
-                           getUpdateCategory(product);
-                       }
-                   }
-           );
-           ticket.setOrder(order);
+           changeStatusProductByUnit(ticket, order);
        }else{
            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "La orden ya esta pagada, no se puede generar ticket");
        }
@@ -107,6 +91,26 @@ public abstract class TicketMapper {
 
         countingGeneralService.counting(requestAddTicketDTO.getOrder(), order.getOrderStatus());
         return ticket;
+    }
+
+    private void changeStatusProductByUnit(Ticket ticket, Order order) {
+        order.getProducts().forEach(p->{
+                    Product product = productMapper.toProductResponse(productService.validateAndGetProductById(p.getProduct().getId()));
+                    if(product.getUnit()<=0){
+                        throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Producto Agotado");
+                    }else if(product.getUnit()>0){
+                        int unitNew= product.getUnit()-p.getUnit();
+                        if(unitNew<=0){
+                            unitNew=0;
+                            product.setStatus(Status.INACTIVE);
+                        }
+                        product.setUnit(unitNew);
+
+                        getUpdateCategory(product);
+                    }
+                }
+        );
+        ticket.setOrder(order);
     }
 
     public void getUpdateCategory(Product product) {

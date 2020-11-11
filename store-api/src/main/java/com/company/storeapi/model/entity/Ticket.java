@@ -2,9 +2,7 @@ package com.company.storeapi.model.entity;
 
 import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.enums.TicketStatus;
-import lombok.Data;
 import lombok.NonNull;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -19,7 +17,9 @@ public class Ticket {
     private Date createAt;
     private PaymentType paymentType;
     private TicketStatus ticketStatus;
-
+    private Double ticketCost;
+    private Double outstandingBalance;
+    private Double creditCapital;
     public Ticket() {
 
     }
@@ -70,5 +70,29 @@ public class Ticket {
 
     public void setTicketStatus(TicketStatus ticketStatus) {
         this.ticketStatus = ticketStatus;
+    }
+
+    public Double getTicketCost() {
+        return ticketCost;
+    }
+
+    public void setTicketCost(Double ticketCost) {
+        this.ticketCost = ticketCost;
+    }
+
+    public Double getOutstandingBalance() {
+        return outstandingBalance;
+    }
+
+    public void setOutstandingBalance(Double outstandingBalance) {
+        this.outstandingBalance = outstandingBalance;
+    }
+
+    public Double getCreditCapital() {
+        return creditCapital;
+    }
+
+    public void setCreditCapital(Double creditCapital) {
+        this.creditCapital = creditCapital;
     }
 }
