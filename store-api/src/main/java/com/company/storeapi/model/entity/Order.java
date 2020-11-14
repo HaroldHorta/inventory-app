@@ -1,11 +1,10 @@
 package com.company.storeapi.model.entity;
 
-import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.enums.OrderStatus;
-import com.company.storeapi.model.enums.PaymentType;
-import lombok.*;
-import org.hibernate.annotations.Columns;
-import org.springframework.data.annotation.Id;
+import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -25,5 +24,7 @@ public class Order {
     private Set<ResponseOrderProductItemsDTO> products = new LinkedHashSet<>();
 
     private OrderStatus orderStatus;
+
+    private Double totalOrder;
 
 }

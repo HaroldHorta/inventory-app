@@ -67,6 +67,7 @@ public abstract class OrderMapper {
         Set<ResponseOrderProductItemsDTO> listOrder = getResponseOrderProductItemsDTOS(createOrderDto);
 
         order.setProducts(listOrder);
+        order.setTotalOrder(createOrderDto.getTotalOrder());
 
         List<CountingGeneral> counting = countingGeneralService.getAllCountingGeneral();
 
