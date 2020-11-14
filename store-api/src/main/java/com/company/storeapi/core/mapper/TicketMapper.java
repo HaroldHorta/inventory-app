@@ -1,20 +1,19 @@
 package com.company.storeapi.core.mapper;
 
-import com.company.storeapi.core.constants.MessageError;
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.model.entity.Customer;
 import com.company.storeapi.model.entity.Order;
+import com.company.storeapi.model.entity.Product;
+import com.company.storeapi.model.entity.Ticket;
+import com.company.storeapi.model.enums.OrderStatus;
 import com.company.storeapi.model.enums.PaymentType;
+import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.enums.TicketStatus;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
-import com.company.storeapi.model.entity.Product;
-import com.company.storeapi.model.entity.Ticket;
-import com.company.storeapi.model.enums.OrderStatus;
-import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import com.company.storeapi.services.countingGeneral.CountingGeneralService;
@@ -47,9 +46,6 @@ public abstract class TicketMapper {
     private CustomerService customerService;
 
     @Autowired
-    private ProductService productService;
-
-    @Autowired
     private CountingGeneralService countingGeneralService;
 
     @Autowired
@@ -58,11 +54,11 @@ public abstract class TicketMapper {
     @Autowired
     private OrderRepositoryFacade orderRepositoryFacade;
 
-    @Mapping(source = "customer.id",target = "customer")
-    @Mapping(source = "order",target = "order")
+    @Mapping(source = "customer.id", target = "customer")
+    @Mapping(source = "order", target = "order")
     public abstract ResponseTicketDTO toTicketDto(Ticket ticket);
 
-    public Ticket toTicket (RequestAddTicketDTO requestAddTicketDTO){
+    public Ticket toTicket(RequestAddTicketDTO requestAddTicketDTO) {
 
         Ticket ticket = new Ticket();
         Order order = orderRepositoryFacade.validateAndGetOrderById(requestAddTicketDTO.getOrder());
@@ -71,21 +67,21 @@ public abstract class TicketMapper {
         Customer customer = customerMapper.toCustomer(customerService.validateAndGetCustomerById(requestAddTicketDTO.getCustomerId()));
         ticket.setCustomer(customer);
 
-       if(order.getOrderStatus() == OrderStatus.OPEN){
-           order.setOrderStatus(OrderStatus.PAYED);
+        if (order.getOrderStatus() == OrderStatus.OPEN) {
+            order.setOrderStatus(OrderStatus.PAYED);
 
-           orderRepositoryFacade.saveOrder(order);
-           changeStatusProductByUnit(ticket, order);
-       }else{
-           throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "La orden ya esta pagada, no se puede generar ticket");
-       }
+            orderRepositoryFacade.saveOrder(order);
+            changeStatusProductByUnit(ticket, order);
+        } else {
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "La orden ya esta pagada, no se puede generar ticket");
+        }
 
         ticket.setCreateAt(new Date());
         ticket.setPaymentType(requestAddTicketDTO.getPaymentType());
 
-        if(requestAddTicketDTO.getPaymentType() == PaymentType.CASH || requestAddTicketDTO.getPaymentType() == PaymentType.TRANSACTION){
+        if (requestAddTicketDTO.getPaymentType() == PaymentType.CASH || requestAddTicketDTO.getPaymentType() == PaymentType.TRANSACTION) {
             ticket.setTicketStatus(TicketStatus.PAYED);
-        }else {
+        } else {
             ticket.setTicketStatus(TicketStatus.CREDIT);
         }
 
@@ -94,20 +90,23 @@ public abstract class TicketMapper {
     }
 
     private void changeStatusProductByUnit(Ticket ticket, Order order) {
-        order.getProducts().forEach(p->{
-                    Product product = productMapper.toProductResponse(productService.validateAndGetProductById(p.getProduct().getId()));
-                    if(product.getUnit()<=0){
-                        throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Producto Agotado");
-                    }else if(product.getUnit()>0){
-                        int unitNew= product.getUnit()-p.getUnit();
-                        if(unitNew<=0){
-                            unitNew=0;
+        order.getProducts().forEach(p -> {
+                    Product product = productRepositoryFacade.validateAndGetProductById(p.getProduct().getId());
+                    if (product.getUnit() <= 0) {
+                        throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "Producto Agotado");
+                    } else if (product.getUnit() > 0) {
+                        int unitNew = product.getUnit() - p.getUnit();
+                        if (unitNew <= 0) {
+                            unitNew = 0;
                             product.setStatus(Status.INACTIVE);
                         }
                         product.setUnit(unitNew);
 
                         getUpdateCategory(product);
+
+
                     }
+                    productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
                 }
         );
         ticket.setOrder(order);
@@ -115,13 +114,13 @@ public abstract class TicketMapper {
 
     public void getUpdateCategory(Product product) {
         Set<ResponseCategoryDTO> listCategory = new LinkedHashSet<>();
-        product.getCategory().forEach(c ->{
+        product.getCategory().forEach(c -> {
             ResponseCategoryDTO cat = new ResponseCategoryDTO();
             cat.setId(c.getId());
             cat.setDescription(c.getDescription());
             listCategory.add(cat);
         });
         product.setCategory(listCategory);
-        productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
+
     }
 }
