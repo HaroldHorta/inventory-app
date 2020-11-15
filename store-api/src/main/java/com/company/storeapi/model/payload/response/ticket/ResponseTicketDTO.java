@@ -14,4 +14,8 @@ public class ResponseTicketDTO {
     private String createAt;
     private PaymentType paymentType;
     private TicketStatus ticketStatus;
+    private Double ticketCost;
+    private Double ticketCostWithoutIVA;
+    private Double outstandingBalance;
+    private Double creditCapital;
 }

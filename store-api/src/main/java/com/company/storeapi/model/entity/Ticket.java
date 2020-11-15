@@ -18,8 +18,18 @@ public class Ticket {
     private PaymentType paymentType;
     private TicketStatus ticketStatus;
     private Double ticketCost;
+    private Double ticketCostWithoutIVA;
     private Double outstandingBalance;
     private Double creditCapital;
+
+    public Double getTicketCostWithoutIVA() {
+        return ticketCostWithoutIVA;
+    }
+
+    public void setTicketCostWithoutIVA(Double ticketCostWithoutIVA) {
+        this.ticketCostWithoutIVA = ticketCostWithoutIVA;
+    }
+
     public Ticket() {
 
     }

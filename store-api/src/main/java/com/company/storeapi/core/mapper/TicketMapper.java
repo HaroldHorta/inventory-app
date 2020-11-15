@@ -7,10 +7,7 @@ import com.company.storeapi.model.entity.Customer;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.entity.Ticket;
-import com.company.storeapi.model.enums.OrderStatus;
-import com.company.storeapi.model.enums.PaymentType;
-import com.company.storeapi.model.enums.Status;
-import com.company.storeapi.model.enums.TicketStatus;
+import com.company.storeapi.model.enums.*;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
@@ -81,10 +78,15 @@ public abstract class TicketMapper {
 
         if (requestAddTicketDTO.getPaymentType() == PaymentType.CASH || requestAddTicketDTO.getPaymentType() == PaymentType.TRANSACTION) {
             ticket.setTicketStatus(TicketStatus.PAYED);
+
         } else {
             ticket.setTicketStatus(TicketStatus.CREDIT);
         }
 
+        Double getTicketCostWithoutIVA = (IVA.IVA19 * order.getTotalOrder())/ IVA.PORCENTAJE;
+
+        ticket.setTicketCost(order.getTotalOrder());
+        ticket.setTicketCostWithoutIVA(getTicketCostWithoutIVA);
         countingGeneralService.counting(requestAddTicketDTO.getOrder(), order.getOrderStatus());
         return ticket;
     }
