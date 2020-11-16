@@ -64,29 +64,32 @@ public abstract class TicketMapper {
         Customer customer = customerMapper.toCustomer(customerService.validateAndGetCustomerById(requestAddTicketDTO.getCustomerId()));
         ticket.setCustomer(customer);
 
-        if (order.getOrderStatus() == OrderStatus.OPEN) {
-            order.setOrderStatus(OrderStatus.PAYED);
-
-            orderRepositoryFacade.saveOrder(order);
-            changeStatusProductByUnit(ticket, order);
-        } else {
+        if (!(order.getOrderStatus() == OrderStatus.OPEN)) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "La orden ya esta pagada, no se puede generar ticket");
         }
+
+        order.setOrderStatus(OrderStatus.PAYED);
+
+        orderRepositoryFacade.saveOrder(order);
+        changeStatusProductByUnit(ticket, order);
 
         ticket.setCreateAt(new Date());
         ticket.setPaymentType(requestAddTicketDTO.getPaymentType());
 
-        if (requestAddTicketDTO.getPaymentType() == PaymentType.CASH || requestAddTicketDTO.getPaymentType() == PaymentType.TRANSACTION) {
-            ticket.setTicketStatus(TicketStatus.PAYED);
-
-        } else {
+        ticket.setTicketStatus(TicketStatus.PAYED);
+        ticket.setOutstandingBalance((double) 0);
+        if (!(requestAddTicketDTO.getPaymentType() == PaymentType.CASH || requestAddTicketDTO.getPaymentType() == PaymentType.TRANSACTION)) {
             ticket.setTicketStatus(TicketStatus.CREDIT);
+            ticket.setOutstandingBalance(order.getTotalOrder());
         }
 
-        Double getTicketCostWithoutIVA = (IVA.IVA19 * order.getTotalOrder())/ IVA.PORCENTAJE;
-
+        Double getTicketCostWithoutIVA = (IVA.IVA19 * order.getTotalOrder()) / IVA.PORCENTAJE;
         ticket.setTicketCost(order.getTotalOrder());
         ticket.setTicketCostWithoutIVA(getTicketCostWithoutIVA);
+        ticket.setCreditCapital(requestAddTicketDTO.getCreditCapital());
+        if(requestAddTicketDTO.getCreditCapital().isNaN()){
+            ticket.setCreditCapital((double) 0);
+        }
         countingGeneralService.counting(requestAddTicketDTO.getOrder(), order.getOrderStatus());
         return ticket;
     }
@@ -96,18 +99,17 @@ public abstract class TicketMapper {
                     Product product = productRepositoryFacade.validateAndGetProductById(p.getProduct().getId());
                     if (product.getUnit() <= 0) {
                         throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "Producto Agotado");
-                    } else if (product.getUnit() > 0) {
-                        int unitNew = product.getUnit() - p.getUnit();
-                        if (unitNew <= 0) {
-                            unitNew = 0;
-                            product.setStatus(Status.INACTIVE);
-                        }
-                        product.setUnit(unitNew);
-
-                        getUpdateCategory(product);
-
-
                     }
+                    int unitNew = product.getUnit() - p.getUnit();
+                    if (unitNew <= 0) {
+                        unitNew = 0;
+                        product.setStatus(Status.INACTIVE);
+                    }
+                    product.setUnit(unitNew);
+
+                    getUpdateCategory(product);
+
+
                     productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
                 }
         );

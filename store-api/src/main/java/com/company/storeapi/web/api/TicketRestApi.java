@@ -43,4 +43,10 @@ public class TicketRestApi {
         return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.CREATED);
     }
 
+    @PatchMapping(value = "/{idTicket}/credit/{creditCapital}")
+    public ResponseEntity<ResponseTicketDTO> updateCredit(@PathVariable String idTicket, @PathVariable Double creditCapital) throws ServiceException{
+        ResponseTicketDTO entity = ticketServices.updateCreditCapital(idTicket, creditCapital);
+        return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.CREATED);
+    }
+
 }

@@ -15,4 +15,6 @@ public interface TicketServices {
 
     List<ResponseTicketDTO> findTicketByCustomer_NroDocument (String nroDocument);
 
+    ResponseTicketDTO updateCreditCapital(String idTicket, Double creditCapital);
+
 }
