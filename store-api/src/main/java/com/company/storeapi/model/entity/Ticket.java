@@ -21,6 +21,7 @@ public class Ticket {
     private Double ticketCostWithoutIVA;
     private Double outstandingBalance;
     private Double creditCapital;
+    private boolean cashRegister;
 
     public Double getTicketCostWithoutIVA() {
         return ticketCostWithoutIVA;
