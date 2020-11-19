@@ -21,6 +21,9 @@ public class Ticket {
     private Double ticketCostWithoutIVA;
     private Double outstandingBalance;
     private Double creditCapital;
+    private Double cashPayment;
+    private Double transactionPayment;
+    private Double creditPayment;
     private boolean cashRegister;
 
     public Double getTicketCostWithoutIVA() {
@@ -105,5 +108,37 @@ public class Ticket {
 
     public void setCreditCapital(Double creditCapital) {
         this.creditCapital = creditCapital;
+    }
+
+    public boolean isCashRegister() {
+        return cashRegister;
+    }
+
+    public void setCashRegister(boolean cashRegister) {
+        this.cashRegister = cashRegister;
+    }
+
+    public Double getCashPayment() {
+        return cashPayment;
+    }
+
+    public void setCashPayment(Double cashPayment) {
+        this.cashPayment = cashPayment;
+    }
+
+    public Double getTransactionPayment() {
+        return transactionPayment;
+    }
+
+    public void setTransactionPayment(Double transactionPayment) {
+        this.transactionPayment = transactionPayment;
+    }
+
+    public Double getCreditPayment() {
+        return creditPayment;
+    }
+
+    public void setCreditPayment(Double creditPayment) {
+        this.creditPayment = creditPayment;
     }
 }

@@ -29,6 +29,11 @@ public class TicketServicesImpl implements TicketServices {
     }
 
     @Override
+    public List<ResponseTicketDTO> getAllTicketByCashRegister() {
+        return ticketRepositoryFacade.getAllTicket().stream().filter(ticket -> !ticket.isCashRegister()).map(ticketMapper::toTicketDto).collect(Collectors.toList());
+    }
+
+    @Override
     public ResponseTicketDTO validateAndGetTicketById(String id) {
         return ticketMapper.toTicketDto(ticketRepositoryFacade.validateAndGetTicketById(id));
     }
