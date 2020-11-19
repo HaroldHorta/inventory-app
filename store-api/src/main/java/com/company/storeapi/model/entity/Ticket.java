@@ -2,16 +2,17 @@ package com.company.storeapi.model.entity;
 
 import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.enums.TicketStatus;
-import lombok.NonNull;
+import com.company.storeapi.model.payload.response.finance.CreditCapital;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Document(collection = "ticket")
 public class Ticket {
 
     private String id;
-    @NonNull
     private Order order;
     private Customer customer;
     private Date createAt;
@@ -19,8 +20,8 @@ public class Ticket {
     private TicketStatus ticketStatus;
     private Double ticketCost;
     private Double ticketCostWithoutIVA;
+    private Set<CreditCapital> creditCapital = new LinkedHashSet<>();
     private Double outstandingBalance;
-    private Double creditCapital;
     private Double cashPayment;
     private Double transactionPayment;
     private Double creditPayment;
@@ -94,21 +95,7 @@ public class Ticket {
         this.ticketCost = ticketCost;
     }
 
-    public Double getOutstandingBalance() {
-        return outstandingBalance;
-    }
 
-    public void setOutstandingBalance(Double outstandingBalance) {
-        this.outstandingBalance = outstandingBalance;
-    }
-
-    public Double getCreditCapital() {
-        return creditCapital;
-    }
-
-    public void setCreditCapital(Double creditCapital) {
-        this.creditCapital = creditCapital;
-    }
 
     public boolean isCashRegister() {
         return cashRegister;
@@ -140,5 +127,21 @@ public class Ticket {
 
     public void setCreditPayment(Double creditPayment) {
         this.creditPayment = creditPayment;
+    }
+
+    public Double getOutstandingBalance() {
+        return outstandingBalance;
+    }
+
+    public void setOutstandingBalance(Double outstandingBalance) {
+        this.outstandingBalance = outstandingBalance;
+    }
+
+    public Set<CreditCapital> getCreditCapital() {
+        return creditCapital;
+    }
+
+    public void setCreditCapital(Set<CreditCapital> creditCapital) {
+        this.creditCapital = creditCapital;
     }
 }

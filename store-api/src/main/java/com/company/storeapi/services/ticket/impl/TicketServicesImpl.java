@@ -6,14 +6,17 @@ import com.company.storeapi.core.mapper.TicketMapper;
 import com.company.storeapi.model.entity.Ticket;
 import com.company.storeapi.model.enums.TicketStatus;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
-import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
+import com.company.storeapi.model.payload.response.finance.CreditCapital;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
 import com.company.storeapi.repositories.tickey.facade.TicketRepositoryFacade;
 import com.company.storeapi.services.ticket.TicketServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,21 +55,30 @@ public class TicketServicesImpl implements TicketServices {
     public ResponseTicketDTO updateCreditCapital(String idTicket, Double creditCapital) {
         Ticket ticket = ticketRepositoryFacade.validateAndGetTicketById(idTicket);
         boolean validate = true;
-        Double abono= ticket.getCreditCapital() + creditCapital;
-        if(ticket.getTicketStatus() == TicketStatus.PAYED){
+
+        if (ticket.getTicketStatus() == TicketStatus.PAYED) {
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La orden ha sido cancelada en su totalidad");
         }
-        if (ticket.getTicketCost() > abono) {
+
+        double capital = ticket.getCreditCapital().stream().mapToDouble(CreditCapital::getCreditCapital).sum();
+
+        if (ticket.getTicketCost() > capital) {
             validate = false;
             Double credit = ticket.getOutstandingBalance() - creditCapital;
-            ticket.setCreditCapital(abono);
+            Set<CreditCapital> creditCapitals = new LinkedHashSet<>();
+            CreditCapital creditCap = new CreditCapital();
+            creditCap.setCreditCapital(creditCapital);
+            creditCap.setCreatAt(new Date());
+            creditCapitals.add(creditCap);
+            ticket.setCreditCapital(creditCapitals);
             ticket.setOutstandingBalance(credit);
         }
+
         if (validate) {
             ticket.setOutstandingBalance((double) 0);
-            ticket.setCreditCapital(ticket.getTicketCost());
             ticket.setTicketStatus(TicketStatus.PAYED);
         }
+
         return ticketMapper.toTicketDto(ticketRepositoryFacade.saveTicket(ticket));
     }
 }
