@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -50,7 +49,6 @@ public class TicketServicesImpl implements TicketServices {
     @Override
     public ResponseTicketDTO updateCreditCapital(String idTicket, Double creditCapital, PaymentType creditPayment) {
         Ticket ticket = ticketRepositoryFacade.validateAndGetTicketById(idTicket);
-        boolean validate = true;
 
         if (ticket.getTicketStatus() == TicketStatus.PAYED) {
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La orden ha sido cancelada en su totalidad");
@@ -58,11 +56,10 @@ public class TicketServicesImpl implements TicketServices {
 
         double cashCreditCapital = ticket.getCreditCapital().stream().mapToDouble(CreditCapital::getCashCreditCapital).sum();
         double transactionCreditCapital = ticket.getCreditCapital().stream().mapToDouble(CreditCapital::getTransactionCreditCapital).sum();
-        double capital = cashCreditCapital + transactionCreditCapital;
+        double capital = cashCreditCapital + transactionCreditCapital + creditCapital;
         if (ticket.getTicketCost() > capital) {
-            validate = false;
-            Double credit = ticket.getOutstandingBalance() - creditCapital;
-            Set<CreditCapital> creditCapitals = new LinkedHashSet<>();
+            double credit = ticket.getOutstandingBalance() - creditCapital;
+            Set<CreditCapital> creditCapitals = ticket.getCreditCapital();
             CreditCapital creditCap = new CreditCapital();
             creditCap.setCashCreditCapital(creditCapital);
             creditCap.setTransactionCreditCapital((double) 0);
@@ -74,13 +71,11 @@ public class TicketServicesImpl implements TicketServices {
             creditCapitals.add(creditCap);
             ticket.setCreditCapital(creditCapitals);
             ticket.setOutstandingBalance(credit);
+            if (credit <= 0) {
+                ticket.setOutstandingBalance((double) 0);
+                ticket.setTicketStatus(TicketStatus.PAYED);
+            }
         }
-
-        if (validate) {
-            ticket.setOutstandingBalance((double) 0);
-            ticket.setTicketStatus(TicketStatus.PAYED);
-        }
-
         return ticketMapper.toTicketDto(ticketRepositoryFacade.saveTicket(ticket));
     }
 }
