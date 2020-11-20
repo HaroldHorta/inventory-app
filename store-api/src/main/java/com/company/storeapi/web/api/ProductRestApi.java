@@ -62,11 +62,6 @@ public class ProductRestApi {
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @PutMapping(value = "product/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseProductDTO> updateProductWithPhoto (@PathVariable String id, @RequestBody RequestUpdateProductDTO productDTO,  @RequestParam("file") MultipartFile file) throws ServiceException, IOException {
-        ResponseProductDTO update = service.updateProductWithImages(id, productDTO, file);
-        return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
-    }
 
     @PatchMapping(value="/{id}/status/{status}")
     public ResponseEntity<ResponseProductDTO> updateStatus(@PathVariable String id, @PathVariable Status status) throws ServiceException{

@@ -4,7 +4,9 @@ package com.company.storeapi.model.entity;
 import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.user.FileInfo;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,6 +18,8 @@ import java.util.Set;
 
 @Document(collection = "product")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
 
     @Id
@@ -42,10 +46,6 @@ public class Product {
 
     private int unit;
 
-    private FileInfo photo;
-
-    public Product() {
-
-    }
+    private String photo;
 
    }

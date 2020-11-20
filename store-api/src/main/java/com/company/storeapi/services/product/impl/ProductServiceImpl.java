@@ -142,37 +142,5 @@ public class ProductServiceImpl implements ProductService {
         return products.stream().map(productMapper::toProductDto).collect(Collectors.toList());
     }
 
-    @Override
-    public ResponseProductDTO updateProductWithImages(String id, RequestUpdateProductDTO requestUpdateCustomerDTO, MultipartFile file) throws IOException {
-        Product product = productRepositoryFacade.validateAndGetProductById(id);
-        String namePhoto = UUID.randomUUID().toString() + "-" + Objects.requireNonNull(file.getOriginalFilename())
-                .replace(" ", "")
-                .replace(":", "")
-                .replace("\\", "");
 
-        String fileName = StringUtils.cleanPath(namePhoto);
-
-        FileInfo fileInfo = new FileInfo(fileName, file.getContentType(), file.getBytes());
-
-        Set<ResponseCategoryDTO> listCategory = productMapper.getResponseCategoryDTOS(productMapper.toProductRequestUpdate(requestUpdateCustomerDTO));
-
-        product.setCategory(listCategory);
-        product.setUpdateAt(new Date());
-        product.setPhoto(fileInfo);
-        productMapper.updateProductFromDto(requestUpdateCustomerDTO, product);
-
-        ResponseProductDTO responseProductDTO = productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
-
-        List<Order> orderList = orderRepositoryFacade.findOrderByProducts(responseProductDTO.getId());
-
-        orderList.forEach(o -> {
-            getListOrderProduct(productRepositoryFacade, productMapper, orderRepositoryFacade, o);
-
-            Ticket ticket = ticketRepositoryFacade.findTicketByOrder(o.getId());
-            ticket.setOrder(o);
-
-            ticketRepositoryFacade.saveTicket(ticket);
-        });
-        return responseProductDTO;
-    }
 }

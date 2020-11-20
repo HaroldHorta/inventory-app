@@ -32,6 +32,6 @@ public class ResponseProductDTO {
 
     private int unit;
 
-    private FileInfo photo;
+    private String photo;
 
 }
