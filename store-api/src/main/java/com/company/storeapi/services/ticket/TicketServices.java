@@ -9,6 +9,8 @@ public interface TicketServices {
 
     List<ResponseTicketDTO> getAllTicket();
 
+    List<ResponseTicketDTO> getAllTicketByCashRegister();
+
     ResponseTicketDTO validateAndGetTicketById (String id);
 
     ResponseTicketDTO saveTicket(RequestAddTicketDTO requestAddTicketDTO);

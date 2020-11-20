@@ -10,6 +10,7 @@ import com.company.storeapi.model.entity.Ticket;
 import com.company.storeapi.model.enums.*;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
+import com.company.storeapi.model.payload.response.finance.CreditCapital;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
 import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
@@ -57,16 +58,18 @@ public abstract class TicketMapper {
 
     public Ticket toTicket(RequestAddTicketDTO requestAddTicketDTO) {
 
-        Ticket ticket = new Ticket();
         Order order = orderRepositoryFacade.validateAndGetOrderById(requestAddTicketDTO.getOrder());
-        ticket.setId(requestAddTicketDTO.getId());
-
-        Customer customer = customerMapper.toCustomer(customerService.validateAndGetCustomerById(requestAddTicketDTO.getCustomerId()));
-        ticket.setCustomer(customer);
 
         if (!(order.getOrderStatus() == OrderStatus.OPEN)) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "La orden ya esta pagada, no se puede generar ticket");
         }
+
+        Ticket ticket = new Ticket();
+
+        ticket.setId(requestAddTicketDTO.getId());
+
+        Customer customer = customerMapper.toCustomer(customerService.validateAndGetCustomerById(requestAddTicketDTO.getCustomerId()));
+        ticket.setCustomer(customer);
 
         order.setOrderStatus(OrderStatus.PAYED);
 
@@ -78,18 +81,42 @@ public abstract class TicketMapper {
 
         ticket.setTicketStatus(TicketStatus.PAYED);
         ticket.setOutstandingBalance((double) 0);
-        if (!(requestAddTicketDTO.getPaymentType() == PaymentType.CASH || requestAddTicketDTO.getPaymentType() == PaymentType.TRANSACTION)) {
-            ticket.setTicketStatus(TicketStatus.CREDIT);
-            ticket.setOutstandingBalance(order.getTotalOrder());
-        }
 
         Double getTicketCostWithoutIVA = (IVA.IVA19 * order.getTotalOrder()) / IVA.PORCENTAJE;
         ticket.setTicketCost(order.getTotalOrder());
         ticket.setTicketCostWithoutIVA(getTicketCostWithoutIVA);
-        ticket.setCreditCapital(requestAddTicketDTO.getCreditCapital());
-        if(requestAddTicketDTO.getCreditCapital().isNaN()){
-            ticket.setCreditCapital((double) 0);
+
+        ticket.setCashPayment(order.getTotalOrder());
+        ticket.setTransactionPayment((double) 0);
+        ticket.setCreditPayment((double) 0);
+
+        if (ticket.getPaymentType() == PaymentType.TRANSACTION) {
+            ticket.setTransactionPayment(order.getTotalOrder());
+            ticket.setCashPayment((double) 0);
+            ticket.setCreditPayment((double) 0);
         }
+
+        if (ticket.getPaymentType() == PaymentType.CREDIT) {
+            ticket.setTransactionPayment((double) 0);
+            ticket.setCashPayment((double) 0);
+            ticket.setCreditPayment(order.getTotalOrder());
+
+            Set<CreditCapital> creditCapitals = new LinkedHashSet<>();
+            CreditCapital creditCapital = new CreditCapital();
+            creditCapital.setCreditCapital(requestAddTicketDTO.getCreditCapital());
+            creditCapital.setCreatAt(new Date());
+            creditCapitals.add(creditCapital);
+
+            ticket.setTicketStatus(TicketStatus.CREDIT);
+
+            double balance = order.getTotalOrder() - requestAddTicketDTO.getCreditCapital();
+
+            ticket.setOutstandingBalance(requestAddTicketDTO.getCreditCapital() == 0 ?  order.getTotalOrder() : balance);
+
+            ticket.setCreditCapital(creditCapitals);
+        }
+
+
         countingGeneralService.counting(requestAddTicketDTO.getOrder(), order.getOrderStatus());
         return ticket;
     }
@@ -109,7 +136,6 @@ public abstract class TicketMapper {
 
                     getUpdateCategory(product);
 
-
                     productMapper.toProductDto(productRepositoryFacade.saveProduct(product));
                 }
         );
@@ -127,4 +153,5 @@ public abstract class TicketMapper {
         product.setCategory(listCategory);
 
     }
+
 }

@@ -1,22 +1,13 @@
-package com.company.storeapi.model.entity.finance;
+package com.company.storeapi.model.payload.response.finance;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Document(collection = "cashRegister")
-public class CashRegister {
+public class ResponseCashRegisterDTO {
 
-    @Id
-    private String id;
     private String description;
     private Double dailyCashBase;
     private Double dailyCashSales;
@@ -29,5 +20,4 @@ public class CashRegister {
     private Double remainingMoney;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date createAt;
-
 }

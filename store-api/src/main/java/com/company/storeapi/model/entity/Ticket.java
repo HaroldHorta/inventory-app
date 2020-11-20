@@ -2,16 +2,17 @@ package com.company.storeapi.model.entity;
 
 import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.enums.TicketStatus;
-import lombok.NonNull;
+import com.company.storeapi.model.payload.response.finance.CreditCapital;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Document(collection = "ticket")
 public class Ticket {
 
     private String id;
-    @NonNull
     private Order order;
     private Customer customer;
     private Date createAt;
@@ -19,8 +20,12 @@ public class Ticket {
     private TicketStatus ticketStatus;
     private Double ticketCost;
     private Double ticketCostWithoutIVA;
+    private Set<CreditCapital> creditCapital = new LinkedHashSet<>();
     private Double outstandingBalance;
-    private Double creditCapital;
+    private Double cashPayment;
+    private Double transactionPayment;
+    private Double creditPayment;
+    private boolean cashRegister;
 
     public Double getTicketCostWithoutIVA() {
         return ticketCostWithoutIVA;
@@ -90,6 +95,40 @@ public class Ticket {
         this.ticketCost = ticketCost;
     }
 
+
+
+    public boolean isCashRegister() {
+        return cashRegister;
+    }
+
+    public void setCashRegister(boolean cashRegister) {
+        this.cashRegister = cashRegister;
+    }
+
+    public Double getCashPayment() {
+        return cashPayment;
+    }
+
+    public void setCashPayment(Double cashPayment) {
+        this.cashPayment = cashPayment;
+    }
+
+    public Double getTransactionPayment() {
+        return transactionPayment;
+    }
+
+    public void setTransactionPayment(Double transactionPayment) {
+        this.transactionPayment = transactionPayment;
+    }
+
+    public Double getCreditPayment() {
+        return creditPayment;
+    }
+
+    public void setCreditPayment(Double creditPayment) {
+        this.creditPayment = creditPayment;
+    }
+
     public Double getOutstandingBalance() {
         return outstandingBalance;
     }
@@ -98,11 +137,11 @@ public class Ticket {
         this.outstandingBalance = outstandingBalance;
     }
 
-    public Double getCreditCapital() {
+    public Set<CreditCapital> getCreditCapital() {
         return creditCapital;
     }
 
-    public void setCreditCapital(Double creditCapital) {
+    public void setCreditCapital(Set<CreditCapital> creditCapital) {
         this.creditCapital = creditCapital;
     }
 }
