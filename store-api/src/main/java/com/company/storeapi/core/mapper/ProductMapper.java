@@ -8,7 +8,6 @@ import com.company.storeapi.model.entity.finance.Assets;
 import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
-import com.company.storeapi.model.payload.request.user.FileInfo;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.repositories.finances.assets.facade.AssetRepositoryFacade;
@@ -81,11 +80,11 @@ public abstract class ProductMapper {
         product.setPriceSell(requestAddProductDTO.getPriceSell());
         product.setUnit(requestAddProductDTO.getUnit());
 
-        FileInfo file = new FileInfo();
-        file.setName(ImageDefault.name);
-        file.setType(ImageDefault.type);
-        file.setData(ImageDefault.data);
-        product.setPhoto(file);
+//        FileInfo file = new FileInfo();
+//        file.setName(ImageDefault.name);
+//        file.setType(ImageDefault.type);
+//        file.setData(ImageDefault.data);
+        product.setPhoto(ImageDefault.photo);
 
         List<Assets> assets = assetRepositoryFacade.getAllCustomers();
         assets.forEach(asset -> {
@@ -97,7 +96,7 @@ public abstract class ProductMapper {
 
         List<CountingGeneral> counting = countingGeneralService.getAllCountingGeneral();
 
-        if((counting.size() ==0)){
+        if((counting.isEmpty())){
             CountingGeneral c = new CountingGeneral();
 
             c.setQuantity_of_product(1);

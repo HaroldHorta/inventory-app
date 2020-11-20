@@ -30,7 +30,5 @@ public interface ProductService {
 
     List<ResponseProductDTO> findProductByCategory (String id);
 
-    ResponseProductDTO updateProductWithImages(String id,RequestUpdateProductDTO requestUpdateCustomerDTO, MultipartFile file)  throws IOException;
-
 
 }

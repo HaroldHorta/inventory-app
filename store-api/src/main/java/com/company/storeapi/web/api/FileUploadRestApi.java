@@ -1,5 +1,6 @@
 package com.company.storeapi.web.api;
 
+import com.company.storeapi.model.payload.request.product.FileUploadDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.services.product.FilesStorageService;
 import org.springframework.http.HttpHeaders;
@@ -21,31 +22,9 @@ public class FileUploadRestApi {
         this.storageService = storageService;
     }
 
-    @PostMapping(value = "/upload/{id}")
-    public ResponseEntity<ResponseProductDTO> uploadFile(@PathVariable String id, @RequestParam("file") MultipartFile file) throws IOException {
-        ResponseProductDTO created = storageService.save(id,file);
+    @PostMapping(value = "/upload")
+    public ResponseEntity<ResponseProductDTO> uploadFile(@RequestBody FileUploadDTO file) throws IOException {
+        ResponseProductDTO created = storageService.save(file);
         return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.OK);
     }
-
-
-   /* @GetMapping("/files")
-    public ResponseEntity<List<FileInfo>> getListFiles() {
-        List<FileInfo> fileInfos = storageService.loadAll().map(path -> {
-            String filename = path.getFileName().toString();
-            String url = MvcUriComponentsBuilder
-                    .fromMethodName(ProductRestApi.class, "getFile", path.getFileName().toString()).build().toString();
-
-            return new FileInfo(filename, url);
-        }).collect(Collectors.toList());
-
-        return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
-    }
-
-    @GetMapping("/files/{filename:.+}")
-    @ResponseBody
-    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-        Resource file = storageService.load(filename);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
-    }*/
 }
