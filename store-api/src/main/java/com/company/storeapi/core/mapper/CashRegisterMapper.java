@@ -22,13 +22,13 @@ public abstract class CashRegisterMapper {
 
     public abstract ResponseCashRegisterDTO DtoChasRegisterDocument(CashRegister cashRegister);
 
-    public CashRegister toCashRegister(ResponseCashRegisterDTO responseCashRegisterDTO) {
-
-        List<ResponseTicketDTO> responseCashRegisterDTOS = ticketServices.getAllTicketByCashRegister();
-        responseCashRegisterDTOS.forEach(ticketDTO -> {
-         //  Double totalCash += ticketDTO.getC.
-        });
-
-        return null;
-    }
+//    public CashRegister toCashRegister(ResponseCashRegisterDTO responseCashRegisterDTO) {
+//
+//       // List<ResponseTicketDTO> responseCashRegisterDTOS = ticketServices.getAllTicketByCashRegister();
+//       // responseCashRegisterDTOS.forEach(ticketDTO -> {
+//         //  Double totalCash += ticketDTO.getC.
+//        });
+//
+//        return null;
+//    }
 }

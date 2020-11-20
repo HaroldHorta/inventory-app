@@ -1,20 +1,32 @@
 package com.company.storeapi.model.payload.response.finance;
 
+import com.company.storeapi.model.enums.PaymentType;
+
 import java.util.Date;
 
 
 public class CreditCapital {
 
-    private Double creditCapital;
+    private Double CashCreditCapital;
+    private Double TransactionCreditCapital;
     private Date creatAt;
     private boolean cashRegister;
+    private PaymentType paymentType;
 
-    public Double getCreditCapital() {
-        return creditCapital;
+    public Double getCashCreditCapital() {
+        return CashCreditCapital;
     }
 
-    public void setCreditCapital(Double creditCapital) {
-        this.creditCapital = creditCapital;
+    public void setCashCreditCapital(Double cashCreditCapital) {
+        CashCreditCapital = cashCreditCapital;
+    }
+
+    public Double getTransactionCreditCapital() {
+        return TransactionCreditCapital;
+    }
+
+    public void setTransactionCreditCapital(Double transactionCreditCapital) {
+        TransactionCreditCapital = transactionCreditCapital;
     }
 
     public Date getCreatAt(Date date) {
@@ -38,5 +50,13 @@ public class CreditCapital {
     }
 
     public CreditCapital() {
+    }
+
+    public PaymentType getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(PaymentType paymentType) {
+        this.paymentType = paymentType;
     }
 }

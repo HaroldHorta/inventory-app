@@ -1,6 +1,7 @@
 package com.company.storeapi.web.api;
 
 import com.company.storeapi.core.exceptions.base.ServiceException;
+import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
 import com.company.storeapi.services.ticket.TicketServices;
@@ -43,9 +44,9 @@ public class TicketRestApi {
         return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/{idTicket}/credit/{creditCapital}")
-    public ResponseEntity<ResponseTicketDTO> updateCredit(@PathVariable String idTicket, @PathVariable Double creditCapital) throws ServiceException{
-        ResponseTicketDTO entity = ticketServices.updateCreditCapital(idTicket, creditCapital);
+    @PatchMapping(value = "/{idTicket}/{creditCapital}/{creditPayment}")
+    public ResponseEntity<ResponseTicketDTO> updateCredit(@PathVariable String idTicket, @PathVariable Double creditCapital, @PathVariable PaymentType creditPayment) throws ServiceException{
+        ResponseTicketDTO entity = ticketServices.updateCreditCapital(idTicket, creditCapital, creditPayment);
         return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.CREATED);
     }
 

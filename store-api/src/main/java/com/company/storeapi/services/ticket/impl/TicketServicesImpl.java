@@ -4,6 +4,7 @@ import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
 import com.company.storeapi.core.mapper.TicketMapper;
 import com.company.storeapi.model.entity.Ticket;
+import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.enums.TicketStatus;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
 import com.company.storeapi.model.payload.response.finance.CreditCapital;
@@ -32,11 +33,6 @@ public class TicketServicesImpl implements TicketServices {
     }
 
     @Override
-    public List<ResponseTicketDTO> getAllTicketByCashRegister() {
-        return ticketRepositoryFacade.getAllTicket().stream().filter(ticket -> !ticket.isCashRegister()).map(ticketMapper::toTicketDto).collect(Collectors.toList());
-    }
-
-    @Override
     public ResponseTicketDTO validateAndGetTicketById(String id) {
         return ticketMapper.toTicketDto(ticketRepositoryFacade.validateAndGetTicketById(id));
     }
@@ -52,7 +48,7 @@ public class TicketServicesImpl implements TicketServices {
     }
 
     @Override
-    public ResponseTicketDTO updateCreditCapital(String idTicket, Double creditCapital) {
+    public ResponseTicketDTO updateCreditCapital(String idTicket, Double creditCapital, PaymentType creditPayment) {
         Ticket ticket = ticketRepositoryFacade.validateAndGetTicketById(idTicket);
         boolean validate = true;
 
@@ -60,14 +56,20 @@ public class TicketServicesImpl implements TicketServices {
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La orden ha sido cancelada en su totalidad");
         }
 
-        double capital = ticket.getCreditCapital().stream().mapToDouble(CreditCapital::getCreditCapital).sum();
-
+        double cashCreditCapital = ticket.getCreditCapital().stream().mapToDouble(CreditCapital::getCashCreditCapital).sum();
+        double transactionCreditCapital = ticket.getCreditCapital().stream().mapToDouble(CreditCapital::getTransactionCreditCapital).sum();
+        double capital = cashCreditCapital + transactionCreditCapital;
         if (ticket.getTicketCost() > capital) {
             validate = false;
             Double credit = ticket.getOutstandingBalance() - creditCapital;
             Set<CreditCapital> creditCapitals = new LinkedHashSet<>();
             CreditCapital creditCap = new CreditCapital();
-            creditCap.setCreditCapital(creditCapital);
+            creditCap.setCashCreditCapital(creditCapital);
+            creditCap.setTransactionCreditCapital((double) 0);
+            if (creditPayment == PaymentType.TRANSACTION) {
+                creditCap.setCashCreditCapital((double) 0);
+                creditCap.setTransactionCreditCapital(creditCapital);
+            }
             creditCap.setCreatAt(new Date());
             creditCapitals.add(creditCap);
             ticket.setCreditCapital(creditCapitals);

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -33,6 +34,18 @@ public class TicketRepositoryFacadeImpl implements TicketRepositoryFacade {
        }catch (DataAccessException er){
            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
        }
+    }
+
+    @Override
+    public List<Ticket> getAllTicketByCashRegister() {
+        try {
+            return Optional.of(ticketRepository.findAll().stream().filter(ticket -> !ticket.isCashRegister()).collect(Collectors.toList()))
+                    .orElseThrow(()-> new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND,"No se encontraron registros de ticket"));
+        }catch (IllegalArgumentException ie){
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+        }catch (DataAccessException er){
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+        }
     }
 
     @Override

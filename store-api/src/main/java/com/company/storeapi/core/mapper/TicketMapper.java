@@ -103,15 +103,21 @@ public abstract class TicketMapper {
 
             Set<CreditCapital> creditCapitals = new LinkedHashSet<>();
             CreditCapital creditCapital = new CreditCapital();
-            creditCapital.setCreditCapital(requestAddTicketDTO.getCreditCapital());
+            creditCapital.setCashCreditCapital(requestAddTicketDTO.getCreditCapital());
+            creditCapital.setTransactionCreditCapital((double) 0);
+            if (requestAddTicketDTO.getCreditPaymentType() == PaymentType.TRANSACTION) {
+                creditCapital.setCashCreditCapital((double) 0);
+                creditCapital.setTransactionCreditCapital(requestAddTicketDTO.getCreditCapital());
+            }
             creditCapital.setCreatAt(new Date());
+
             creditCapitals.add(creditCapital);
 
             ticket.setTicketStatus(TicketStatus.CREDIT);
 
             double balance = order.getTotalOrder() - requestAddTicketDTO.getCreditCapital();
 
-            ticket.setOutstandingBalance(requestAddTicketDTO.getCreditCapital() == 0 ?  order.getTotalOrder() : balance);
+            ticket.setOutstandingBalance(requestAddTicketDTO.getCreditCapital() == 0 ? order.getTotalOrder() : balance);
 
             ticket.setCreditCapital(creditCapitals);
         }
