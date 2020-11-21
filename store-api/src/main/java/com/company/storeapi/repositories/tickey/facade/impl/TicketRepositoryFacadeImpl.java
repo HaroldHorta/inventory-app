@@ -81,4 +81,9 @@ public class TicketRepositoryFacadeImpl implements TicketRepositoryFacade {
             throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
         }
     }
+
+    @Override
+    public boolean existsByCashRegister(boolean cash) {
+        return ticketRepository.existsByCashRegister(cash);
+    }
 }
