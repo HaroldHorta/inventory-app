@@ -12,4 +12,7 @@ public interface TicketRepository extends MongoRepository<Ticket, String> {
     Ticket findTicketByOrder(String id);
 
     List<Ticket> findTicketByCustomer_NroDocument (String nroDocument);
+
+    boolean existsByCashRegister(boolean cash);
+
 }
