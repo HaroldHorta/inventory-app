@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 @ControllerAdvice(assignableTypes = {
 
         CategoryRestApi.class,
+        CountingGeneralRestApi.class,
         CustomerRestApi.class,
         FileUploadRestApi.class,
         InventoryRestApi.class,
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
         ProductRestApi.class,
         TicketRestApi.class,
         UserRestApi.class,
-        CountingGeneralRestApi.class
 
 
 })
