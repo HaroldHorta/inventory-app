@@ -18,4 +18,6 @@ public interface TicketRepositoryFacade {
     Ticket findTicketByOrder(String id);
 
     List<Ticket> findTicketByCustomer_NroDocument (String nroDocument);
+
+    boolean existsByCashRegister(boolean cash);
 }
