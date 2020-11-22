@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 @Slf4j
 @ControllerAdvice(assignableTypes = {
 
+        CashBaseApi.class,
         CategoryRestApi.class,
         CountingGeneralRestApi.class,
         CustomerRestApi.class,
