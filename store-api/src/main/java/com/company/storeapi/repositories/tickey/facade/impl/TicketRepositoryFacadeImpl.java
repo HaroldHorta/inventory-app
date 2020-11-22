@@ -66,11 +66,6 @@ public class TicketRepositoryFacadeImpl implements TicketRepositoryFacade {
     }
 
     @Override
-    public Ticket findTicketByOrder(String id) {
-        return ticketRepository.findTicketByOrder(id);
-    }
-
-    @Override
     public List<Ticket> findTicketByCustomer_NroDocument(String nroDocument) {
         try {
             return Optional.of(ticketRepository.findTicketByCustomer_NroDocument(nroDocument))
@@ -82,8 +77,4 @@ public class TicketRepositoryFacadeImpl implements TicketRepositoryFacade {
         }
     }
 
-    @Override
-    public boolean existsByCashRegister(boolean cash) {
-        return ticketRepository.existsByCashRegister(cash);
-    }
-}
+ }
