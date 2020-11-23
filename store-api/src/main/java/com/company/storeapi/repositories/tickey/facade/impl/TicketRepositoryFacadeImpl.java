@@ -49,6 +49,11 @@ public class TicketRepositoryFacadeImpl implements TicketRepositoryFacade {
     }
 
     @Override
+    public List<Ticket> getAllTicketByCreditCapitalByCashRegister(boolean cashRegister) {
+        return ticketRepository.findTicketByCreditCapital(cashRegister);
+    }
+
+    @Override
     public Ticket validateAndGetTicketById(String id) {
         return ticketRepository.findById(id).orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "NO se encontraron productos con el id " + id));
 

@@ -74,6 +74,7 @@ public class TicketServicesImpl implements TicketServices {
             if (credit <= 0) {
                 ticket.setOutstandingBalance((double) 0);
                 ticket.setTicketStatus(TicketStatus.PAYED);
+                ticket.setCashRegister(false);
             }
         }
         return ticketMapper.toTicketDto(ticketRepositoryFacade.saveTicket(ticket));

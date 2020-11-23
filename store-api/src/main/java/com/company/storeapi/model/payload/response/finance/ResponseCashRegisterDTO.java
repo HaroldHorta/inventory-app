@@ -8,16 +8,15 @@ import java.util.Date;
 @Data
 public class ResponseCashRegisterDTO {
 
-    private String description;
-    private Double dailyCashBase;
-    private Double dailyCashSales;
-    private Double dailyTransactionsSales;
-    private Double dailyCreditSales;
-    private Double totalSales;
-    private Double moneyOut;
-    private Double discounts;
-    private Double moneyMissing;
-    private Double remainingMoney;
+    private double dailyCashBase;
+    private double dailyCashSales;
+    private double dailyTransactionsSales;
+    private double dailyCreditSales;
+    private double totalSales;
+    private double moneyOut;
+   // private double discounts;
+   private Double cashCreditCapital;
+    private Double transactionCreditCapital;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date createAt;
 }

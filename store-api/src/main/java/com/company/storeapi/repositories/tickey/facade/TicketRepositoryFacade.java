@@ -11,6 +11,8 @@ public interface TicketRepositoryFacade {
 
     List<Ticket> getAllTicketByCashRegister();
 
+    List<Ticket> getAllTicketByCreditCapitalByCashRegister(boolean cashRegister);
+
     Ticket validateAndGetTicketById (String id);
 
     Ticket saveTicket(Ticket ticket);
