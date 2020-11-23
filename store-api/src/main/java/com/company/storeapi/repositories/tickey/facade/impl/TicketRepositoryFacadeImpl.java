@@ -49,6 +49,11 @@ public class TicketRepositoryFacadeImpl implements TicketRepositoryFacade {
     }
 
     @Override
+    public List<Ticket> getAllTicketByCreditCapitalByCashRegister(boolean cashRegister) {
+        return ticketRepository.findTicketByCreditCapital(cashRegister);
+    }
+
+    @Override
     public Ticket validateAndGetTicketById(String id) {
         return ticketRepository.findById(id).orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "NO se encontraron productos con el id " + id));
 
@@ -66,11 +71,6 @@ public class TicketRepositoryFacadeImpl implements TicketRepositoryFacade {
     }
 
     @Override
-    public Ticket findTicketByOrder(String id) {
-        return ticketRepository.findTicketByOrder(id);
-    }
-
-    @Override
     public List<Ticket> findTicketByCustomer_NroDocument(String nroDocument) {
         try {
             return Optional.of(ticketRepository.findTicketByCustomer_NroDocument(nroDocument))
@@ -81,4 +81,5 @@ public class TicketRepositoryFacadeImpl implements TicketRepositoryFacade {
             throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
         }
     }
-}
+
+ }

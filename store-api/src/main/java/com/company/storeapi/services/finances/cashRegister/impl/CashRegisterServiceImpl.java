@@ -3,19 +3,18 @@ package com.company.storeapi.services.finances.cashRegister.impl;
 import com.company.storeapi.core.mapper.CashRegisterMapper;
 import com.company.storeapi.model.entity.Ticket;
 import com.company.storeapi.model.entity.finance.CashRegister;
-import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.payload.response.finance.CreditCapital;
+import com.company.storeapi.model.payload.response.finance.ResponseCashBase;
 import com.company.storeapi.model.payload.response.finance.ResponseCashRegisterDTO;
 import com.company.storeapi.repositories.finances.cashRegister.facade.CashRegisterRepositoryFacade;
 import com.company.storeapi.repositories.tickey.facade.TicketRepositoryFacade;
+import com.company.storeapi.services.finances.cashBase.CashBaseService;
 import com.company.storeapi.services.finances.cashRegister.CashRegisterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +23,7 @@ public class CashRegisterServiceImpl implements CashRegisterService {
 
     private final CashRegisterRepositoryFacade cashRegisterRepositoryFacade;
     private final CashRegisterMapper cashRegisterMapper;
+    private final CashBaseService cashBaseService;
     private final TicketRepositoryFacade ticketRepositoryFacade;
 
 
@@ -34,41 +34,92 @@ public class CashRegisterServiceImpl implements CashRegisterService {
     }
 
     @Override
-    public ResponseCashRegisterDTO saveCashRegister(CashRegister cashRegister) {
-        double cashPayment;
-        double transactionPayment;
-        AtomicReference<Double> creditCashPayment = new AtomicReference<>((double) 0);
-        AtomicReference<Double> transactionCashPayment = new AtomicReference<>((double) 0);
+    public ResponseCashRegisterDTO saveCashRegister() {
 
-        AtomicReference<Double> creditPayment = new AtomicReference<>((double) 0);
-        List<Ticket> ticket = ticketRepositoryFacade.getAllTicketByCashRegister();
-        Set<CreditCapital> creditCapitals = new LinkedHashSet<>();
+        CashRegister cashRegister = new CashRegister();
+
+        List<Ticket> tickets = ticketRepositoryFacade.getAllTicketByCashRegister();
+
+        List<Ticket> ticketsCreditTrue = ticketRepositoryFacade.getAllTicketByCreditCapitalByCashRegister(true);
+        List<Ticket> ticketsCreditFalse = ticketRepositoryFacade.getAllTicketByCreditCapitalByCashRegister(false);
+        ResponseCashBase cashBase = cashBaseService.findCashBaseByUltime();
 
 
-        cashPayment = ticket.stream().filter(t -> t.getPaymentType() == PaymentType.CASH).mapToDouble(Ticket::getCashPayment).sum();
-        transactionPayment = ticket.stream().filter(t -> t.getPaymentType() == PaymentType.TRANSACTION).mapToDouble(Ticket::getTransactionPayment).sum();
+        if (ticketsCreditTrue.isEmpty() && ticketsCreditFalse.isEmpty()) {
 
-        ticket.forEach(tick -> {
-            if (tick.getPaymentType() == PaymentType.CREDIT) {
-                tick.getCreditCapital().forEach(cap -> {
-                    if (!cap.isCashRegister()) {
-                        if(cap.getPaymentType() == PaymentType.CASH){
-                            creditCashPayment.updateAndGet(v -> new Double((double) (v + cap.getCashCreditCapital())));
-                        }
-                        if(cap.getPaymentType() == PaymentType.TRANSACTION){
-                            transactionCashPayment.updateAndGet(v -> new Double((double) (v + cap.getCashCreditCapital())));
-                        }
-                        cap.setCashRegister(true);
-                        creditCapitals.add(cap);
+            getDataGeneralCashRegister(cashRegister, tickets);
+            cashRegister.setCashCreditCapital((double) 0);
+            cashRegister.setTransactionCreditCapital((double) 0);
+
+            cashRegister.setDailyCashBase(cashBase.getDailyCashBase());
+
+            tickets.forEach(tick -> {
+                tick.setCashRegister(true);
+                ticketRepositoryFacade.saveTicket(tick);
+            });
+        }
+
+        if (!tickets.isEmpty() && ticketsCreditFalse.isEmpty()) {
+            cashRegister.setDailyCashBase(cashBase.getDailyCashBase());
+
+            getDataGeneralCashRegister(cashRegister, tickets);
+
+            tickets.forEach(tick -> {
+
+                tick.getCreditCapital().forEach(c -> {
+
+                    if (!c.isCashRegister()) {
+                        Set<CreditCapital> creditCapital = tick.getCreditCapital();
+                        double cashCreditCapital = +c.getCashCreditCapital();
+                        double transactionCreditCapital = +c.getTransactionCreditCapital();
+                        cashRegister.setCashCreditCapital(cashCreditCapital);
+                        cashRegister.setTransactionCreditCapital(transactionCreditCapital);
+                        c.setCashRegister(true);
+                        creditCapital.add(c);
+                        tick.setCreditCapital(creditCapital);
+                    }
+                    if (tick.getOutstandingBalance() == 0) {
+                        tick.setCashRegister(true);
                     }
                 });
-                tick.setCreditCapital(creditCapitals);
                 ticketRepositoryFacade.saveTicket(tick);
-            }
-        });
+            });
 
+        }
 
+        return getResponseCashRegister(cashRegisterRepositoryFacade.saveCashRegister(cashRegister));
 
-        return null;
+    }
+
+    public void getDataGeneralCashRegister(CashRegister cashRegister, List<Ticket> tickets) {
+        double dailyCashSales = tickets.stream().mapToDouble(Ticket::getCashPayment).sum();
+        cashRegister.setDailyCashSales(dailyCashSales);
+
+        double dailyTransactionsSales = tickets.stream().mapToDouble(Ticket::getTransactionPayment).sum();
+        cashRegister.setDailyTransactionsSales(dailyTransactionsSales);
+
+        double dailyCreditSales = tickets.stream().mapToDouble(Ticket::getCreditPayment).sum();
+        cashRegister.setDailyCreditSales(dailyCreditSales);
+
+        double totalSales = dailyCashSales + dailyTransactionsSales + dailyCreditSales;
+        cashRegister.setTotalSales(totalSales);
+
+        // falta el servicio para registrar las salidas
+        cashRegister.setMoneyOut((double) 0);
+    }
+
+    public ResponseCashRegisterDTO getResponseCashRegister(CashRegister cashRegister) {
+        ResponseCashRegisterDTO responseCashRegisterDTO = new ResponseCashRegisterDTO();
+        responseCashRegisterDTO.setDailyCashBase(cashRegister.getDailyCashBase());
+        responseCashRegisterDTO.setDailyCashSales(cashRegister.getDailyCashSales());
+        responseCashRegisterDTO.setDailyTransactionsSales(cashRegister.getDailyTransactionsSales());
+        responseCashRegisterDTO.setDailyCreditSales(cashRegister.getDailyCreditSales());
+        responseCashRegisterDTO.setTotalSales(cashRegister.getTotalSales());
+        responseCashRegisterDTO.setMoneyOut(cashRegister.getMoneyOut());
+        responseCashRegisterDTO.setCashCreditCapital(cashRegister.getCashCreditCapital());
+        responseCashRegisterDTO.setTransactionCreditCapital(cashRegister.getTransactionCreditCapital());
+        responseCashRegisterDTO.setCreateAt(cashRegister.getCreateAt());
+
+        return responseCashRegisterDTO;
     }
 }

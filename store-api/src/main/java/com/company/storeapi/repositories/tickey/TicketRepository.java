@@ -8,8 +8,10 @@ import java.util.List;
 
 public interface TicketRepository extends MongoRepository<Ticket, String> {
 
-    @Query("{'order.id':?0}")
-    Ticket findTicketByOrder(String id);
+    List<Ticket> findTicketByCustomer_NroDocument(String nroDocument);
 
-    List<Ticket> findTicketByCustomer_NroDocument (String nroDocument);
+    @Query("{'creditCapital.cashRegister':?0}")
+    List<Ticket> findTicketByCreditCapital(boolean cashRegister);
+
+
 }
