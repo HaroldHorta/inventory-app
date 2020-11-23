@@ -1,6 +1,6 @@
 package com.company.storeapi.web.api;
 
-import com.company.storeapi.core.exceptions.base.ServiceException;
+import com.company.storeapi.model.payload.request.product.RequestUpdateUnitDTO;
 import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.services.product.ProductService;
@@ -20,14 +20,14 @@ public class InventoryRestApi {
         this.service = service;
     }
 
-    @PatchMapping(value="/{id}/unit/{unit}")
-    public ResponseEntity<ResponseProductDTO> addUnitProduct(@PathVariable String id, @PathVariable int unit) throws ServiceException {
-        ResponseProductDTO addUnit = service.addUnitProduct(id,unit);
+    @PatchMapping(value="/unit")
+    public ResponseEntity<ResponseProductDTO> addUnitProduct(@RequestBody RequestUpdateUnitDTO requestUpdateUnitDTO) {
+        ResponseProductDTO addUnit = service.addUnitProduct(requestUpdateUnitDTO);
         return new ResponseEntity<>(addUnit, new HttpHeaders(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}/unit/{unit}")
-    public ResponseOrderProductItemsDTO details(@PathVariable String id, @PathVariable int unit) throws ServiceException {
+    public ResponseOrderProductItemsDTO details(@PathVariable String id, @PathVariable int unit) {
         return service.getItemsTotal(id, unit);
     }
 }

@@ -5,26 +5,24 @@ import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistence
 import com.company.storeapi.core.mapper.ProductMapper;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.entity.Product;
-import com.company.storeapi.model.entity.Ticket;
 import com.company.storeapi.model.enums.OrderStatus;
 import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
-import com.company.storeapi.model.payload.request.user.FileInfo;
+import com.company.storeapi.model.payload.request.product.RequestUpdateUnitDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
-import com.company.storeapi.repositories.tickey.facade.TicketRepositoryFacade;
 import com.company.storeapi.services.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +31,6 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepositoryFacade productRepositoryFacade;
     private final OrderRepositoryFacade orderRepositoryFacade;
-    private final TicketRepositoryFacade ticketRepositoryFacade;
 
     private final ProductMapper productMapper;
 
@@ -116,12 +113,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseProductDTO addUnitProduct(String id, int unit) {
-        Product product = productRepositoryFacade.validateAndGetProductById(id);
-        if (unit > 0) {
-            int unitNew = product.getUnit() + unit;
+    public ResponseProductDTO addUnitProduct(RequestUpdateUnitDTO requestUpdateUnitDTO) {
+        Product product = productRepositoryFacade.validateAndGetProductById(requestUpdateUnitDTO.getId());
+        if (requestUpdateUnitDTO.getUnit() > 0) {
+            int unitNew = product.getUnit() + requestUpdateUnitDTO.getUnit();
             product.setStatus(Status.ACTIVE);
             product.setUnit(unitNew);
+            product.setPriceBuy(requestUpdateUnitDTO.getPriceBuy());
+            product.setPriceSell(requestUpdateUnitDTO.getPriceSell());
         } else {
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "la cantidad a ingresar no puede ser 0 o menor a 0");
         }

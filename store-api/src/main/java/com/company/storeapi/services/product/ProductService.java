@@ -1,13 +1,12 @@
 package com.company.storeapi.services.product;
 
+import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
+import com.company.storeapi.model.payload.request.product.RequestUpdateUnitDTO;
 import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
-import com.company.storeapi.model.enums.Status;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface ProductService {
@@ -24,7 +23,7 @@ public interface ProductService {
 
     ResponseOrderProductItemsDTO getItemsTotal(String id, int unit);
 
-    ResponseProductDTO addUnitProduct(String id, int unit);
+    ResponseProductDTO addUnitProduct(RequestUpdateUnitDTO requestUpdateUnitDTO);
 
     ResponseProductDTO updateStatus(String id, Status status);
 
