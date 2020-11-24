@@ -1,5 +1,8 @@
 package com.company.storeapi.services.finances.cashRegister.impl;
 
+import com.company.storeapi.core.constants.MessageError;
+import com.company.storeapi.core.exceptions.enums.LogRefServices;
+import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.core.mapper.CashRegisterMapper;
 import com.company.storeapi.model.entity.Ticket;
 import com.company.storeapi.model.entity.finance.CashRegister;
@@ -39,53 +42,95 @@ public class CashRegisterServiceImpl implements CashRegisterService {
         CashRegister cashRegister = new CashRegister();
 
         List<Ticket> tickets = ticketRepositoryFacade.getAllTicketByCashRegister();
-
-        List<Ticket> ticketsCreditTrue = ticketRepositoryFacade.getAllTicketByCreditCapitalByCashRegister(true);
-        List<Ticket> ticketsCreditFalse = ticketRepositoryFacade.getAllTicketByCreditCapitalByCashRegister(false);
         ResponseCashBase cashBase = cashBaseService.findCashBaseByUltime();
+        List<Ticket> ticketsCreditFalse = ticketRepositoryFacade.getAllTicketByCreditCapitalByCashRegister(false);
+        cashRegister.setDailyCashBase(cashBase.getDailyCashBase());
+        if (!tickets.isEmpty()) {
+
+            tickets.forEach(ticket -> {
+                boolean validate = true;
+                if (ticket.getCreditCapital().isEmpty()) {
+                    validate = false;
+                    getDataGeneralCashRegister(cashRegister, tickets);
+                    cashRegister.setCashCreditCapital((double) 0);
+                    cashRegister.setTransactionCreditCapital((double) 0);
 
 
-        if (ticketsCreditTrue.isEmpty() && ticketsCreditFalse.isEmpty()) {
-
-            getDataGeneralCashRegister(cashRegister, tickets);
-            cashRegister.setCashCreditCapital((double) 0);
-            cashRegister.setTransactionCreditCapital((double) 0);
-
-            cashRegister.setDailyCashBase(cashBase.getDailyCashBase());
-
-            tickets.forEach(tick -> {
-                tick.setCashRegister(true);
-                ticketRepositoryFacade.saveTicket(tick);
-            });
-        }
-
-        if (!tickets.isEmpty() && ticketsCreditFalse.isEmpty()) {
-            cashRegister.setDailyCashBase(cashBase.getDailyCashBase());
-
-            getDataGeneralCashRegister(cashRegister, tickets);
-
-            tickets.forEach(tick -> {
-
-                tick.getCreditCapital().forEach(c -> {
-
-                    if (!c.isCashRegister()) {
-                        Set<CreditCapital> creditCapital = tick.getCreditCapital();
-                        double cashCreditCapital = +c.getCashCreditCapital();
-                        double transactionCreditCapital = +c.getTransactionCreditCapital();
-                        cashRegister.setCashCreditCapital(cashCreditCapital);
-                        cashRegister.setTransactionCreditCapital(transactionCreditCapital);
-                        c.setCashRegister(true);
-                        creditCapital.add(c);
-                        tick.setCreditCapital(creditCapital);
-                    }
-                    if (tick.getOutstandingBalance() == 0) {
+                    tickets.forEach(tick -> {
                         tick.setCashRegister(true);
-                    }
-                });
-                ticketRepositoryFacade.saveTicket(tick);
+                        ticketRepositoryFacade.saveTicket(tick);
+                    });
+                }
+                if (!ticketsCreditFalse.isEmpty()) {
+                    validate = false;
+
+                    tickets.forEach(tick -> {
+                        cashRegister.setDailyCashSales((double) 0);
+
+                        cashRegister.setDailyTransactionsSales((double) 0);
+
+                        cashRegister.setDailyCreditSales((double) 0);
+
+                        cashRegister.setTotalSales((double) 0);
+
+                        // falta el servicio para registrar las salidas
+                        cashRegister.setMoneyOut((double) 0);
+
+                        tick.getCreditCapital().forEach(c -> {
+
+                            if (!c.isCashRegister()) {
+                                Set<CreditCapital> creditCapital = tick.getCreditCapital();
+                                double cashCreditCapital = +c.getCashCreditCapital();
+                                double transactionCreditCapital = +c.getTransactionCreditCapital();
+                                cashRegister.setCashCreditCapital(cashCreditCapital);
+                                cashRegister.setTransactionCreditCapital(transactionCreditCapital);
+                                c.setCashRegister(true);
+                                creditCapital.add(c);
+                                tick.setCreditCapital(creditCapital);
+                            }
+                            if (tick.getOutstandingBalance() == 0) {
+                                tick.setCashRegister(true);
+                            }
+                        });
+                        ticketRepositoryFacade.saveTicket(tick);
+                    });
+                }
+
+                if (validate) {
+                    throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encuentran movimientos");
+                }
+
             });
 
         }
+
+//        List<Ticket> ticketsCreditTrue = ticketRepositoryFacade.getAllTicketByCreditCapitalByCashRegister(true);
+//        List<Ticket> ticketsCreditFalse = ticketRepositoryFacade.getAllTicketByCreditCapitalByCashRegister(false);
+//        ResponseCashBase cashBase = cashBaseService.findCashBaseByUltime();
+//
+
+//        if (ticketsCreditTrue.isEmpty() && ticketsCreditFalse.isEmpty()) {
+//
+//            getDataGeneralCashRegister(cashRegister, tickets);
+//            cashRegister.setCashCreditCapital((double) 0);
+//            cashRegister.setTransactionCreditCapital((double) 0);
+//
+//            cashRegister.setDailyCashBase(cashBase.getDailyCashBase());
+//
+//            tickets.forEach(tick -> {
+//                tick.setCashRegister(true);
+//                ticketRepositoryFacade.saveTicket(tick);
+//            });
+//        }
+//
+//        if (!tickets.isEmpty() && ticketsCreditFalse.isEmpty()) {
+//            cashRegister.setDailyCashBase(cashBase.getDailyCashBase());
+//
+//            getDataGeneralCashRegister(cashRegister, tickets);
+//
+
+//
+//        }
 
         return getResponseCashRegister(cashRegisterRepositoryFacade.saveCashRegister(cashRegister));
 

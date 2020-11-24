@@ -57,8 +57,9 @@ public class TicketServicesImpl implements TicketServices {
         double cashCreditCapital = ticket.getCreditCapital().stream().mapToDouble(CreditCapital::getCashCreditCapital).sum();
         double transactionCreditCapital = ticket.getCreditCapital().stream().mapToDouble(CreditCapital::getTransactionCreditCapital).sum();
         double capital = cashCreditCapital + transactionCreditCapital + creditCapital;
+        double credit = ticket.getOutstandingBalance() - creditCapital;
         if (ticket.getTicketCost() > capital) {
-            double credit = ticket.getOutstandingBalance() - creditCapital;
+
             Set<CreditCapital> creditCapitals = ticket.getCreditCapital();
             CreditCapital creditCap = new CreditCapital();
             creditCap.setCashCreditCapital(creditCapital);
@@ -71,11 +72,12 @@ public class TicketServicesImpl implements TicketServices {
             creditCapitals.add(creditCap);
             ticket.setCreditCapital(creditCapitals);
             ticket.setOutstandingBalance(credit);
-            if (credit <= 0) {
-                ticket.setOutstandingBalance((double) 0);
-                ticket.setTicketStatus(TicketStatus.PAYED);
-                ticket.setCashRegister(false);
-            }
+
+        }
+        if (credit <= 0) {
+            ticket.setOutstandingBalance((double) 0);
+            ticket.setTicketStatus(TicketStatus.PAYED);
+            ticket.setCashRegister(true);
         }
         return ticketMapper.toTicketDto(ticketRepositoryFacade.saveTicket(ticket));
     }
