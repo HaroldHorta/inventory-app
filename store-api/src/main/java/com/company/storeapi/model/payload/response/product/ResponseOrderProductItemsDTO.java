@@ -18,6 +18,6 @@ public class ResponseOrderProductItemsDTO {
     @Positive
     private Integer unit;
 
-    private Double total;
+    private double total;
 
 }

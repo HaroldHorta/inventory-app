@@ -7,25 +7,25 @@ import java.util.Date;
 
 public class CreditCapital {
 
-    private Double cashCreditCapital;
-    private Double transactionCreditCapital;
+    private double cashCreditCapital;
+    private double transactionCreditCapital;
     private Date creatAt;
     private boolean cashRegister;
     private PaymentType paymentType;
 
-    public Double getCashCreditCapital() {
+    public double getCashCreditCapital() {
         return cashCreditCapital;
     }
 
-    public void setCashCreditCapital(Double cashCreditCapital) {
+    public void setCashCreditCapital(double cashCreditCapital) {
         this.cashCreditCapital = cashCreditCapital;
     }
 
-    public void setTransactionCreditCapital(Double transactionCreditCapital) {
+    public void setTransactionCreditCapital(double transactionCreditCapital) {
         this.transactionCreditCapital = transactionCreditCapital;
     }
 
-    public Double getTransactionCreditCapital() {
+    public double getTransactionCreditCapital() {
         return transactionCreditCapital;
     }
 

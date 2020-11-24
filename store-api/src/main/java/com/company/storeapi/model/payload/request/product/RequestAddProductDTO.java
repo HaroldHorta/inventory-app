@@ -21,10 +21,10 @@ public class RequestAddProductDTO {
     private List<Category> categoryId;
 
     @Schema(example = "21345")
-    private Double priceBuy;
+    private double priceBuy;
 
     @Schema(example = "30000")
-    private Double priceSell;
+    private double priceSell;
 
     @Schema(example = "2")
     private int unit;

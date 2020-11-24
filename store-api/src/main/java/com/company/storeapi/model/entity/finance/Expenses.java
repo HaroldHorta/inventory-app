@@ -18,7 +18,7 @@ public class Expenses {
     @Id
     private String id;
     private String description;
-    private Double price;
+    private double price;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date createAt;
 

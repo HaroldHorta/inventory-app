@@ -1,6 +1,5 @@
 package com.company.storeapi.services.finances.cashRegister.impl;
 
-import com.company.storeapi.core.constants.MessageError;
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.core.mapper.CashRegisterMapper;
@@ -42,18 +41,32 @@ public class CashRegisterServiceImpl implements CashRegisterService {
         CashRegister cashRegister = new CashRegister();
 
         List<Ticket> tickets = ticketRepositoryFacade.getAllTicketByCashRegister();
-        ResponseCashBase cashBase = cashBaseService.findCashBaseByUltime();
+
+        ResponseCashBase cashBase = cashBaseService.findCashBaseByUltimate();
         List<Ticket> ticketsCreditFalse = ticketRepositoryFacade.getAllTicketByCreditCapitalByCashRegister(false);
         cashRegister.setDailyCashBase(cashBase.getDailyCashBase());
+
         if (!tickets.isEmpty()) {
 
             tickets.forEach(ticket -> {
-                boolean validate = true;
                 if (ticket.getCreditCapital().isEmpty()) {
-                    validate = false;
-                    getDataGeneralCashRegister(cashRegister, tickets);
-                    cashRegister.setCashCreditCapital((double) 0);
-                    cashRegister.setTransactionCreditCapital((double) 0);
+
+                    double dailyCashSales = tickets.stream().mapToDouble(Ticket::getCashPayment).sum();
+                    cashRegister.setDailyCashSales(dailyCashSales);
+
+                    double dailyTransactionsSales = tickets.stream().mapToDouble(Ticket::getTransactionPayment).sum();
+                    cashRegister.setDailyTransactionsSales(dailyTransactionsSales);
+
+                    double dailyCreditSales = tickets.stream().mapToDouble(Ticket::getCreditPayment).sum();
+                    cashRegister.setDailyCreditSales(dailyCreditSales);
+
+                    double totalSales = dailyCashSales + dailyTransactionsSales + dailyCreditSales;
+                    cashRegister.setTotalSales(totalSales);
+
+                    // falta el servicio para registrar las salidas
+                    cashRegister.setMoneyOut(0);
+                    cashRegister.setCashCreditCapital(0);
+                    cashRegister.setTransactionCreditCapital(0);
 
 
                     tickets.forEach(tick -> {
@@ -62,19 +75,18 @@ public class CashRegisterServiceImpl implements CashRegisterService {
                     });
                 }
                 if (!ticketsCreditFalse.isEmpty()) {
-                    validate = false;
 
                     tickets.forEach(tick -> {
-                        cashRegister.setDailyCashSales((double) 0);
+                        cashRegister.setDailyCashSales(0);
 
-                        cashRegister.setDailyTransactionsSales((double) 0);
+                        cashRegister.setDailyTransactionsSales(0);
 
-                        cashRegister.setDailyCreditSales((double) 0);
+                        cashRegister.setDailyCreditSales(0);
 
-                        cashRegister.setTotalSales((double) 0);
+                        cashRegister.setTotalSales(0);
 
                         // falta el servicio para registrar las salidas
-                        cashRegister.setMoneyOut((double) 0);
+                        cashRegister.setMoneyOut(0);
 
                         tick.getCreditCapital().forEach(c -> {
 
@@ -96,7 +108,7 @@ public class CashRegisterServiceImpl implements CashRegisterService {
                     });
                 }
 
-                if (validate) {
+                if (tickets.isEmpty()) {
                     throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encuentran movimientos");
                 }
 
@@ -106,7 +118,7 @@ public class CashRegisterServiceImpl implements CashRegisterService {
 
 //        List<Ticket> ticketsCreditTrue = ticketRepositoryFacade.getAllTicketByCreditCapitalByCashRegister(true);
 //        List<Ticket> ticketsCreditFalse = ticketRepositoryFacade.getAllTicketByCreditCapitalByCashRegister(false);
-//        ResponseCashBase cashBase = cashBaseService.findCashBaseByUltime();
+//        ResponseCashBase cashBase = cashBaseService.findCashBaseByUltimate();
 //
 
 //        if (ticketsCreditTrue.isEmpty() && ticketsCreditFalse.isEmpty()) {
@@ -134,23 +146,6 @@ public class CashRegisterServiceImpl implements CashRegisterService {
 
         return getResponseCashRegister(cashRegisterRepositoryFacade.saveCashRegister(cashRegister));
 
-    }
-
-    public void getDataGeneralCashRegister(CashRegister cashRegister, List<Ticket> tickets) {
-        double dailyCashSales = tickets.stream().mapToDouble(Ticket::getCashPayment).sum();
-        cashRegister.setDailyCashSales(dailyCashSales);
-
-        double dailyTransactionsSales = tickets.stream().mapToDouble(Ticket::getTransactionPayment).sum();
-        cashRegister.setDailyTransactionsSales(dailyTransactionsSales);
-
-        double dailyCreditSales = tickets.stream().mapToDouble(Ticket::getCreditPayment).sum();
-        cashRegister.setDailyCreditSales(dailyCreditSales);
-
-        double totalSales = dailyCashSales + dailyTransactionsSales + dailyCreditSales;
-        cashRegister.setTotalSales(totalSales);
-
-        // falta el servicio para registrar las salidas
-        cashRegister.setMoneyOut((double) 0);
     }
 
     public ResponseCashRegisterDTO getResponseCashRegister(CashRegister cashRegister) {

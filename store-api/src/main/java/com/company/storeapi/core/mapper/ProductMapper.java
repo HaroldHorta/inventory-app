@@ -88,8 +88,8 @@ public abstract class ProductMapper {
 
         List<Assets> assets = assetRepositoryFacade.getAllCustomers();
         assets.forEach(asset -> {
-            Double productQuantity = requestAddProductDTO.getPriceSell() * requestAddProductDTO.getUnit();
-            Double investment = asset.getInvestment() + productQuantity;
+            double productQuantity = requestAddProductDTO.getPriceSell() * requestAddProductDTO.getUnit();
+            double investment = asset.getInvestment() + productQuantity;
             asset.setEarnings(investment);
         });
 

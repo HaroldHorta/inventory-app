@@ -18,12 +18,12 @@ public class ResponseTicketDTO {
     private String createAt;
     private PaymentType paymentType;
     private TicketStatus ticketStatus;
-    private Double ticketCost;
-    private Double ticketCostWithoutIVA;
+    private double ticketCost;
+    private double ticketCostWithoutIVA;
     private Set<CreditCapital> creditCapital = new LinkedHashSet<>();
-    private Double outstandingBalance;
-    private Double cashPayment;
-    private Double transactionPayment;
-    private Double creditPayment;
+    private double outstandingBalance;
+    private double cashPayment;
+    private double transactionPayment;
+    private double creditPayment;
     private boolean cashRegister;
 }

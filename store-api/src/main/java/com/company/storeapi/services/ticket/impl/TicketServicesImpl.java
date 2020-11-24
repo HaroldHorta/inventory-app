@@ -47,7 +47,7 @@ public class TicketServicesImpl implements TicketServices {
     }
 
     @Override
-    public ResponseTicketDTO updateCreditCapital(String idTicket, Double creditCapital, PaymentType creditPayment) {
+    public ResponseTicketDTO updateCreditCapital(String idTicket, double creditCapital, PaymentType creditPayment) {
         Ticket ticket = ticketRepositoryFacade.validateAndGetTicketById(idTicket);
 
         if (ticket.getTicketStatus() == TicketStatus.PAYED) {
@@ -63,9 +63,9 @@ public class TicketServicesImpl implements TicketServices {
             Set<CreditCapital> creditCapitals = ticket.getCreditCapital();
             CreditCapital creditCap = new CreditCapital();
             creditCap.setCashCreditCapital(creditCapital);
-            creditCap.setTransactionCreditCapital((double) 0);
+            creditCap.setTransactionCreditCapital(0);
             if (creditPayment == PaymentType.TRANSACTION) {
-                creditCap.setCashCreditCapital((double) 0);
+                creditCap.setCashCreditCapital(0);
                 creditCap.setTransactionCreditCapital(creditCapital);
             }
             creditCap.setCreatAt(new Date());
@@ -75,9 +75,9 @@ public class TicketServicesImpl implements TicketServices {
 
         }
         if (credit <= 0) {
-            ticket.setOutstandingBalance((double) 0);
+            ticket.setOutstandingBalance(0);
             ticket.setTicketStatus(TicketStatus.PAYED);
-            ticket.setCashRegister(true);
+            ticket.setCashRegister(false);
         }
         return ticketMapper.toTicketDto(ticketRepositoryFacade.saveTicket(ticket));
     }

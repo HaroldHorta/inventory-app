@@ -15,8 +15,8 @@ public class ResponseCashRegisterDTO {
     private double totalSales;
     private double moneyOut;
    // private double discounts;
-   private Double cashCreditCapital;
-    private Double transactionCreditCapital;
+   private double cashCreditCapital;
+    private double transactionCreditCapital;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date createAt;
 }

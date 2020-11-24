@@ -17,15 +17,15 @@ public class CashRegister {
 
     @Id
     private String id;
-    private Double dailyCashBase;
-    private Double dailyCashSales;
-    private Double dailyTransactionsSales;
-    private Double dailyCreditSales;
-    private Double totalSales;
-    private Double moneyOut;
-    //private Double discounts;
-    private Double cashCreditCapital;
-    private Double transactionCreditCapital;
+    private double dailyCashBase;
+    private double dailyCashSales;
+    private double dailyTransactionsSales;
+    private double dailyCreditSales;
+    private double totalSales;
+    private double moneyOut;
+    //private double discounts;
+    private double cashCreditCapital;
+    private double transactionCreditCapital;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date createAt;
 

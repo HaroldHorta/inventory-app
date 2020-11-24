@@ -18,20 +18,20 @@ public class Ticket {
     private Date createAt;
     private PaymentType paymentType;
     private TicketStatus ticketStatus;
-    private Double ticketCost;
-    private Double ticketCostWithoutIVA;
+    private double ticketCost;
+    private double ticketCostWithoutIVA;
     private Set<CreditCapital> creditCapital = new LinkedHashSet<>();
-    private Double outstandingBalance;
-    private Double cashPayment;
-    private Double transactionPayment;
-    private Double creditPayment;
+    private double outstandingBalance;
+    private double cashPayment;
+    private double transactionPayment;
+    private double creditPayment;
     private boolean cashRegister;
 
-    public Double getTicketCostWithoutIVA() {
+    public double getTicketCostWithoutIVA() {
         return ticketCostWithoutIVA;
     }
 
-    public void setTicketCostWithoutIVA(Double ticketCostWithoutIVA) {
+    public void setTicketCostWithoutIVA(double ticketCostWithoutIVA) {
         this.ticketCostWithoutIVA = ticketCostWithoutIVA;
     }
 
@@ -87,11 +87,11 @@ public class Ticket {
         this.ticketStatus = ticketStatus;
     }
 
-    public Double getTicketCost() {
+    public double getTicketCost() {
         return ticketCost;
     }
 
-    public void setTicketCost(Double ticketCost) {
+    public void setTicketCost(double ticketCost) {
         this.ticketCost = ticketCost;
     }
 
@@ -105,35 +105,35 @@ public class Ticket {
         this.cashRegister = cashRegister;
     }
 
-    public Double getCashPayment() {
+    public double getCashPayment() {
         return cashPayment;
     }
 
-    public void setCashPayment(Double cashPayment) {
+    public void setCashPayment(double cashPayment) {
         this.cashPayment = cashPayment;
     }
 
-    public Double getTransactionPayment() {
+    public double getTransactionPayment() {
         return transactionPayment;
     }
 
-    public void setTransactionPayment(Double transactionPayment) {
+    public void setTransactionPayment(double transactionPayment) {
         this.transactionPayment = transactionPayment;
     }
 
-    public Double getCreditPayment() {
+    public double getCreditPayment() {
         return creditPayment;
     }
 
-    public void setCreditPayment(Double creditPayment) {
+    public void setCreditPayment(double creditPayment) {
         this.creditPayment = creditPayment;
     }
 
-    public Double getOutstandingBalance() {
+    public double getOutstandingBalance() {
         return outstandingBalance;
     }
 
-    public void setOutstandingBalance(Double outstandingBalance) {
+    public void setOutstandingBalance(double outstandingBalance) {
         this.outstandingBalance = outstandingBalance;
     }
 

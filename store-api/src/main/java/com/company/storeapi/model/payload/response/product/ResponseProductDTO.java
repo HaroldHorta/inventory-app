@@ -26,9 +26,9 @@ public class ResponseProductDTO {
 
     private String updateAt;
 
-    private Double priceBuy;
+    private double priceBuy;
 
-    private Double priceSell;
+    private double priceSell;
 
     private int unit;
 
