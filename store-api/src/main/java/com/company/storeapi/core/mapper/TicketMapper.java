@@ -10,8 +10,9 @@ import com.company.storeapi.model.entity.Ticket;
 import com.company.storeapi.model.enums.*;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
-import com.company.storeapi.model.payload.response.finance.CreditCapital;
+import com.company.storeapi.model.entity.CreditCapital;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
+import com.company.storeapi.repositories.finances.creditCapital.facade.CreditCapitalRepositoryFacade;
 import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import com.company.storeapi.services.countingGeneral.CountingGeneralService;
@@ -51,6 +52,9 @@ public abstract class TicketMapper {
 
     @Autowired
     private OrderRepositoryFacade orderRepositoryFacade;
+
+    @Autowired
+    private CreditCapitalRepositoryFacade creditCapitalRepositoryFacade;
 
     @Mapping(source = "customer.id", target = "customer")
     @Mapping(source = "order", target = "order")
@@ -101,17 +105,19 @@ public abstract class TicketMapper {
             ticket.setCashPayment(0);
             ticket.setCreditPayment(order.getTotalOrder());
 
-            Set<CreditCapital> creditCapitals = new LinkedHashSet<>();
-            CreditCapital creditCapital = new CreditCapital();
-            creditCapital.setCashCreditCapital(requestAddTicketDTO.getCreditCapital());
-            creditCapital.setTransactionCreditCapital(0);
-            if (requestAddTicketDTO.getCreditPaymentType() == PaymentType.TRANSACTION) {
-                creditCapital.setCashCreditCapital(0);
-                creditCapital.setTransactionCreditCapital(requestAddTicketDTO.getCreditCapital());
+            if (requestAddTicketDTO.getCreditCapital() != 0) {
+                CreditCapital creditCapital = new CreditCapital();
+                creditCapital.setIdTicket(requestAddTicketDTO.getId());
+                creditCapital.setCashCreditCapital(requestAddTicketDTO.getCreditCapital());
+                creditCapital.setTransactionCreditCapital(0);
+                if (requestAddTicketDTO.getCreditPaymentType() == PaymentType.TRANSACTION) {
+                    creditCapital.setCashCreditCapital(0);
+                    creditCapital.setTransactionCreditCapital(requestAddTicketDTO.getCreditCapital());
+                }
+                creditCapital.setCreatAt(new Date());
+                creditCapitalRepositoryFacade.saveCreditCapital(creditCapital);
             }
-            creditCapital.setCreatAt(new Date());
 
-            creditCapitals.add(creditCapital);
 
             ticket.setTicketStatus(TicketStatus.CREDIT);
 
@@ -119,7 +125,7 @@ public abstract class TicketMapper {
 
             ticket.setOutstandingBalance(requestAddTicketDTO.getCreditCapital() == 0 ? order.getTotalOrder() : balance);
 
-            ticket.setCreditCapital(creditCapitals);
+
         }
 
 

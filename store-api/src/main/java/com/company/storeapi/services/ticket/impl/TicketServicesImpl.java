@@ -7,8 +7,9 @@ import com.company.storeapi.model.entity.Ticket;
 import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.enums.TicketStatus;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
-import com.company.storeapi.model.payload.response.finance.CreditCapital;
+import com.company.storeapi.model.entity.CreditCapital;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
+import com.company.storeapi.repositories.finances.creditCapital.facade.CreditCapitalRepositoryFacade;
 import com.company.storeapi.repositories.tickey.facade.TicketRepositoryFacade;
 import com.company.storeapi.services.ticket.TicketServices;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +25,7 @@ public class TicketServicesImpl implements TicketServices {
 
     private final TicketRepositoryFacade ticketRepositoryFacade;
     private final TicketMapper ticketMapper;
+    private final CreditCapitalRepositoryFacade creditCapitalRepositoryFacade;
 
     @Override
     public List<ResponseTicketDTO> getAllTicket() {
@@ -49,19 +50,23 @@ public class TicketServicesImpl implements TicketServices {
     @Override
     public ResponseTicketDTO updateCreditCapital(String idTicket, double creditCapital, PaymentType creditPayment) {
         Ticket ticket = ticketRepositoryFacade.validateAndGetTicketById(idTicket);
+        List<CreditCapital> credits = creditCapitalRepositoryFacade.findCreditCapitalByTicket(idTicket);
 
         if (ticket.getTicketStatus() == TicketStatus.PAYED) {
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La orden ha sido cancelada en su totalidad");
         }
 
-        double cashCreditCapital = ticket.getCreditCapital().stream().mapToDouble(CreditCapital::getCashCreditCapital).sum();
-        double transactionCreditCapital = ticket.getCreditCapital().stream().mapToDouble(CreditCapital::getTransactionCreditCapital).sum();
+        double cashCreditCapital = credits.stream().mapToDouble(CreditCapital::getCashCreditCapital).sum();
+
+        double transactionCreditCapital = credits.stream().mapToDouble(CreditCapital::getTransactionCreditCapital).sum();
+
         double capital = cashCreditCapital + transactionCreditCapital + creditCapital;
         double credit = ticket.getOutstandingBalance() - creditCapital;
-        if (ticket.getTicketCost() > capital) {
 
-            Set<CreditCapital> creditCapitals = ticket.getCreditCapital();
+        if (ticket.getTicketCost() > capital && creditCapital != 0) {
+
             CreditCapital creditCap = new CreditCapital();
+            creditCap.setIdTicket(idTicket);
             creditCap.setCashCreditCapital(creditCapital);
             creditCap.setTransactionCreditCapital(0);
             if (creditPayment == PaymentType.TRANSACTION) {
@@ -69,12 +74,13 @@ public class TicketServicesImpl implements TicketServices {
                 creditCap.setTransactionCreditCapital(creditCapital);
             }
             creditCap.setCreatAt(new Date());
-            creditCapitals.add(creditCap);
-            ticket.setCreditCapital(creditCapitals);
+            creditCap.setPaymentType(creditPayment);
             ticket.setOutstandingBalance(credit);
 
+            creditCapitalRepositoryFacade.saveCreditCapital(creditCap);
         }
-        if (credit <= 0) {
+
+        if (!(ticket.getTicketCost() > capital)) {
             ticket.setOutstandingBalance(0);
             ticket.setTicketStatus(TicketStatus.PAYED);
             ticket.setCashRegister(false);

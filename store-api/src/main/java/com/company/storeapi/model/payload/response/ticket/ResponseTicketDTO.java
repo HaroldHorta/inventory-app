@@ -3,7 +3,7 @@ package com.company.storeapi.model.payload.response.ticket;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.enums.TicketStatus;
-import com.company.storeapi.model.payload.response.finance.CreditCapital;
+import com.company.storeapi.model.entity.CreditCapital;
 import lombok.Data;
 
 import java.util.LinkedHashSet;

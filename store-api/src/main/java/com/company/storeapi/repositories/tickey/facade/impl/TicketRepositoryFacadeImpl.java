@@ -5,7 +5,6 @@ import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.model.entity.Ticket;
-import com.company.storeapi.model.payload.response.finance.CreditCapital;
 import com.company.storeapi.repositories.tickey.TicketRepository;
 import com.company.storeapi.repositories.tickey.facade.TicketRepositoryFacade;
 import lombok.RequiredArgsConstructor;

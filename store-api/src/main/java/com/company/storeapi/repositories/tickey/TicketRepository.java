@@ -1,7 +1,6 @@
 package com.company.storeapi.repositories.tickey;
 
 import com.company.storeapi.model.entity.Ticket;
-import com.company.storeapi.model.payload.response.finance.CreditCapital;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
