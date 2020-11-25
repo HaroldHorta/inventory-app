@@ -10,8 +10,5 @@ public interface TicketRepository extends MongoRepository<Ticket, String> {
 
     List<Ticket> findTicketByCustomer_NroDocument(String nroDocument);
 
-    @Query(value = "{'creditCapital.cashRegister':?0}")
-    List<Ticket> findTicketByCreditCapital(boolean cashRegister);
-
 
 }

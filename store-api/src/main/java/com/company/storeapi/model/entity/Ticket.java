@@ -28,5 +28,6 @@ public class Ticket {
     private double transactionPayment;
     private double creditPayment;
     private boolean cashRegister;
+    private boolean cashRegisterCredit;
 
 }

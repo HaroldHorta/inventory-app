@@ -10,4 +10,7 @@ public interface CreditCapitalRepositoryFacade {
 
     void saveCreditCapital (CreditCapital creditCapital);
 
+    boolean existsCreditCapitalByCashRegister ();
+
+
 }

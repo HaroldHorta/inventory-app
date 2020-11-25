@@ -9,4 +9,6 @@ public interface CreditCapitalRepository extends MongoRepository<CreditCapital,S
 
     List<CreditCapital> findCreditCapitalByIdTicket(String idTicket);
 
+    boolean existsCreditCapitalByCashRegister (boolean cashRegister);
+
 }

@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Data
 @NoArgsConstructor
@@ -18,14 +19,14 @@ public class CashRegister {
     @Id
     private String id;
     private double dailyCashBase;
-    private double dailyCashSales;
-    private double dailyTransactionsSales;
-    private double dailyCreditSales;
+    private AtomicReference<Double> dailyCashSales;
+    private AtomicReference <Double> dailyTransactionsSales;
+    private AtomicReference <Double> dailyCreditSales;
     private double totalSales;
     private double moneyOut;
     //private double discounts;
-    private double cashCreditCapital;
-    private double transactionCreditCapital;
+    private AtomicReference <Double> cashCreditCapital;
+    private AtomicReference <Double> transactionCreditCapital;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date createAt;
 

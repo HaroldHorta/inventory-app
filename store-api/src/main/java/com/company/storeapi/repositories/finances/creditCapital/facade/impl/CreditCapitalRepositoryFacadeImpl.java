@@ -24,4 +24,9 @@ public class CreditCapitalRepositoryFacadeImpl implements CreditCapitalRepositor
     public void saveCreditCapital(CreditCapital creditCapital) {
         creditCapitalRepository.save(creditCapital);
     }
+
+    @Override
+    public boolean existsCreditCapitalByCashRegister() {
+        return creditCapitalRepository.existsCreditCapitalByCashRegister(true);
+    }
 }
