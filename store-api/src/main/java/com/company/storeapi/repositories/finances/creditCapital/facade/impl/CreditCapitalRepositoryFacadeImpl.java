@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -16,11 +17,11 @@ public class CreditCapitalRepositoryFacadeImpl implements CreditCapitalRepositor
 
     @Override
     public List<CreditCapital> findCreditCapitalByTicket(String idTicket) {
-        return creditCapitalRepository.findCreditCapitalByIdTicket(idTicket);
+        return creditCapitalRepository.findCreditCapitalByIdTicket(idTicket).stream().filter(creditCapital -> !creditCapital.isCashRegister()).collect(Collectors.toList());
     }
 
     @Override
-    public CreditCapital saveCreditCapital(CreditCapital creditCapital) {
-        return creditCapitalRepository.save(creditCapital);
+    public void saveCreditCapital(CreditCapital creditCapital) {
+        creditCapitalRepository.save(creditCapital);
     }
 }

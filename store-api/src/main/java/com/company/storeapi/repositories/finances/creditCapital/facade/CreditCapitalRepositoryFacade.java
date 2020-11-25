@@ -8,6 +8,6 @@ public interface CreditCapitalRepositoryFacade {
 
     List<CreditCapital> findCreditCapitalByTicket(String idTicket);
 
-    CreditCapital saveCreditCapital (CreditCapital creditCapital);
+    void saveCreditCapital (CreditCapital creditCapital);
 
 }
