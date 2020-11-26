@@ -13,8 +13,8 @@ import java.util.concurrent.atomic.AtomicReference;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "cashRegister")
-public class CashRegister {
+@Document(collection = "cashRegisterHistory")
+public class CashRegisterHistory {
 
     @Id
     private String id;

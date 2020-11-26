@@ -7,11 +7,13 @@ import com.company.storeapi.model.entity.Customer;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.entity.Product;
 import com.company.storeapi.model.entity.Ticket;
+import com.company.storeapi.model.entity.finance.CashRegisterDaily;
 import com.company.storeapi.model.enums.*;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.entity.CreditCapital;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
+import com.company.storeapi.repositories.finances.cashRegisterDaily.facade.CashRegisterDailyRepositoryFacade;
 import com.company.storeapi.repositories.finances.creditCapital.facade.CreditCapitalRepositoryFacade;
 import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
@@ -56,6 +58,9 @@ public abstract class TicketMapper {
     @Autowired
     private CreditCapitalRepositoryFacade creditCapitalRepositoryFacade;
 
+    @Autowired
+    private CashRegisterDailyRepositoryFacade cashRegisterDailyRepositoryFacade;
+
     @Mapping(source = "customer.id", target = "customer")
     @Mapping(source = "order", target = "order")
     public abstract ResponseTicketDTO toTicketDto(Ticket ticket);
@@ -63,6 +68,12 @@ public abstract class TicketMapper {
     public Ticket toTicket(RequestAddTicketDTO requestAddTicketDTO) {
 
         Order order = orderRepositoryFacade.validateAndGetOrderById(requestAddTicketDTO.getOrder());
+
+        double dailyCashSales;
+        double dailyTransactionsSales = 0;
+        double dailyCreditSales = 0;
+        double cashCreditCapital = 0;
+        double transactionCreditCapital = 0;
 
         if (!(order.getOrderStatus() == OrderStatus.OPEN)) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "La orden ya esta pagada, no se puede generar ticket");
@@ -94,10 +105,14 @@ public abstract class TicketMapper {
         ticket.setTransactionPayment(0);
         ticket.setCreditPayment(0);
 
+        dailyCashSales = order.getTotalOrder();
+
         if (ticket.getPaymentType() == PaymentType.TRANSACTION) {
             ticket.setTransactionPayment(order.getTotalOrder());
             ticket.setCashPayment(0);
             ticket.setCreditPayment(0);
+
+            dailyTransactionsSales = order.getTotalOrder();
         }
 
         if (ticket.getPaymentType() == PaymentType.CREDIT) {
@@ -105,29 +120,51 @@ public abstract class TicketMapper {
             ticket.setCashPayment(0);
             ticket.setCreditPayment(order.getTotalOrder());
 
+            dailyCreditSales = order.getTotalOrder();
+
             if (requestAddTicketDTO.getCreditCapital() != 0) {
                 CreditCapital creditCapital = new CreditCapital();
                 creditCapital.setIdTicket(requestAddTicketDTO.getId());
                 creditCapital.setCashCreditCapital(requestAddTicketDTO.getCreditCapital());
                 creditCapital.setTransactionCreditCapital(0);
+
+                cashCreditCapital = requestAddTicketDTO.getCreditCapital();
+
                 if (requestAddTicketDTO.getCreditPaymentType() == PaymentType.TRANSACTION) {
                     creditCapital.setCashCreditCapital(0);
                     creditCapital.setTransactionCreditCapital(requestAddTicketDTO.getCreditCapital());
+                    transactionCreditCapital = requestAddTicketDTO.getCreditCapital();
                 }
                 creditCapital.setCreatAt(new Date());
                 creditCapitalRepositoryFacade.saveCreditCapital(creditCapital);
             }
-
-
             ticket.setTicketStatus(TicketStatus.CREDIT);
 
             double balance = order.getTotalOrder() - requestAddTicketDTO.getCreditCapital();
 
             ticket.setOutstandingBalance(requestAddTicketDTO.getCreditCapital() == 0 ? order.getTotalOrder() : balance);
 
-
         }
 
+        if (cashRegisterDailyRepositoryFacade.existsCashRegisterDailiesByCashRegister(false)) {
+            CashRegisterDaily cashRegisterDaily = cashRegisterDailyRepositoryFacade.findCashBaseByUltimate();
+            cashRegisterDaily.setDailyCashSales(cashRegisterDaily.getDailyCashSales() + dailyCashSales);
+            cashRegisterDaily.setDailyTransactionsSales(cashRegisterDaily.getDailyTransactionsSales() + dailyTransactionsSales);
+            cashRegisterDaily.setDailyCreditSales(cashRegisterDaily.getDailyCreditSales() + dailyCreditSales);
+            cashRegisterDaily.setCashCreditCapital(cashRegisterDaily.getCashCreditCapital() + cashCreditCapital);
+            cashRegisterDaily.setTransactionCreditCapital(cashRegisterDaily.getTransactionCreditCapital() + transactionCreditCapital);
+
+            cashRegisterDailyRepositoryFacade.save(cashRegisterDaily);
+        } else {
+            CashRegisterDaily cashRegisterDaily = new CashRegisterDaily();
+            cashRegisterDaily.setDailyCashSales(dailyCashSales);
+            cashRegisterDaily.setDailyTransactionsSales(dailyTransactionsSales);
+            cashRegisterDaily.setDailyCreditSales(dailyCreditSales);
+            cashRegisterDaily.setCashCreditCapital(cashCreditCapital);
+            cashRegisterDaily.setTransactionCreditCapital(transactionCreditCapital);
+
+            cashRegisterDailyRepositoryFacade.save(cashRegisterDaily);
+        }
 
         countingGeneralService.counting(requestAddTicketDTO.getOrder(), order.getOrderStatus());
         return ticket;

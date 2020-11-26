@@ -3,7 +3,7 @@ package com.company.storeapi.repositories.finances.cashRegister.facade.impl;
 import com.company.storeapi.core.constants.MessageError;
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
-import com.company.storeapi.model.entity.finance.CashRegister;
+import com.company.storeapi.model.entity.finance.CashRegisterHistory;
 import com.company.storeapi.repositories.finances.cashRegister.CashRegisterRepository;
 import com.company.storeapi.repositories.finances.cashRegister.facade.CashRegisterRepositoryFacade;
 import org.springframework.dao.DataAccessException;
@@ -23,7 +23,7 @@ public class CashRegisterRepositoryFacadeImpl implements CashRegisterRepositoryF
     }
 
     @Override
-    public List<CashRegister> getCashRegister() {
+    public List<CashRegisterHistory> getCashRegister() {
         try {
             return Optional.of(cashRegisterRepository.findAll())
                     .orElseThrow(() -> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de cierre de caja"));
@@ -35,7 +35,7 @@ public class CashRegisterRepositoryFacadeImpl implements CashRegisterRepositoryF
     }
 
     @Override
-    public CashRegister saveCashRegister(CashRegister cashRegister) {
-        return cashRegisterRepository.save(cashRegister);
+    public CashRegisterHistory saveCashRegister(CashRegisterHistory cashRegisterHistory) {
+        return cashRegisterRepository.save(cashRegisterHistory);
     }
 }

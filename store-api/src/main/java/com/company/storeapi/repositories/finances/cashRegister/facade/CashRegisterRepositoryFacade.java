@@ -1,12 +1,12 @@
 package com.company.storeapi.repositories.finances.cashRegister.facade;
 
-import com.company.storeapi.model.entity.finance.CashRegister;
+import com.company.storeapi.model.entity.finance.CashRegisterHistory;
 
 import java.util.List;
 
 public interface CashRegisterRepositoryFacade  {
 
-    List<CashRegister> getCashRegister();
+    List<CashRegisterHistory> getCashRegister();
 
-    CashRegister saveCashRegister ( CashRegister cashRegister);
+    CashRegisterHistory saveCashRegister (CashRegisterHistory cashRegisterHistory);
 }
