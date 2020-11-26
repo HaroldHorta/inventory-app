@@ -26,7 +26,7 @@ public abstract class CashRegisterMapper {
 //
 //       // List<ResponseTicketDTO> responseCashRegisterDTOS = ticketServices.getAllTicketByCashRegister();
 //       // responseCashRegisterDTOS.forEach(ticketDTO -> {
-//         //  Double totalCash += ticketDTO.getC.
+//         //  double totalCash += ticketDTO.getC.
 //        });
 //
 //        return null;

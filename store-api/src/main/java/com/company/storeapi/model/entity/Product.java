@@ -40,9 +40,9 @@ public class Product {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date updateAt;
 
-    private Double priceBuy;
+    private double priceBuy;
 
-    private Double priceSell;
+    private double priceSell;
 
     private int unit;
 

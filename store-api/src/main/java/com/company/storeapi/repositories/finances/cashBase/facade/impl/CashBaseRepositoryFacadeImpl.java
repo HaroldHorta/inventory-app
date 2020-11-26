@@ -20,7 +20,8 @@ public class CashBaseRepositoryFacadeImpl implements CashBaseRepositoryFacade {
 
     @Override
     public CashBase findCashBaseByUltime() {
-        return cashBaseRepository.findCashBaseByCashRegister(false);
+        return Optional.ofNullable(cashBaseRepository.findCashBaseByCashRegister(false))
+                .orElseThrow(() -> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No existe registro de la base diaria "));
     }
 
     @Override

@@ -19,7 +19,7 @@ public class CashBase {
 
     @Id
     private String id;
-    private Double dailyCashBase;
+    private double dailyCashBase;
     private boolean cashRegister;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date createAt;

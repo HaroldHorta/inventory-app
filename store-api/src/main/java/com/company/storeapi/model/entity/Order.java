@@ -25,6 +25,6 @@ public class Order {
 
     private OrderStatus orderStatus;
 
-    private Double totalOrder;
+    private double totalOrder;
 
 }

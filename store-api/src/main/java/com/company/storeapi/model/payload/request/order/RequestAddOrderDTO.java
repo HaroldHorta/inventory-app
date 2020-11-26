@@ -13,6 +13,6 @@ public class RequestAddOrderDTO {
     @Valid
     private List<RequestOrderProductItemsDTO> products;
 
-    private Double totalOrder;
+    private double totalOrder;
 
 }

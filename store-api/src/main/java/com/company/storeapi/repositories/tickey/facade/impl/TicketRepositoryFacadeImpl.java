@@ -26,36 +26,31 @@ public class TicketRepositoryFacadeImpl implements TicketRepositoryFacade {
 
     @Override
     public List<Ticket> getAllTicket() {
-       try {
-           return Optional.of(ticketRepository.findAll())
-                   .orElseThrow(()-> new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND,"No se encontraron registros de ticket"));
-       }catch (IllegalArgumentException ie){
-           throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
-       }catch (DataAccessException er){
-           throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
-       }
+        try {
+            return Optional.of(ticketRepository.findAll())
+                    .orElseThrow(() -> new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de ticket"));
+        } catch (IllegalArgumentException ie) {
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+        } catch (DataAccessException er) {
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD, er);
+        }
     }
 
     @Override
     public List<Ticket> getAllTicketByCashRegister() {
         try {
             return Optional.of(ticketRepository.findAll().stream().filter(ticket -> !ticket.isCashRegister()).collect(Collectors.toList()))
-                    .orElseThrow(()-> new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND,"No se encontraron registros de ticket"));
-        }catch (IllegalArgumentException ie){
+                    .orElseThrow(() -> new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de ticket"));
+        } catch (IllegalArgumentException ie) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
-        }catch (DataAccessException er){
-            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+        } catch (DataAccessException er) {
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD, er);
         }
     }
 
     @Override
-    public List<Ticket> getAllTicketByCreditCapitalByCashRegister(boolean cashRegister) {
-        return ticketRepository.findTicketByCreditCapital(cashRegister);
-    }
-
-    @Override
     public Ticket validateAndGetTicketById(String id) {
-        return ticketRepository.findById(id).orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "NO se encontraron productos con el id " + id));
+        return ticketRepository.findById(id).orElseThrow(() -> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "NO se encontraron productos con el id " + id));
 
     }
 
@@ -63,10 +58,10 @@ public class TicketRepositoryFacadeImpl implements TicketRepositoryFacade {
     public Ticket saveTicket(Ticket ticket) {
         try {
             return ticketRepository.save(ticket);
-        }catch (IllegalArgumentException ie){
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Error al guardar el producto");
-        }catch (DataAccessException er){
-            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+        } catch (IllegalArgumentException ie) {
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "Error al guardar el producto");
+        } catch (DataAccessException er) {
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD, er);
         }
     }
 
@@ -74,12 +69,12 @@ public class TicketRepositoryFacadeImpl implements TicketRepositoryFacade {
     public List<Ticket> findTicketByCustomer_NroDocument(String nroDocument) {
         try {
             return Optional.of(ticketRepository.findTicketByCustomer_NroDocument(nroDocument))
-                    .orElseThrow(()-> new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND,"El cliente no tiene ticket asosiados"));
-        }catch (IllegalArgumentException ie){
+                    .orElseThrow(() -> new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "El cliente no tiene ticket asosiados"));
+        } catch (IllegalArgumentException ie) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
-        }catch (DataAccessException er){
-            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+        } catch (DataAccessException er) {
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD, er);
         }
     }
 
- }
+}

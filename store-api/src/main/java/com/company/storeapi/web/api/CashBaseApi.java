@@ -25,12 +25,12 @@ public class CashBaseApi {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseCashBase findCashBaseByUltime() throws ServiceException {
-        return cashBaseService.findCashBaseByUltime();
+    public ResponseCashBase findCashBaseByUltimate() throws ServiceException {
+        return cashBaseService.findCashBaseByUltimate();
     }
 
     @PostMapping(value ="/{cashBase}")
-    public ResponseEntity<ResponseCashBase> create(@PathVariable Double cashBase) throws ServiceException {
+    public ResponseEntity<ResponseCashBase> create(@PathVariable double cashBase) throws ServiceException {
         ResponseCashBase created = cashBaseService.save(cashBase);
         return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.OK);
     }

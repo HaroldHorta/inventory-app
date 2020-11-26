@@ -3,7 +3,7 @@ package com.company.storeapi.model.payload.response.ticket;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.enums.TicketStatus;
-import com.company.storeapi.model.payload.response.finance.CreditCapital;
+import com.company.storeapi.model.entity.CreditCapital;
 import lombok.Data;
 
 import java.util.LinkedHashSet;
@@ -18,12 +18,12 @@ public class ResponseTicketDTO {
     private String createAt;
     private PaymentType paymentType;
     private TicketStatus ticketStatus;
-    private Double ticketCost;
-    private Double ticketCostWithoutIVA;
+    private double ticketCost;
+    private double ticketCostWithoutIVA;
     private Set<CreditCapital> creditCapital = new LinkedHashSet<>();
-    private Double outstandingBalance;
-    private Double cashPayment;
-    private Double transactionPayment;
-    private Double creditPayment;
+    private double outstandingBalance;
+    private double cashPayment;
+    private double transactionPayment;
+    private double creditPayment;
     private boolean cashRegister;
 }

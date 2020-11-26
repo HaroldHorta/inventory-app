@@ -14,7 +14,7 @@ public class Assets {
 
     @Id
     private String id;
-    private Double earnings;
-    private Double investment;
+    private double earnings;
+    private double investment;
 
 }

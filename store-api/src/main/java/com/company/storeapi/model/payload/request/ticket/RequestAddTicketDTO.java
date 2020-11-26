@@ -21,7 +21,7 @@ public class RequestAddTicketDTO {
     private PaymentType paymentType;
 
     @Schema(example = "0")
-    private Double creditCapital;
+    private double creditCapital;
 
     @Schema
     private PaymentType CreditPaymentType;

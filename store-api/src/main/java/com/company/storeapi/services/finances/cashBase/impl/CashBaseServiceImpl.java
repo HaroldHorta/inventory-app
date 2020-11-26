@@ -18,7 +18,7 @@ public class CashBaseServiceImpl implements CashBaseService {
     private final CashBaseRepositoryFacade cashBaseRepositoryFacade;
 
     @Override
-    public ResponseCashBase findCashBaseByUltime() {
+    public ResponseCashBase findCashBaseByUltimate() {
         CashBase cashBase = cashBaseRepositoryFacade.findCashBaseByUltime();
         return getResponseCashBase(cashBase);
     }
