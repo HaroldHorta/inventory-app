@@ -2,12 +2,16 @@ package com.company.storeapi.model.entity;
 
 import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.enums.TicketStatus;
+import com.company.storeapi.model.payload.response.finance.CreditCapital;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Document(collection = "ticket")
 @Data
@@ -21,6 +25,7 @@ public class Ticket {
     private Date createAt;
     private PaymentType paymentType;
     private TicketStatus ticketStatus;
+    Set<CreditCapital> creditCapitals = new LinkedHashSet<>();
     private double ticketCost;
     private double ticketCostWithoutIVA;
     private double outstandingBalance;

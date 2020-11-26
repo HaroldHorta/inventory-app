@@ -1,11 +1,13 @@
 package com.company.storeapi.model.payload.response.ticket;
 
+import com.company.storeapi.model.entity.Customer;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.enums.TicketStatus;
-import com.company.storeapi.model.entity.CreditCapital;
+import com.company.storeapi.model.payload.response.finance.CreditCapital;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -13,14 +15,14 @@ import java.util.Set;
 public class ResponseTicketDTO {
 
     private String id;
-    private String customer;
     private Order order;
-    private String createAt;
+    private Customer customer;
+    private Date createAt;
     private PaymentType paymentType;
     private TicketStatus ticketStatus;
+    private Set<CreditCapital> creditCapitals = new LinkedHashSet<>();
     private double ticketCost;
     private double ticketCostWithoutIVA;
-    private Set<CreditCapital> creditCapital = new LinkedHashSet<>();
     private double outstandingBalance;
     private double cashPayment;
     private double transactionPayment;

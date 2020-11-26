@@ -1,4 +1,4 @@
-package com.company.storeapi.model.entity;
+package com.company.storeapi.model.payload.response.finance;
 
 import com.company.storeapi.model.enums.PaymentType;
 import lombok.AllArgsConstructor;
@@ -12,16 +12,11 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "creditCapital")
 public class CreditCapital {
 
-    @Id
-    private String id;
-    private String idTicket;
     private double cashCreditCapital;
     private double transactionCreditCapital;
     private Date creatAt;
-    private boolean cashRegister;
     private PaymentType paymentType;
 
 }

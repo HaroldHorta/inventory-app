@@ -25,4 +25,5 @@ public class RequestAddTicketDTO {
 
     @Schema
     private PaymentType CreditPaymentType;
+
 }

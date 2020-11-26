@@ -19,14 +19,14 @@ public class CashRegisterHistory {
     @Id
     private String id;
     private double dailyCashBase;
-    private AtomicReference<Double> dailyCashSales;
-    private AtomicReference <Double> dailyTransactionsSales;
-    private AtomicReference <Double> dailyCreditSales;
+    private double dailyCashSales;
+    private double dailyTransactionsSales;
+    private double dailyCreditSales;
     private double totalSales;
     private double moneyOut;
     //private double discounts;
-    private AtomicReference <Double> cashCreditCapital;
-    private AtomicReference <Double> transactionCreditCapital;
+    private double cashCreditCapital;
+    private double transactionCreditCapital;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date createAt;
 

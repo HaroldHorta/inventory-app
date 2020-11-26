@@ -1,12 +1,13 @@
 package com.company.storeapi.services.finances.cashRegister.impl;
 
 import com.company.storeapi.core.mapper.CashRegisterMapper;
+import com.company.storeapi.model.entity.finance.CashBase;
+import com.company.storeapi.model.entity.finance.CashRegisterDaily;
 import com.company.storeapi.model.entity.finance.CashRegisterHistory;
 import com.company.storeapi.model.payload.response.finance.ResponseCashRegisterDTO;
 import com.company.storeapi.repositories.finances.cashBase.facade.CashBaseRepositoryFacade;
 import com.company.storeapi.repositories.finances.cashRegister.facade.CashRegisterRepositoryFacade;
-import com.company.storeapi.repositories.finances.creditCapital.facade.CreditCapitalRepositoryFacade;
-import com.company.storeapi.repositories.tickey.facade.TicketRepositoryFacade;
+import com.company.storeapi.repositories.finances.cashRegisterDaily.facade.CashRegisterDailyRepositoryFacade;
 import com.company.storeapi.services.finances.cashRegister.CashRegisterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,8 @@ public class CashRegisterServiceImpl implements CashRegisterService {
 
     private final CashRegisterRepositoryFacade cashRegisterRepositoryFacade;
     private final CashRegisterMapper cashRegisterMapper;
+    private final CashRegisterDailyRepositoryFacade cashRegisterDailyRepositoryFacade;
     private final CashBaseRepositoryFacade cashBaseRepositoryFacade;
-    private final TicketRepositoryFacade ticketRepositoryFacade;
-    private final CreditCapitalRepositoryFacade creditCapitalRepositoryFacade;
-
 
     @Override
     public List<ResponseCashRegisterDTO> getCashRegister() {
@@ -34,7 +33,23 @@ public class CashRegisterServiceImpl implements CashRegisterService {
     @Override
     public ResponseCashRegisterDTO saveCashRegister() {
 
-      return null;
+        CashRegisterDaily cashRegisterDaily = cashRegisterDailyRepositoryFacade.findCashBaseByUltimate();
+        CashBase cashBase = cashBaseRepositoryFacade.findCashBaseByUltime();
+        double totalSales = cashRegisterDaily.getDailyCashSales() + cashRegisterDaily.getDailyTransactionsSales() + cashRegisterDaily.getDailyCreditSales();
+
+
+        CashRegisterHistory cashRegisterHistory = new CashRegisterHistory();
+        cashRegisterHistory.setDailyCashBase(cashBase.getDailyCashBase());
+        cashRegisterHistory.setDailyCashBase(cashRegisterDaily.getDailyCashSales());
+        cashRegisterHistory.setDailyTransactionsSales(cashRegisterDaily.getDailyTransactionsSales());
+        cashRegisterHistory.setDailyCreditSales(cashRegisterDaily.getDailyCreditSales());
+        cashRegisterHistory.setTotalSales(totalSales);
+
+
+
+
+
+        return null;
     }
 
     public ResponseCashRegisterDTO getResponseCashRegister(CashRegisterHistory cashRegisterHistory) {

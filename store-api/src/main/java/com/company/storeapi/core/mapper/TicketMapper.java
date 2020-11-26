@@ -11,10 +11,9 @@ import com.company.storeapi.model.entity.finance.CashRegisterDaily;
 import com.company.storeapi.model.enums.*;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
-import com.company.storeapi.model.entity.CreditCapital;
+import com.company.storeapi.model.payload.response.finance.CreditCapital;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
 import com.company.storeapi.repositories.finances.cashRegisterDaily.facade.CashRegisterDailyRepositoryFacade;
-import com.company.storeapi.repositories.finances.creditCapital.facade.CreditCapitalRepositoryFacade;
 import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import com.company.storeapi.services.countingGeneral.CountingGeneralService;
@@ -26,9 +25,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @Mapper(
         componentModel = "spring",
@@ -56,13 +53,11 @@ public abstract class TicketMapper {
     private OrderRepositoryFacade orderRepositoryFacade;
 
     @Autowired
-    private CreditCapitalRepositoryFacade creditCapitalRepositoryFacade;
-
-    @Autowired
     private CashRegisterDailyRepositoryFacade cashRegisterDailyRepositoryFacade;
 
-    @Mapping(source = "customer.id", target = "customer")
+    @Mapping(source = "customer", target = "customer")
     @Mapping(source = "order", target = "order")
+    @Mapping(source = "creditCapitals", target = "creditCapitals")
     public abstract ResponseTicketDTO toTicketDto(Ticket ticket);
 
     public Ticket toTicket(RequestAddTicketDTO requestAddTicketDTO) {
@@ -123,10 +118,13 @@ public abstract class TicketMapper {
             dailyCreditSales = order.getTotalOrder();
 
             if (requestAddTicketDTO.getCreditCapital() != 0) {
+
+                Set<CreditCapital> creditCapitals = new LinkedHashSet<>();
+
                 CreditCapital creditCapital = new CreditCapital();
-                creditCapital.setIdTicket(requestAddTicketDTO.getId());
                 creditCapital.setCashCreditCapital(requestAddTicketDTO.getCreditCapital());
                 creditCapital.setTransactionCreditCapital(0);
+                creditCapital.setPaymentType(requestAddTicketDTO.getCreditPaymentType());
 
                 cashCreditCapital = requestAddTicketDTO.getCreditCapital();
 
@@ -136,8 +134,13 @@ public abstract class TicketMapper {
                     transactionCreditCapital = requestAddTicketDTO.getCreditCapital();
                 }
                 creditCapital.setCreatAt(new Date());
-                creditCapitalRepositoryFacade.saveCreditCapital(creditCapital);
+
+                creditCapitals.add(creditCapital);
+                ticket.setCreditCapitals(creditCapitals);
+
             }
+
+
             ticket.setTicketStatus(TicketStatus.CREDIT);
 
             double balance = order.getTotalOrder() - requestAddTicketDTO.getCreditCapital();
