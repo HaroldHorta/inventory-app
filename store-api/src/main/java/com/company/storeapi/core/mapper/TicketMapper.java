@@ -156,6 +156,7 @@ public abstract class TicketMapper {
             cashRegisterDaily.setDailyCreditSales(cashRegisterDaily.getDailyCreditSales() + dailyCreditSales);
             cashRegisterDaily.setCashCreditCapital(cashRegisterDaily.getCashCreditCapital() + cashCreditCapital);
             cashRegisterDaily.setTransactionCreditCapital(cashRegisterDaily.getTransactionCreditCapital() + transactionCreditCapital);
+            cashRegisterDaily.setCashRegister(false);
 
             cashRegisterDailyRepositoryFacade.save(cashRegisterDaily);
         } else {

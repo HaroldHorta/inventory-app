@@ -1,11 +1,11 @@
-package com.company.storeapi.repositories.finances.cashRegister.facade.impl;
+package com.company.storeapi.repositories.finances.cashRegisterHistory.facade.impl;
 
 import com.company.storeapi.core.constants.MessageError;
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.model.entity.finance.CashRegisterHistory;
-import com.company.storeapi.repositories.finances.cashRegister.CashRegisterRepository;
-import com.company.storeapi.repositories.finances.cashRegister.facade.CashRegisterRepositoryFacade;
+import com.company.storeapi.repositories.finances.cashRegisterHistory.CashRegisterRepositoryHistory;
+import com.company.storeapi.repositories.finances.cashRegisterHistory.facade.CashRegisterRepositoryFacadeHistory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
@@ -14,18 +14,18 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class CashRegisterRepositoryFacadeImpl implements CashRegisterRepositoryFacade {
+public class CashRegisterRepositoryFacadeHistoryImpl implements CashRegisterRepositoryFacadeHistory {
 
-    private final CashRegisterRepository cashRegisterRepository;
+    private final CashRegisterRepositoryHistory cashRegisterRepositoryHistory;
 
-    public CashRegisterRepositoryFacadeImpl(CashRegisterRepository cashRegisterRepository) {
-        this.cashRegisterRepository = cashRegisterRepository;
+    public CashRegisterRepositoryFacadeHistoryImpl(CashRegisterRepositoryHistory cashRegisterRepositoryHistory) {
+        this.cashRegisterRepositoryHistory = cashRegisterRepositoryHistory;
     }
 
     @Override
     public List<CashRegisterHistory> getCashRegister() {
         try {
-            return Optional.of(cashRegisterRepository.findAll())
+            return Optional.of(cashRegisterRepositoryHistory.findAll())
                     .orElseThrow(() -> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de cierre de caja"));
         } catch (EmptyResultDataAccessException er) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
@@ -36,6 +36,6 @@ public class CashRegisterRepositoryFacadeImpl implements CashRegisterRepositoryF
 
     @Override
     public CashRegisterHistory saveCashRegister(CashRegisterHistory cashRegisterHistory) {
-        return cashRegisterRepository.save(cashRegisterHistory);
+        return cashRegisterRepositoryHistory.save(cashRegisterHistory);
     }
 }

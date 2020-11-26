@@ -21,4 +21,5 @@ public class CashRegisterDaily {
     private double transactionCreditCapital;
     private boolean cashRegister;
 
+
 }
