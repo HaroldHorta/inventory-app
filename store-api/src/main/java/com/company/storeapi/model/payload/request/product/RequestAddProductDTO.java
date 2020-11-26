@@ -29,4 +29,7 @@ public class RequestAddProductDTO {
     @Schema(example = "2")
     private int unit;
 
+    @Schema(example = "img/java.jpg")
+    private String photo;
+
 }

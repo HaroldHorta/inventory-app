@@ -79,12 +79,9 @@ public abstract class ProductMapper {
         product.setPriceBuy(requestAddProductDTO.getPriceBuy());
         product.setPriceSell(requestAddProductDTO.getPriceSell());
         product.setUnit(requestAddProductDTO.getUnit());
+        product.setPhoto(requestAddProductDTO.getPhoto());
 
-//        FileInfo file = new FileInfo();
-//        file.setName(ImageDefault.name);
-//        file.setType(ImageDefault.type);
-//        file.setData(ImageDefault.data);
-        product.setPhoto(ImageDefault.photo);
+        product.setPhoto(requestAddProductDTO.getPhoto() == null ? ImageDefault.photo : requestAddProductDTO.getPhoto());
 
         List<Assets> assets = assetRepositoryFacade.getAllCustomers();
         assets.forEach(asset -> {
