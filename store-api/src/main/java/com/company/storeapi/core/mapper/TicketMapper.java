@@ -161,11 +161,7 @@ public abstract class TicketMapper {
             cashRegisterDailyRepositoryFacade.save(cashRegisterDaily);
         } else {
             CashRegisterDaily cashRegisterDaily = new CashRegisterDaily();
-            cashRegisterDaily.setDailyCashSales(dailyCashSales);
-            cashRegisterDaily.setDailyTransactionsSales(dailyTransactionsSales);
-            cashRegisterDaily.setDailyCreditSales(dailyCreditSales);
-            cashRegisterDaily.setCashCreditCapital(cashCreditCapital);
-            cashRegisterDaily.setTransactionCreditCapital(transactionCreditCapital);
+            cashRegisterDaily.setCreateAt(new Date());
 
             cashRegisterDailyRepositoryFacade.save(cashRegisterDaily);
         }

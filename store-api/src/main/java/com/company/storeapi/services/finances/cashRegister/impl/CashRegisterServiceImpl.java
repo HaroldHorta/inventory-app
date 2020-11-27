@@ -37,10 +37,6 @@ public class CashRegisterServiceImpl implements CashRegisterService {
         CashBase cashBase = cashBaseRepositoryFacade.findCashBaseByUltime();
         double totalSales = cashRegisterDaily.getDailyCashSales() + cashRegisterDaily.getDailyTransactionsSales() + cashRegisterDaily.getDailyCreditSales();
 
-        if (totalSales == 0) {
-            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se han registrado movimientos");
-        }
-
         cashRegisterDaily.setDailyCashBase(cashBase.getDailyCashBase());
 
         cashRegisterDaily.setTotalSales(totalSales);
