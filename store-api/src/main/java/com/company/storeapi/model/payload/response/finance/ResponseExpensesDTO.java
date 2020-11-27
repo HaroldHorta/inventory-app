@@ -1,24 +1,15 @@
-package com.company.storeapi.model.entity.finance;
+package com.company.storeapi.model.payload.response.finance;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Document(collection = "expenses")
-public class Expenses {
+public class ResponseExpensesDTO {
 
-    @Id
     private String id;
     private String description;
     private double price;
