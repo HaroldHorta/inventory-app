@@ -150,7 +150,7 @@ public abstract class TicketMapper {
         }
 
         if (cashRegisterDailyRepositoryFacade.existsCashRegisterDailiesByCashRegister(false)) {
-            CashRegisterDaily cashRegisterDaily = cashRegisterDailyRepositoryFacade.findCashBaseByUltimate();
+            CashRegisterDaily cashRegisterDaily = cashRegisterDailyRepositoryFacade.findCashRegisterDailyByUltimate();
             cashRegisterDaily.setDailyCashSales(cashRegisterDaily.getDailyCashSales() + dailyCashSales);
             cashRegisterDaily.setDailyTransactionsSales(cashRegisterDaily.getDailyTransactionsSales() + dailyTransactionsSales);
             cashRegisterDaily.setDailyCreditSales(cashRegisterDaily.getDailyCreditSales() + dailyCreditSales);

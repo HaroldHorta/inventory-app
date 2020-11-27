@@ -4,7 +4,7 @@ import com.company.storeapi.model.entity.finance.CashRegisterDaily;
 
 public interface CashRegisterDailyRepositoryFacade {
 
-    CashRegisterDaily findCashBaseByUltimate();
+    CashRegisterDaily findCashRegisterDailyByUltimate();
 
     CashRegisterDaily save(CashRegisterDaily cashRegisterDaily);
 

@@ -5,10 +5,8 @@ import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistence
 import com.company.storeapi.core.mapper.CashRegisterMapper;
 import com.company.storeapi.model.entity.finance.CashBase;
 import com.company.storeapi.model.entity.finance.CashRegisterDaily;
-import com.company.storeapi.model.entity.finance.CashRegisterHistory;
 import com.company.storeapi.model.payload.response.finance.ResponseCashRegisterDTO;
 import com.company.storeapi.repositories.finances.cashBase.facade.CashBaseRepositoryFacade;
-import com.company.storeapi.repositories.finances.cashRegisterHistory.facade.CashRegisterRepositoryFacadeHistory;
 import com.company.storeapi.repositories.finances.cashRegisterDaily.facade.CashRegisterDailyRepositoryFacade;
 import com.company.storeapi.services.finances.cashRegister.CashRegisterService;
 import lombok.RequiredArgsConstructor;
@@ -16,27 +14,26 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CashRegisterServiceImpl implements CashRegisterService {
 
-    private final CashRegisterRepositoryFacadeHistory cashRegisterRepositoryFacadeHistory;
     private final CashRegisterMapper cashRegisterMapper;
     private final CashRegisterDailyRepositoryFacade cashRegisterDailyRepositoryFacade;
     private final CashBaseRepositoryFacade cashBaseRepositoryFacade;
 
     @Override
     public List<ResponseCashRegisterDTO> getCashRegister() {
-        List<CashRegisterHistory> cashRegisterHistories = cashRegisterRepositoryFacadeHistory.getCashRegister();
-        return cashRegisterHistories.stream().map(cashRegisterMapper::DtoChasRegisterDocument).collect(Collectors.toList());
+      //  List<CashRegisterDaily> cashRegisterHistories = cashRegisterDailyRepositoryFacade.();
+      //  return cashRegisterHistories.stream().map(cashRegisterMapper::DtoChasRegisterDocument).collect(Collectors.toList());
+  return null;
     }
 
     @Override
     public ResponseCashRegisterDTO saveCashRegister() {
 
-        CashRegisterDaily cashRegisterDaily = cashRegisterDailyRepositoryFacade.findCashBaseByUltimate();
+        CashRegisterDaily cashRegisterDaily = cashRegisterDailyRepositoryFacade.findCashRegisterDailyByUltimate();
         CashBase cashBase = cashBaseRepositoryFacade.findCashBaseByUltime();
         double totalSales = cashRegisterDaily.getDailyCashSales() + cashRegisterDaily.getDailyTransactionsSales() + cashRegisterDaily.getDailyCreditSales();
 
@@ -44,48 +41,29 @@ public class CashRegisterServiceImpl implements CashRegisterService {
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se han registrado movimientos");
         }
 
-        CashRegisterHistory cashRegisterHistory = new CashRegisterHistory();
-        cashRegisterHistory.setDailyCashBase(cashBase.getDailyCashBase());
-        cashRegisterHistory.setDailyCashBase(cashRegisterDaily.getDailyCashSales());
-        cashRegisterHistory.setDailyTransactionsSales(cashRegisterDaily.getDailyTransactionsSales());
-        cashRegisterHistory.setDailyCreditSales(cashRegisterDaily.getDailyCreditSales());
-        cashRegisterHistory.setTotalSales(totalSales);
+        cashRegisterDaily.setDailyCashBase(cashBase.getDailyCashBase());
 
-        cashRegisterHistory.setMoneyOut(0);
+        cashRegisterDaily.setTotalSales(totalSales);
+        cashRegisterDaily.setMoneyOut(0);
 
-        cashRegisterHistory.setCashCreditCapital(cashRegisterDaily.getCashCreditCapital());
-        cashRegisterHistory.setTransactionCreditCapital(cashRegisterDaily.getTransactionCreditCapital());
+        cashRegisterDaily.setCreateAt(new Date());
 
-        cashRegisterHistory.setCreateAt(new Date());
-
-
-        cashRegisterRepositoryFacadeHistory.saveCashRegister(cashRegisterHistory);
-
-        cashRegisterDaily.setDailyCashSales(0);
-        cashRegisterDaily.setDailyTransactionsSales(0);
-        cashRegisterDaily.setDailyCreditSales(0);
-        cashRegisterDaily.setCashCreditCapital(0);
-        cashRegisterDaily.setTransactionCreditCapital(0);
         cashRegisterDaily.setCashRegister(true);
 
-
-        cashRegisterDailyRepositoryFacade.save(cashRegisterDaily);
-
-
-        return null;
+        return getResponseCashRegister( cashRegisterDailyRepositoryFacade.save(cashRegisterDaily));
     }
 
-    public ResponseCashRegisterDTO getResponseCashRegister(CashRegisterHistory cashRegisterHistory) {
+    public ResponseCashRegisterDTO getResponseCashRegister(CashRegisterDaily cashRegisterDaily) {
         ResponseCashRegisterDTO responseCashRegisterDTO = new ResponseCashRegisterDTO();
-        responseCashRegisterDTO.setDailyCashBase(cashRegisterHistory.getDailyCashBase());
-        responseCashRegisterDTO.setDailyCashSales(cashRegisterHistory.getDailyCashSales());
-        responseCashRegisterDTO.setDailyTransactionsSales(cashRegisterHistory.getDailyTransactionsSales());
-        responseCashRegisterDTO.setDailyCreditSales(cashRegisterHistory.getDailyCreditSales());
-        responseCashRegisterDTO.setTotalSales(cashRegisterHistory.getTotalSales());
-        responseCashRegisterDTO.setMoneyOut(cashRegisterHistory.getMoneyOut());
-        responseCashRegisterDTO.setCashCreditCapital(cashRegisterHistory.getCashCreditCapital());
-        responseCashRegisterDTO.setTransactionCreditCapital(cashRegisterHistory.getTransactionCreditCapital());
-        responseCashRegisterDTO.setCreateAt(cashRegisterHistory.getCreateAt());
+        responseCashRegisterDTO.setDailyCashBase(cashRegisterDaily.getDailyCashBase());
+        responseCashRegisterDTO.setDailyCashSales(cashRegisterDaily.getDailyCashSales());
+        responseCashRegisterDTO.setDailyTransactionsSales(cashRegisterDaily.getDailyTransactionsSales());
+        responseCashRegisterDTO.setDailyCreditSales(cashRegisterDaily.getDailyCreditSales());
+        responseCashRegisterDTO.setTotalSales(cashRegisterDaily.getTotalSales());
+        responseCashRegisterDTO.setMoneyOut(cashRegisterDaily.getMoneyOut());
+        responseCashRegisterDTO.setCashCreditCapital(cashRegisterDaily.getCashCreditCapital());
+        responseCashRegisterDTO.setTransactionCreditCapital(cashRegisterDaily.getTransactionCreditCapital());
+        responseCashRegisterDTO.setCreateAt(cashRegisterDaily.getCreateAt());
 
         return responseCashRegisterDTO;
     }

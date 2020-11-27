@@ -16,7 +16,7 @@ public class CashRegisterDailyRepositoryFacadeImpl implements CashRegisterDailyR
 
     private final CashRegisterDailyRepository cashRegisterDailyRepository;
     @Override
-    public CashRegisterDaily findCashBaseByUltimate() {
+    public CashRegisterDaily findCashRegisterDailyByUltimate() {
         return Optional.ofNullable(cashRegisterDailyRepository.findCashRegisterDailyByCashRegister(false))
                 .orElseThrow(() -> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No existe registro de la base diaria "));
 

@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -59,7 +58,16 @@ public class TicketServicesImpl implements TicketServices {
         }
 
         Ticket ticket = ticketRepositoryFacade.validateAndGetTicketById(idTicket);
-        CashRegisterDaily cashRegisterDaily = cashRegisterDailyRepositoryFacade.findCashBaseByUltimate();
+
+        if(!(cashRegisterDailyRepositoryFacade.existsCashRegisterDailiesByCashRegister(false))){
+
+            CashRegisterDaily cashRegisterDaily = new CashRegisterDaily();
+            cashRegisterDaily.setCreateAt(new Date());
+            cashRegisterDailyRepositoryFacade.save(cashRegisterDaily);
+
+        }
+
+        CashRegisterDaily cashRegisterDaily = cashRegisterDailyRepositoryFacade.findCashRegisterDailyByUltimate();
 
         if (ticket.getTicketStatus() == TicketStatus.PAYED) {
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La orden ha sido cancelada en su totalidad");
