@@ -1,7 +1,5 @@
 package com.company.storeapi.services.finances.cashRegister.impl;
 
-import com.company.storeapi.core.exceptions.enums.LogRefServices;
-import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
 import com.company.storeapi.core.mapper.CashRegisterMapper;
 import com.company.storeapi.model.entity.finance.CashBase;
 import com.company.storeapi.model.entity.finance.CashRegisterDaily;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,9 +24,8 @@ public class CashRegisterServiceImpl implements CashRegisterService {
 
     @Override
     public List<ResponseCashRegisterDTO> getCashRegister() {
-      //  List<CashRegisterDaily> cashRegisterHistories = cashRegisterDailyRepositoryFacade.();
-      //  return cashRegisterHistories.stream().map(cashRegisterMapper::DtoChasRegisterDocument).collect(Collectors.toList());
-  return null;
+       List<CashRegisterDaily> cashRegisterHistories = cashRegisterDailyRepositoryFacade.findAllCashRegisterDaily();
+        return cashRegisterHistories.stream().filter(CashRegisterDaily::isCashRegister).map(cashRegisterMapper::DtoChasRegisterDocument).collect(Collectors.toList());
     }
 
     @Override
