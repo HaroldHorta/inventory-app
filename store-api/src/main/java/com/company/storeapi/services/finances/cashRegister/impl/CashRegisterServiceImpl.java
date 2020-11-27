@@ -36,12 +36,8 @@ public class CashRegisterServiceImpl implements CashRegisterService {
         double totalSales = cashRegisterDaily.getDailyCashSales() + cashRegisterDaily.getDailyTransactionsSales() + cashRegisterDaily.getDailyCreditSales();
 
         cashRegisterDaily.setDailyCashBase(cashBase.getDailyCashBase());
-
         cashRegisterDaily.setTotalSales(totalSales);
-        cashRegisterDaily.setMoneyOut(0);
-
         cashRegisterDaily.setCreateAt(new Date());
-
         cashRegisterDaily.setCashRegister(true);
 
         return getResponseCashRegister( cashRegisterDailyRepositoryFacade.save(cashRegisterDaily));
