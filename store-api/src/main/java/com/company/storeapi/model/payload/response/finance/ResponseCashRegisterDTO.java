@@ -1,10 +1,6 @@
 package com.company.storeapi.model.payload.response.finance;
 
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.util.Date;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Data
 public class ResponseCashRegisterDTO {
@@ -18,6 +14,5 @@ public class ResponseCashRegisterDTO {
     //private double discounts;
     private double cashCreditCapital;
     private double transactionCreditCapital;
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
-    private Date createAt;
+    private String createAt;
 }

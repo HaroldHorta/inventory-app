@@ -14,7 +14,6 @@ public class ResponseExpensesDTO {
     private String description;
     private double price;
     private Set<String> images = new LinkedHashSet<>();
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
-    private Date createAt;
+    private String createAt;
 
 }

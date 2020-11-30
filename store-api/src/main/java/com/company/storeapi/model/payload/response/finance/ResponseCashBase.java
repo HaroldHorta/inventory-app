@@ -9,7 +9,6 @@ import java.util.Date;
 public class ResponseCashBase {
 
     private double dailyCashBase;
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
-    private Date createAt;
+    private String createAt;
 
 }

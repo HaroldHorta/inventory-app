@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -22,6 +23,7 @@ public class Ticket {
     private String id;
     private Order order;
     private Customer customer;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date createAt;
     private PaymentType paymentType;
     private TicketStatus ticketStatus;

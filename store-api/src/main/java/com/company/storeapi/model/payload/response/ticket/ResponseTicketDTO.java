@@ -6,6 +6,7 @@ import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.enums.TicketStatus;
 import com.company.storeapi.model.payload.response.finance.CreditCapital;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -17,7 +18,7 @@ public class ResponseTicketDTO {
     private String id;
     private Order order;
     private Customer customer;
-    private Date createAt;
+    private String createAt;
     private PaymentType paymentType;
     private TicketStatus ticketStatus;
     private Set<CreditCapital> creditCapitals = new LinkedHashSet<>();

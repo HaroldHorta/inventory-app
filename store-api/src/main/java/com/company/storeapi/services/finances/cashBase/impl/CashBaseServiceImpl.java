@@ -1,5 +1,6 @@
 package com.company.storeapi.services.finances.cashBase.impl;
 
+import com.company.storeapi.core.mapper.CashRegisterMapper;
 import com.company.storeapi.model.entity.finance.CashBase;
 import com.company.storeapi.model.payload.response.finance.ResponseCashBase;
 import com.company.storeapi.repositories.finances.cashBase.facade.CashBaseRepositoryFacade;
@@ -16,11 +17,12 @@ import java.util.stream.Collectors;
 public class CashBaseServiceImpl implements CashBaseService {
 
     private final CashBaseRepositoryFacade cashBaseRepositoryFacade;
+    private final CashRegisterMapper cashRegisterMapper;
 
     @Override
     public ResponseCashBase findCashBaseByUltimate() {
         CashBase cashBase = cashBaseRepositoryFacade.findCashBaseByUltime();
-        return getResponseCashBase(cashBase);
+        return cashRegisterMapper.getResponseCashBase(cashBase);
     }
 
     @Override
@@ -28,25 +30,18 @@ public class CashBaseServiceImpl implements CashBaseService {
         if (cashBaseRepositoryFacade.existsByCashRegister(false)) {
             CashBase cashBase = cashBaseRepositoryFacade.findCashBaseByUltime();
             cashBase.setDailyCashBase(valueCashBase);
-            ResponseCashBase responseCashBase = getResponseCashBase(cashBase);
             cashBaseRepositoryFacade.save(cashBase);
-            return responseCashBase;
+            return cashRegisterMapper.getResponseCashBase(cashBase);
         } else {
             CashBase cashBase = new CashBase();
             cashBase.setCreateAt(new Date());
             cashBase.setDailyCashBase(valueCashBase);
-            ResponseCashBase responseCashBase = getResponseCashBase(cashBase);
             cashBaseRepositoryFacade.save(cashBase);
-            return responseCashBase;
+            return cashRegisterMapper.getResponseCashBase(cashBase);
+
         }
     }
 
-    public ResponseCashBase getResponseCashBase(CashBase cashBase) {
-        ResponseCashBase responseCashBase = new ResponseCashBase();
-        responseCashBase.setDailyCashBase(cashBase.getDailyCashBase());
-        responseCashBase.setCreateAt(cashBase.getCreateAt());
-        return responseCashBase;
-    }
 
 
 }
