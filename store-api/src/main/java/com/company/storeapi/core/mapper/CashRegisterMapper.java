@@ -15,4 +15,5 @@ public abstract class CashRegisterMapper {
     public abstract ResponseCashRegisterDTO DtoChasRegisterDocument(CashRegisterDaily cashRegister);
 
     public abstract ResponseCashBase getResponseCashBase (CashBase cashBase);
+
 }

@@ -40,21 +40,7 @@ public class CashRegisterServiceImpl implements CashRegisterService {
         cashRegisterDaily.setCreateAt(new Date());
         cashRegisterDaily.setCashRegister(true);
 
-        return getResponseCashRegister( cashRegisterDailyRepositoryFacade.save(cashRegisterDaily));
+        return cashRegisterMapper.DtoChasRegisterDocument( cashRegisterDailyRepositoryFacade.save(cashRegisterDaily));
     }
 
-    public ResponseCashRegisterDTO getResponseCashRegister(CashRegisterDaily cashRegisterDaily) {
-        ResponseCashRegisterDTO responseCashRegisterDTO = new ResponseCashRegisterDTO();
-        responseCashRegisterDTO.setDailyCashBase(cashRegisterDaily.getDailyCashBase());
-        responseCashRegisterDTO.setDailyCashSales(cashRegisterDaily.getDailyCashSales());
-        responseCashRegisterDTO.setDailyTransactionsSales(cashRegisterDaily.getDailyTransactionsSales());
-        responseCashRegisterDTO.setDailyCreditSales(cashRegisterDaily.getDailyCreditSales());
-        responseCashRegisterDTO.setTotalSales(cashRegisterDaily.getTotalSales());
-        responseCashRegisterDTO.setMoneyOut(cashRegisterDaily.getMoneyOut());
-        responseCashRegisterDTO.setCashCreditCapital(cashRegisterDaily.getCashCreditCapital());
-        responseCashRegisterDTO.setTransactionCreditCapital(cashRegisterDaily.getTransactionCreditCapital());
-        responseCashRegisterDTO.setCreateAt(cashRegisterDaily.getCreateAt());
-
-        return responseCashRegisterDTO;
-    }
 }
