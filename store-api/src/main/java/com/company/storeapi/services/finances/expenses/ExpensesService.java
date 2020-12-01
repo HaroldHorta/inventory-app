@@ -10,4 +10,6 @@ public interface ExpensesService {
     List<ResponseExpensesDTO> findAllExpenses();
 
     ResponseExpensesDTO saveExpenses (RequestAddExpensesDTO requestAddExpensesDTO);
+
+    ResponseExpensesDTO findExpensesById (String id);
 }

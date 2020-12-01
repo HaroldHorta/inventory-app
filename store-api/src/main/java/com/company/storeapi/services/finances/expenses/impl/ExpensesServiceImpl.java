@@ -26,7 +26,7 @@ public class ExpensesServiceImpl implements ExpensesService {
     @Override
     public List<ResponseExpensesDTO> findAllExpenses() {
         List<Expenses> expenses = expensesRepositoryFacade.findAllExpenses();
-        return expenses.stream().map(expensesMapper::DtoResponseExpensesDTODocument).collect(Collectors.toList());
+        return expenses.stream().map(expensesMapper::DtoResponseExpenses).collect(Collectors.toList());
     }
 
     @Override
@@ -54,6 +54,11 @@ public class ExpensesServiceImpl implements ExpensesService {
         cashRegisterDailyRepositoryFacade.save(cashRegisterDaily);
 
 
-        return expensesMapper.DtoResponseExpensesDTODocument(expensesRepositoryFacade.saveExpenses(expenses));
+        return expensesMapper.DtoResponseExpenses(expensesRepositoryFacade.saveExpenses(expenses));
+    }
+
+    @Override
+    public ResponseExpensesDTO findExpensesById(String id) {
+        return expensesMapper.DtoResponseExpenses(expensesRepositoryFacade.findExpensesById(id));
     }
 }

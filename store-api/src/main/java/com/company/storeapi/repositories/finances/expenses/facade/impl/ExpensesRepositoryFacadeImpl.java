@@ -37,4 +37,9 @@ public class ExpensesRepositoryFacadeImpl implements ExpensesRepositoryFacade {
     public Expenses saveExpenses(Expenses expenses) {
         return expensesRepository.save(expenses);
     }
+
+    @Override
+    public Expenses findExpensesById(String id) {
+        return expensesRepository.findById(id).orElseThrow(() -> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de gastos co el id: " + id));
+    }
 }

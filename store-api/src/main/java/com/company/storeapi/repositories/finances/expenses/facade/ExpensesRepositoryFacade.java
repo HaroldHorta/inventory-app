@@ -7,6 +7,9 @@ import java.util.List;
 public interface ExpensesRepositoryFacade {
 
     List<Expenses> findAllExpenses();
+
     Expenses saveExpenses (Expenses expenses);
+
+    Expenses findExpensesById (String id);
 
 }

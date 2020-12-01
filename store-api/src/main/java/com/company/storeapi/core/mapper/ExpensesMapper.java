@@ -12,6 +12,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 )
 public abstract class ExpensesMapper {
 
-    public abstract ResponseExpensesDTO DtoResponseExpensesDTODocument(Expenses expenses);
+    public abstract ResponseExpensesDTO DtoResponseExpenses(Expenses expenses);
 
 }

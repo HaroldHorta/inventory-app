@@ -25,9 +25,14 @@ public class ExpensesRestApi {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ResponseExpensesDTO> findAllExpenses() throws ServiceException {
-
         return expensesService.findAllExpenses();
+    }
 
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseExpensesDTO> findExpensesById(@PathVariable("id") String  id)
+    {
+        ResponseExpensesDTO entity = expensesService.findExpensesById(id);
+        return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
