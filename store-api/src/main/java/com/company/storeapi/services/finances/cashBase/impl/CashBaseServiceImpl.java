@@ -30,6 +30,7 @@ public class CashBaseServiceImpl implements CashBaseService {
         if (cashBaseRepositoryFacade.existsByCashRegister(false)) {
             CashBase cashBase = cashBaseRepositoryFacade.findCashBaseByUltime();
             cashBase.setDailyCashBase(valueCashBase);
+            cashBase.setCreateAt(new Date());
             cashBaseRepositoryFacade.save(cashBase);
             return cashRegisterMapper.getResponseCashBase(cashBase);
         } else {
