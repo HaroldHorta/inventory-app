@@ -7,14 +7,16 @@ import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.services.product.ProductService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -22,6 +24,8 @@ import java.util.List;
 @CrossOrigin({"*"})
 public class ProductRestApi {
 
+    @Value("${spring.size.pagination}")
+    private int size;
     private final ProductService service;
 
     public ProductRestApi(ProductService service) {
@@ -29,8 +33,9 @@ public class ProductRestApi {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ResponseProductDTO> getAllProduct() throws ServiceException {
-        return service.getAllProducts();
+    public List<ResponseProductDTO> getAllProduct(@Param(value = "page") int page) throws ServiceException {
+        Pageable requestedPage = PageRequest.of(page, size);
+        return service.getAllProduct(requestedPage);
     }
 
     @GetMapping(value = "/products", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -38,36 +43,37 @@ public class ProductRestApi {
         return service.getAllProductsFilters();
     }
 
-   @GetMapping(value = "/category/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/category/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ResponseProductDTO> getProductByCategory(@PathVariable("id") String id) throws ServiceException {
         return service.findProductByCategory(id);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseProductDTO> getProductById(@PathVariable("id") String  id)
+    public ResponseEntity<ResponseProductDTO> getProductById(@PathVariable("id") String id)
             throws ServiceException {
         ResponseProductDTO entity = service.validateAndGetProductById(id);
         return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.OK);
     }
 
     @PostMapping()
-       public ResponseEntity<ResponseProductDTO> create(@RequestBody RequestAddProductDTO requestAddProductDTO) throws ServiceException {
+    public ResponseEntity<ResponseProductDTO> create(@RequestBody RequestAddProductDTO requestAddProductDTO) throws ServiceException {
         ResponseProductDTO created = service.saveProduct(requestAddProductDTO);
         return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseProductDTO> updateProduct (@PathVariable String id, @RequestBody RequestUpdateProductDTO productDTO) throws ServiceException{
+    public ResponseEntity<ResponseProductDTO> updateProduct(@PathVariable String id, @RequestBody RequestUpdateProductDTO productDTO) throws ServiceException {
         ResponseProductDTO update = service.updateProduct(id, productDTO);
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }
 
 
-    @PatchMapping(value="/{id}/status/{status}")
-    public ResponseEntity<ResponseProductDTO> updateStatus(@PathVariable String id, @PathVariable Status status) throws ServiceException{
-        ResponseProductDTO addUnit = service.updateStatus(id,status);
+    @PatchMapping(value = "/{id}/status/{status}")
+    public ResponseEntity<ResponseProductDTO> updateStatus(@PathVariable String id, @PathVariable Status status) throws ServiceException {
+        ResponseProductDTO addUnit = service.updateStatus(id, status);
         return new ResponseEntity<>(addUnit, new HttpHeaders(), HttpStatus.OK);
     }
+
 
 
 }

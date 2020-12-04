@@ -4,10 +4,12 @@ import com.company.storeapi.core.constants.MessageError;
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.model.entity.Product;
+import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.repositories.product.ProductRepository;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,11 +27,9 @@ public class ProductRepositoryFacadeImpl implements ProductRepositoryFacade {
 
 
     @Override
-    public List<Product> getAllProduct() {
+    public List<Product> getAllProduct(Status status, Pageable pageable) {
         try {
-            return Optional.of(repository.findAll())
-                    .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND,"No se encontraron productos registrados"));
-
+           return repository.findAllByStatus(status,pageable);
         }catch (IllegalArgumentException ie){
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
         }catch (DataAccessException er){

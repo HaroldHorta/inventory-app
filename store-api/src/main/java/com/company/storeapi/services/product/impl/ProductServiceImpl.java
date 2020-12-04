@@ -17,6 +17,7 @@ import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import com.company.storeapi.services.product.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -34,16 +35,21 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductMapper productMapper;
 
+
     @Override
-    public List<ResponseProductDTO> getAllProducts() {
-        List<Product> products = productRepositoryFacade.getAllProduct();
-        return products.stream().map(productMapper::toProductDto).collect(Collectors.toList());
+    public List<ResponseProductDTO> getAllProduct(Pageable pageable) {
+        List<Product> products = productRepositoryFacade.getAllProduct(Status.ACTIVE, pageable);
+        return products.stream().filter(product -> product.getUnit() != 0 && product.getStatus() == Status.ACTIVE).map(productMapper::toProductDto).collect(Collectors.toList());
+
     }
+
 
     @Override
     public List<ResponseProductDTO> getAllProductsFilters() {
-        List<Product> products = productRepositoryFacade.getAllProduct();
-        return products.stream().filter(product -> product.getUnit() != 0 && product.getStatus() == Status.ACTIVE).map(productMapper::toProductDto).collect(Collectors.toList());
+//        List<Product> products = productRepositoryFacade.getAllProduct();
+//        return products.stream().filter(product -> product.getUnit() != 0 && product.getStatus() == Status.ACTIVE).map(productMapper::toProductDto).collect(Collectors.toList());
+
+   return null;
     }
 
     @Override

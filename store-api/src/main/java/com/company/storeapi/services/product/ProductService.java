@@ -6,12 +6,14 @@ import com.company.storeapi.model.payload.request.product.RequestUpdateProductDT
 import com.company.storeapi.model.payload.request.product.RequestUpdateUnitDTO;
 import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
 public interface ProductService {
 
-    List<ResponseProductDTO> getAllProducts();
+    List<ResponseProductDTO> getAllProduct (Pageable pageable);
 
     List<ResponseProductDTO> getAllProductsFilters();
 
