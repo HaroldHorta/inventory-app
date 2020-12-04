@@ -9,6 +9,7 @@ import com.company.storeapi.repositories.product.ProductRepository;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -27,7 +28,19 @@ public class ProductRepositoryFacadeImpl implements ProductRepositoryFacade {
 
 
     @Override
-    public List<Product> getAllProduct(Status status, Pageable pageable) {
+    public List<Product> getAllProduct() {
+        try {
+            return Optional.of(repository.findAll())
+                    .orElseThrow(() -> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de productos"));
+        } catch (EmptyResultDataAccessException er) {
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+        } catch (DataAccessException er) {
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD, er);
+        }
+    }
+
+    @Override
+    public List<Product> getAllProductFilters(Status status, Pageable pageable) {
         try {
            return repository.findAllByStatus(status,pageable);
         }catch (IllegalArgumentException ie){

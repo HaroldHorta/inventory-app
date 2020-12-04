@@ -37,20 +37,19 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public List<ResponseProductDTO> getAllProduct(Pageable pageable) {
-        List<Product> products = productRepositoryFacade.getAllProduct(Status.ACTIVE, pageable);
+    public List<ResponseProductDTO> getAllProduct() {
+        List<Product> products = productRepositoryFacade.getAllProduct();
+        return products.stream().map(productMapper::toProductDto).collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<ResponseProductDTO> getAllProductsFilters(Pageable pageable) {
+        List<Product> products = productRepositoryFacade.getAllProductFilters(Status.ACTIVE, pageable);
         return products.stream().filter(product -> product.getUnit() != 0 && product.getStatus() == Status.ACTIVE).map(productMapper::toProductDto).collect(Collectors.toList());
 
     }
 
-
-    @Override
-    public List<ResponseProductDTO> getAllProductsFilters() {
-//        List<Product> products = productRepositoryFacade.getAllProduct();
-//        return products.stream().filter(product -> product.getUnit() != 0 && product.getStatus() == Status.ACTIVE).map(productMapper::toProductDto).collect(Collectors.toList());
-
-   return null;
-    }
 
     @Override
     public ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO) {

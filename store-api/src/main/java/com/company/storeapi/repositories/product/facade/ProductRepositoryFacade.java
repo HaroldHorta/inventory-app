@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface ProductRepositoryFacade {
 
-    List<Product> getAllProduct (Status status, Pageable pageable);
+    List<Product> getAllProduct ();
+
+    List<Product> getAllProductFilters (Status status, Pageable pageable);
 
     Product saveProduct(Product product);
 

@@ -32,16 +32,17 @@ public class ProductRestApi {
         this.service = service;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ResponseProductDTO> getAllProduct(@Param(value = "page") int page) throws ServiceException {
+    @GetMapping(value ="/products" ,produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ResponseProductDTO> getAllProductFilters(@Param(value = "page") int page) throws ServiceException {
         Pageable requestedPage = PageRequest.of(page, size);
-        return service.getAllProduct(requestedPage);
+        return service.getAllProductsFilters(requestedPage);
     }
 
-    @GetMapping(value = "/products", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ResponseProductDTO> getAllProductFilters() throws ServiceException {
-        return service.getAllProductsFilters();
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ResponseProductDTO> getAllProduct() throws ServiceException {
+        return service.getAllProduct();
     }
+
 
     @GetMapping(value = "/category/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ResponseProductDTO> getProductByCategory(@PathVariable("id") String id) throws ServiceException {
