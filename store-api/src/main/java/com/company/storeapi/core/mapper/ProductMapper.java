@@ -17,11 +17,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 @Mapper(
         componentModel = "spring",
@@ -29,6 +28,12 @@ import java.util.Set;
         uses = {CategoryMapper.class}
 )
 public abstract class ProductMapper {
+
+    @Value("${spring.img.path}")
+    private String path;
+
+    @Value("${spring.img.extension}")
+    private String extension;
 
     @Autowired
     private CategoryService categoryService;
@@ -45,8 +50,6 @@ public abstract class ProductMapper {
     public abstract RequestAddProductDTO toProductRequestUpdate(RequestUpdateProductDTO product);
 
     public abstract void updateProductFromDto(RequestUpdateProductDTO updateOrderDto, @MappingTarget Product product);
-
-    public abstract Product toProduct(ResponseProductDTO responseProductDTO);
 
     public Product toProductResponse(ResponseProductDTO responseProductDTO){
         Product product = new Product();
@@ -65,7 +68,7 @@ public abstract class ProductMapper {
         return product;
     }
 
-    public Product toProduct(RequestAddProductDTO requestAddProductDTO) {
+    public Product toProduct(RequestAddProductDTO requestAddProductDTO) throws IOException, FileNotFoundException {
 
         Product product = new Product();
         product.setName(requestAddProductDTO.getName());
@@ -79,9 +82,19 @@ public abstract class ProductMapper {
         product.setPriceBuy(requestAddProductDTO.getPriceBuy());
         product.setPriceSell(requestAddProductDTO.getPriceSell());
         product.setUnit(requestAddProductDTO.getUnit());
-        product.setPhoto(requestAddProductDTO.getPhoto());
 
-        product.setPhoto(requestAddProductDTO.getPhoto() == null ? ImageDefault.photo : requestAddProductDTO.getPhoto());
+        File directory = new File(path);
+
+        if (!directory.exists() && !directory.mkdirs()) throw new IOException("Could not create directory " + directory);
+
+        String photo = path + requestAddProductDTO.getName() + extension;
+
+        byte[] photoByte = Base64.getDecoder().decode(requestAddProductDTO.getPhoto());
+        OutputStream out = new FileOutputStream(photo);
+        out.write(photoByte);
+        out.close();
+
+        product.setPhoto(requestAddProductDTO.getPhoto() == null ? ImageDefault.photo : photo);
 
         List<Assets> assets = assetRepositoryFacade.getAllCustomers();
         assets.forEach(asset -> {

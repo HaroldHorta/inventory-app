@@ -9,6 +9,7 @@ import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ProductService {
@@ -17,7 +18,7 @@ public interface ProductService {
 
     List<ResponseProductDTO> getAllProductsFilters (Pageable pageable);
 
-    ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO);
+    ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO) throws IOException;
 
     ResponseProductDTO updateProduct(String id, RequestUpdateProductDTO requestUpdateCustomerDTO);
 

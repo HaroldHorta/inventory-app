@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -52,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO) {
+    public ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO) throws IOException {
         return productMapper.toProductDto(productRepositoryFacade.saveProduct(productMapper.toProduct(requestAddProductDTO)));
     }
 
