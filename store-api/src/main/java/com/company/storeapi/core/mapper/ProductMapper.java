@@ -17,9 +17,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
-import java.io.*;
 import java.util.*;
 
 @Mapper(
@@ -28,12 +26,6 @@ import java.util.*;
         uses = {CategoryMapper.class}
 )
 public abstract class ProductMapper {
-
-    @Value("${spring.img.path}")
-    private String path;
-
-    @Value("${spring.img.extension}")
-    private String extension;
 
     @Autowired
     private CategoryService categoryService;
@@ -51,7 +43,7 @@ public abstract class ProductMapper {
 
     public abstract void updateProductFromDto(RequestUpdateProductDTO updateOrderDto, @MappingTarget Product product);
 
-    public Product toProductResponse(ResponseProductDTO responseProductDTO){
+    public Product toProductResponse(ResponseProductDTO responseProductDTO) {
         Product product = new Product();
         product.setId(responseProductDTO.getId());
         product.setName(responseProductDTO.getName());
@@ -68,7 +60,7 @@ public abstract class ProductMapper {
         return product;
     }
 
-    public Product toProduct(RequestAddProductDTO requestAddProductDTO) throws IOException, FileNotFoundException {
+    public Product toProduct(RequestAddProductDTO requestAddProductDTO) {
 
         Product product = new Product();
         product.setName(requestAddProductDTO.getName());
@@ -82,19 +74,10 @@ public abstract class ProductMapper {
         product.setPriceBuy(requestAddProductDTO.getPriceBuy());
         product.setPriceSell(requestAddProductDTO.getPriceSell());
         product.setUnit(requestAddProductDTO.getUnit());
+        product.setPhoto(requestAddProductDTO.getPhoto());
 
-        File directory = new File(path);
 
-        if (!directory.exists() && !directory.mkdirs()) throw new IOException("Could not create directory " + directory);
-
-        String photo = path + requestAddProductDTO.getName() + extension;
-
-        byte[] photoByte = Base64.getDecoder().decode(requestAddProductDTO.getPhoto());
-        OutputStream out = new FileOutputStream(photo);
-        out.write(photoByte);
-        out.close();
-
-        product.setPhoto(requestAddProductDTO.getPhoto() == null ? ImageDefault.photo : photo);
+        product.setPhoto(requestAddProductDTO.getPhoto() == null ? ImageDefault.photo : requestAddProductDTO.getPhoto());
 
         List<Assets> assets = assetRepositoryFacade.getAllCustomers();
         assets.forEach(asset -> {
@@ -106,13 +89,13 @@ public abstract class ProductMapper {
 
         List<CountingGeneral> counting = countingGeneralService.getAllCountingGeneral();
 
-        if((counting.isEmpty())){
+        if ((counting.isEmpty())) {
             CountingGeneral c = new CountingGeneral();
 
             c.setQuantity_of_product(1);
             countingGeneralService.saveCountingGeneral(c);
 
-        }  else {
+        } else {
             counting.forEach(p -> {
                 CountingGeneral countingGeneral = countingGeneralService.validateCountingGeneral(p.getId());
 
