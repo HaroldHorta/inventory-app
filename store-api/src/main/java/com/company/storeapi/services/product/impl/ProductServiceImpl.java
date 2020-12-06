@@ -11,6 +11,7 @@ import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateUnitDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
+import com.company.storeapi.model.payload.response.product.ResponseListProductPaginationDto;
 import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
@@ -20,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -45,15 +45,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ResponseProductDTO> getAllProductsFilters(Pageable pageable) {
-        List<Product> products = productRepositoryFacade.getAllProductFilters(Status.ACTIVE, pageable);
-        return products.stream().filter(product -> product.getUnit() != 0 && product.getStatus() == Status.ACTIVE).map(productMapper::toProductDto).collect(Collectors.toList());
+    public ResponseListProductPaginationDto getAllProductsFilters() {
+        List<Product> products = productRepositoryFacade.getAllProduct();
+        return getResponseListProductPaginationDto(products);
+    }
 
+    public ResponseListProductPaginationDto getResponseListProductPaginationDto(List<Product> products) {
+        List<ResponseProductDTO> responseProductDTOList = products.stream().filter(product -> product.getUnit() != 0 && product.getStatus() == Status.ACTIVE).map(productMapper::toProductDto).collect(Collectors.toList());
+        List<Product> productsFilter = productRepositoryFacade.getAllProduct().stream().filter(p -> p.getStatus() == Status.ACTIVE && p.getUnit() != 0).collect(Collectors.toList());
+        ResponseListProductPaginationDto responseListProductPaginationDto = new ResponseListProductPaginationDto();
+        responseListProductPaginationDto.setProducts(responseProductDTOList);
+        responseListProductPaginationDto.setCount(productsFilter.size());
+        return responseListProductPaginationDto;
+    }
+
+    @Override
+    public ResponseListProductPaginationDto getAllProductsFilters(Pageable pageable) {
+        List<Product> products = productRepositoryFacade.getAllProductFilters(Status.ACTIVE, pageable);
+        return getResponseListProductPaginationDto(products);
     }
 
 
     @Override
-    public ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO) throws IOException {
+    public ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO) {
         return productMapper.toProductDto(productRepositoryFacade.saveProduct(productMapper.toProduct(requestAddProductDTO)));
     }
 
