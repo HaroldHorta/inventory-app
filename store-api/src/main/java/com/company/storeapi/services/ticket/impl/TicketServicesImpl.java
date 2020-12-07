@@ -2,6 +2,7 @@ package com.company.storeapi.services.ticket.impl;
 
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
+import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.core.mapper.TicketMapper;
 import com.company.storeapi.model.entity.Ticket;
 import com.company.storeapi.model.entity.finance.CashRegisterDaily;
@@ -46,7 +47,12 @@ public class TicketServicesImpl implements TicketServices {
 
     @Override
     public List<ResponseTicketDTO> findTicketByCustomer_NroDocument(String nroDocument) {
-        return ticketRepositoryFacade.findTicketByCustomer_NroDocument(nroDocument).stream().map(ticketMapper::toTicketDto).collect(Collectors.toList());
+        List<Ticket> tickets = ticketRepositoryFacade.findTicketByCustomer_NroDocument(nroDocument);
+        if(tickets.isEmpty()){
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "El cliente no tiene ticket asosiados");
+        }
+
+        return tickets.stream().map(ticketMapper::toTicketDto).collect(Collectors.toList());
     }
 
     @Override
