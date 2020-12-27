@@ -47,6 +47,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseCategoryDTO saveCategory(RequestAddCategoryDTO requestAddCategoryDTO) {
+        boolean isDescriptionCategory = repositoryFacade.existsCategoryByDescription(requestAddCategoryDTO.getDescription());
+        if(isDescriptionCategory){
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La categoría con el nombre " + requestAddCategoryDTO.getDescription() + " ya existe");
+        }
         return categoryMapper.toCategoryDto(repositoryFacade.saveCategory(categoryMapper.toCategory(requestAddCategoryDTO)));
     }
 

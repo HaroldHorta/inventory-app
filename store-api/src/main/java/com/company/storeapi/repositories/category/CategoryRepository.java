@@ -9,4 +9,6 @@ public interface CategoryRepository extends MongoRepository<Category,String> {
     Category findCategoryById(String id);
 
     Category findCategoriesByDescription(String description);
+
+    Boolean existsCategoryByDescription(String description);
 }
