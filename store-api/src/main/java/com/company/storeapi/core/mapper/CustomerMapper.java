@@ -31,12 +31,12 @@ public abstract class CustomerMapper {
 
     public Customer toCustomer(RequestAddCustomerDTO requestAddCustomerDTO){
 
-        Boolean existDocument = customerRepositoryFacade.validateAndGetCustomerByNroDocument(requestAddCustomerDTO.getNroDocument());
+        Boolean existDocument = customerRepositoryFacade.validateAndGetCustomerByNroDocument(requestAddCustomerDTO.getNroDocument().trim());
         if(existDocument){
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"El numero de cedula ya existe");
         }
 
-        Boolean existEmail = customerRepositoryFacade.validateAndGetCustomerByEmail(requestAddCustomerDTO.getEmail());
+        Boolean existEmail = customerRepositoryFacade.validateAndGetCustomerByEmail(requestAddCustomerDTO.getEmail().trim());
 
         if(existEmail){
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"El correo ya existe");
@@ -45,15 +45,15 @@ public abstract class CustomerMapper {
         if(!requestAddCustomerDTO.getName().isEmpty() && !requestAddCustomerDTO.getTypeDocument().toString().isEmpty() && !requestAddCustomerDTO.getNroDocument().isEmpty() ) {
             customer.setName(requestAddCustomerDTO.getName());
             customer.setTypeDocument(requestAddCustomerDTO.getTypeDocument());
-            customer.setNroDocument(requestAddCustomerDTO.getNroDocument());
-            Matcher mather = pattern.matcher(requestAddCustomerDTO.getEmail());
+            customer.setNroDocument(requestAddCustomerDTO.getNroDocument().trim());
+            Matcher mather = pattern.matcher(requestAddCustomerDTO.getEmail().trim());
             if (mather.find()) {
-                customer.setEmail(requestAddCustomerDTO.getEmail());
+                customer.setEmail(requestAddCustomerDTO.getEmail().trim());
             } else {
                 throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Email no valido");
             }
             customer.setAddress(requestAddCustomerDTO.getAddress());
-            customer.setPhone(requestAddCustomerDTO.getPhone());
+            customer.setPhone(requestAddCustomerDTO.getPhone().trim());
             customer.setStatus(Status.ACTIVE);
             return customer;
         } else  {

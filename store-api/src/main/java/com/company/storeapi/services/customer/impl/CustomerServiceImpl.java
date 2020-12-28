@@ -73,7 +73,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public ResponseCustomerDTO validateAndGetCustomerById(String  id) {
-        return customerMapper.toCustomerDto(customerRepositoryFacade.validateAndGetCustomerById(id));
+        return customerMapper.toCustomerDto(customerRepositoryFacade.validateAndGetCustomerById(id.trim()));
     }
 
     @Override
@@ -85,7 +85,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public ResponseCustomerDTO getCustomerByNroDocument(String nroDocument) {
-        return customerMapper.toCustomerDto(customerRepositoryFacade.findByNroDocument(nroDocument));
+        return customerMapper.toCustomerDto(customerRepositoryFacade.findByNroDocument(nroDocument.trim()));
     }
 
 
