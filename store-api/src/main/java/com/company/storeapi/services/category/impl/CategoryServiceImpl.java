@@ -4,6 +4,7 @@ import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.core.mapper.CategoryMapper;
 import com.company.storeapi.core.mapper.ProductMapper;
+import com.company.storeapi.core.util.StandNameUtil;
 import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.entity.Product;
@@ -47,9 +48,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseCategoryDTO saveCategory(RequestAddCategoryDTO requestAddCategoryDTO) {
-        boolean isDescriptionCategory = repositoryFacade.existsCategoryByDescription(requestAddCategoryDTO.getDescription());
+        String description = StandNameUtil.toCapitalLetters(requestAddCategoryDTO.getDescription().trim());
+        boolean isDescriptionCategory = repositoryFacade.existsCategoryByDescription(description);
         if(isDescriptionCategory){
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La categoría con el nombre " + requestAddCategoryDTO.getDescription() + " ya existe");
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La categoría con el nombre " + description + " ya existe");
         }
         return categoryMapper.toCategoryDto(repositoryFacade.saveCategory(categoryMapper.toCategory(requestAddCategoryDTO)));
     }
