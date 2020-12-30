@@ -54,7 +54,7 @@ public abstract class CustomerMapper {
             }
             customer.setAddress(requestAddCustomerDTO.getAddress());
             customer.setPhone(requestAddCustomerDTO.getPhone().trim());
-            customer.setStatus(Status.ACTIVE);
+            customer.setStatus(Status.ACTIVO);
             return customer;
         } else  {
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Los campos nombre, tipo de documento y numero de documento son obligatorios");

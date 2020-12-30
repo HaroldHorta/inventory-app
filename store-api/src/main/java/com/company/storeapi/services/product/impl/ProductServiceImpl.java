@@ -51,8 +51,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public ResponseListProductPaginationDto getResponseListProductPaginationDto(List<Product> products) {
-        List<ResponseProductDTO> responseProductDTOList = products.stream().filter(product -> product.getUnit() != 0 && product.getStatus() == Status.ACTIVE).map(productMapper::toProductDto).collect(Collectors.toList());
-        List<Product> productsFilter = productRepositoryFacade.getAllProduct().stream().filter(p -> p.getStatus() == Status.ACTIVE && p.getUnit() != 0).collect(Collectors.toList());
+        List<ResponseProductDTO> responseProductDTOList = products.stream().filter(product -> product.getUnit() != 0 && product.getStatus() == Status.ACTIVO).map(productMapper::toProductDto).collect(Collectors.toList());
+        List<Product> productsFilter = productRepositoryFacade.getAllProduct().stream().filter(p -> p.getStatus() == Status.ACTIVO && p.getUnit() != 0).collect(Collectors.toList());
         ResponseListProductPaginationDto responseListProductPaginationDto = new ResponseListProductPaginationDto();
         responseListProductPaginationDto.setProducts(responseProductDTOList);
         responseListProductPaginationDto.setCount(productsFilter.size());
@@ -61,7 +61,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResponseListProductPaginationDto getAllProductsFilters(Pageable pageable) {
-        List<Product> products = productRepositoryFacade.getAllProductFilters(Status.ACTIVE, pageable);
+        List<Product> products = productRepositoryFacade.getAllProductFilters(Status.ACTIVO, pageable);
         return getResponseListProductPaginationDto(products);
     }
 
@@ -96,7 +96,7 @@ public class ProductServiceImpl implements ProductService {
 
     private static void getListOrderProduct(ProductRepositoryFacade productRepositoryFacade, ProductMapper productMapper, OrderRepositoryFacade orderRepositoryFacade, Order order) {
         LinkedHashSet<ResponseOrderProductItemsDTO> listOrderProduct = new LinkedHashSet<>();
-        if (order.getOrderStatus() == OrderStatus.OPEN) {
+        if (order.getOrderStatus() == OrderStatus.ABIERTA) {
             order.getProducts().forEach(pro -> {
                 Product productNew = productRepositoryFacade.validateAndGetProductById(pro.getProduct().getId());
                 ResponseOrderProductItemsDTO responseOrderProductItemsDTO = new ResponseOrderProductItemsDTO();
@@ -137,7 +137,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepositoryFacade.validateAndGetProductById(requestUpdateUnitDTO.getId());
         if (requestUpdateUnitDTO.getUnit() > 0) {
             int unitNew = product.getUnit() + requestUpdateUnitDTO.getUnit();
-            product.setStatus(Status.ACTIVE);
+            product.setStatus(Status.ACTIVO);
             product.setUnit(unitNew);
             product.setPriceBuy(requestUpdateUnitDTO.getPriceBuy());
             product.setPriceSell(requestUpdateUnitDTO.getPriceSell());

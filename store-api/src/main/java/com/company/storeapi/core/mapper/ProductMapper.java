@@ -50,7 +50,7 @@ public abstract class ProductMapper {
         product.setDescription(responseProductDTO.getDescription());
 
         product.setCategory(responseProductDTO.getCategory());
-        product.setStatus(Status.ACTIVE);
+        product.setStatus(Status.ACTIVO);
         product.setCreateAt(new Date());
         product.setUpdateAt(new Date());
         product.setPriceBuy(responseProductDTO.getPriceBuy());
@@ -68,7 +68,7 @@ public abstract class ProductMapper {
 
         Set<ResponseCategoryDTO> listCategory = getResponseCategoryDTOS(requestAddProductDTO);
         product.setCategory(listCategory);
-        product.setStatus(Status.ACTIVE);
+        product.setStatus(Status.ACTIVO);
         product.setCreateAt(new Date());
         product.setUpdateAt(new Date());
         product.setPriceBuy(requestAddProductDTO.getPriceBuy());

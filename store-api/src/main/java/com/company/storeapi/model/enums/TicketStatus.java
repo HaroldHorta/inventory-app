@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum  TicketStatus {
 
-    PAYED(1), CREDIT(2), DEVOLUTION(3);
+    PAGADA(1), CREDITO(2), DEVOLUCION(3);
 
     @Getter
     private final Integer id;

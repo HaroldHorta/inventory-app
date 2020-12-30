@@ -64,7 +64,7 @@ public abstract class TicketMapper {
 
         Order order = orderRepositoryFacade.validateAndGetOrderById(requestAddTicketDTO.getOrder());
 
-        if (!(order.getOrderStatus() == OrderStatus.OPEN)) {
+        if (!(order.getOrderStatus() == OrderStatus.ABIERTA)) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "La orden ya esta pagada, no se puede generar ticket");
         }
 
@@ -78,14 +78,14 @@ public abstract class TicketMapper {
         ticket.setId(requestAddTicketDTO.getId());
         Customer customer = customerMapper.toCustomer(customerService.validateAndGetCustomerById(requestAddTicketDTO.getCustomerId()));
         ticket.setCustomer(customer);
-        order.setOrderStatus(OrderStatus.PAYED);
+        order.setOrderStatus(OrderStatus.PAGADA);
 
         orderRepositoryFacade.saveOrder(order);
 
         changeStatusProductByUnit(ticket, order);
         ticket.setCreateAt(new Date());
         ticket.setPaymentType(requestAddTicketDTO.getPaymentType());
-        ticket.setTicketStatus(TicketStatus.PAYED);
+        ticket.setTicketStatus(TicketStatus.PAGADA);
         ticket.setOutstandingBalance(0);
 
         double getTicketCostWithoutIVA = (IVA.IVA19 * order.getTotalOrder()) / IVA.PORCENTAJE;
@@ -100,7 +100,7 @@ public abstract class TicketMapper {
 
         dailyTransactionsSales = validateDailyTransactionsSales(order, dailyTransactionsSales, ticket);
 
-        if (ticket.getPaymentType() == PaymentType.CREDIT) {
+        if (ticket.getPaymentType() == PaymentType.CREDITO) {
             ticket.setTransactionPayment(0);
             ticket.setCashPayment(0);
             ticket.setCreditPayment(order.getTotalOrder());
@@ -127,7 +127,7 @@ public abstract class TicketMapper {
 
             }
 
-            ticket.setTicketStatus(TicketStatus.CREDIT);
+            ticket.setTicketStatus(TicketStatus.CREDITO);
 
             double balance = order.getTotalOrder() - requestAddTicketDTO.getCreditCapital();
 
@@ -161,7 +161,7 @@ public abstract class TicketMapper {
     }
 
     public double validateTransactionCreditCapital(RequestAddTicketDTO requestAddTicketDTO, double transactionCreditCapital, CreditCapital creditCapital) {
-        if (requestAddTicketDTO.getCreditPaymentType() == PaymentType.TRANSACTION) {
+        if (requestAddTicketDTO.getCreditPaymentType() == PaymentType.TRANSACCION) {
             creditCapital.setCashCreditCapital(0);
             creditCapital.setTransactionCreditCapital(requestAddTicketDTO.getCreditCapital());
             transactionCreditCapital = requestAddTicketDTO.getCreditCapital();
@@ -170,7 +170,7 @@ public abstract class TicketMapper {
     }
 
     public double validateDailyTransactionsSales(Order order, double dailyTransactionsSales, Ticket ticket) {
-        if (ticket.getPaymentType() == PaymentType.TRANSACTION) {
+        if (ticket.getPaymentType() == PaymentType.TRANSACCION) {
             ticket.setTransactionPayment(order.getTotalOrder());
             ticket.setCashPayment(0);
             ticket.setCreditPayment(0);
@@ -189,7 +189,7 @@ public abstract class TicketMapper {
                     int unitNew = product.getUnit() - p.getUnit();
                     if (unitNew <= 0) {
                         unitNew = 0;
-                        product.setStatus(Status.INACTIVE);
+                        product.setStatus(Status.INACTIVO);
                     }
                     product.setUnit(unitNew);
 

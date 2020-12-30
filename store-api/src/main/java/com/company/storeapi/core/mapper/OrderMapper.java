@@ -62,7 +62,7 @@ public abstract class OrderMapper {
 
         Order order = new Order();
         order.setId(createOrderDto.getId());
-        order.setOrderStatus(OrderStatus.OPEN);
+        order.setOrderStatus(OrderStatus.ABIERTA);
 
         Set<ResponseOrderProductItemsDTO> listOrder = getResponseOrderProductItemsDTOS(createOrderDto);
 
@@ -95,7 +95,7 @@ public abstract class OrderMapper {
         Set<ResponseOrderProductItemsDTO> listOrder = new LinkedHashSet<>();
         createOrderDto.getProducts().forEach(p -> {
             Product product = productMapper.toProductResponse(productService.validateAndGetProductById(p.getProduct().getId()));
-            if(product.getUnit()==0 || product.getStatus() == Status.INACTIVE){
+            if(product.getUnit()==0 || product.getStatus() == Status.INACTIVO){
                 throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Producto " + product.getName() + " Agotado o Inactivo");
             }else if(product.getUnit()<p.getUnit()){
                 throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"La cantidad requerida del producto " + product.getName() + " es mayor a la cantidad existente en el inventario");

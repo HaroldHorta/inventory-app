@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
      @Override
     public ResponseOrderDTO updateOrder(String id, RequestUpdateOrderDTO requestUpdateCustomerDTO) {
         Order order = orderRepository.validateAndGetOrderById(id);
-        if (order.getOrderStatus().equals(OrderStatus.PAYED)) {
+        if (order.getOrderStatus().equals(OrderStatus.PAGADA)) {
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_SAVE, "La orden ya esta cerrada, no se puede modificar");
         } else {
             order.setProducts(orderMapper.responseOrderProductItemsDTO(requestUpdateCustomerDTO.getProducts()));

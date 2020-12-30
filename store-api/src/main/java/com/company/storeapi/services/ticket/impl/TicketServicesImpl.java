@@ -75,7 +75,7 @@ public class TicketServicesImpl implements TicketServices {
 
         CashRegisterDaily cashRegisterDaily = cashRegisterDailyRepositoryFacade.findCashRegisterDailyByUltimate();
 
-        if (ticket.getTicketStatus() == TicketStatus.PAYED) {
+        if (ticket.getTicketStatus() == TicketStatus.PAGADA) {
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La orden ha sido cancelada en su totalidad");
         }
 
@@ -88,7 +88,7 @@ public class TicketServicesImpl implements TicketServices {
         creditCap.setTransactionCreditCapital(0);
 
         cashRegisterDaily.setCashCreditCapital(cashRegisterDaily.getCashCreditCapital() + creditCapital);
-        if (creditPayment == PaymentType.TRANSACTION) {
+        if (creditPayment == PaymentType.TRANSACCION) {
             creditCap.setCashCreditCapital(0);
             creditCap.setTransactionCreditCapital(creditCapital);
 
@@ -103,7 +103,7 @@ public class TicketServicesImpl implements TicketServices {
 
         if (credit <= 0) {
             ticket.setOutstandingBalance(0);
-            ticket.setTicketStatus(TicketStatus.PAYED);
+            ticket.setTicketStatus(TicketStatus.PAGADA);
             ticket.setCashRegister(false);
         }
 
