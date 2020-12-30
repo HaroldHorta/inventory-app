@@ -46,14 +46,17 @@ public abstract class CustomerMapper {
             customer.setName(requestAddCustomerDTO.getName());
             customer.setTypeDocument(requestAddCustomerDTO.getTypeDocument());
             customer.setNroDocument(requestAddCustomerDTO.getNroDocument().trim());
-            Matcher mather = pattern.matcher(requestAddCustomerDTO.getEmail().trim());
-            if (mather.find()) {
-                customer.setEmail(requestAddCustomerDTO.getEmail().trim());
-            } else {
-                throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Email no valido");
-            }
-            customer.setAddress(requestAddCustomerDTO.getAddress());
-            customer.setPhone(requestAddCustomerDTO.getPhone().trim());
+            customer.setEmail("N/A");
+          if(!requestAddCustomerDTO.getEmail().isEmpty()){
+              Matcher mather = pattern.matcher(requestAddCustomerDTO.getEmail().trim());
+              if (mather.find()) {
+                  customer.setEmail(requestAddCustomerDTO.getEmail().trim());
+              } else {
+                  throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"Email no valido");
+              }
+          }
+            customer.setAddress(requestAddCustomerDTO.getAddress().isEmpty() ? "N/A" : requestAddCustomerDTO.getAddress().trim());
+            customer.setPhone(requestAddCustomerDTO.getPhone().isEmpty() ? "N/A" : requestAddCustomerDTO.getPhone().trim());
             customer.setStatus(Status.ACTIVO);
             return customer;
         } else  {
