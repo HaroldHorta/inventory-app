@@ -7,10 +7,12 @@ import com.company.storeapi.model.payload.request.customer.RequestAddCustomerDTO
 import com.company.storeapi.model.payload.request.customer.RequestUpdateCustomerDTO;
 import com.company.storeapi.model.payload.response.customer.ResponseCustomerDTO;
 import com.company.storeapi.model.entity.Customer;
+import com.company.storeapi.model.payload.response.customer.ResponseListCustomerPaginationDto;
 import com.company.storeapi.repositories.customer.facade.CustomerRepositoryFacade;
 import com.company.storeapi.services.countingGeneral.CountingGeneralService;
 import com.company.storeapi.services.customer.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -86,6 +88,17 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public ResponseCustomerDTO getCustomerByNroDocument(String nroDocument) {
         return customerMapper.toCustomerDto(customerRepositoryFacade.findByNroDocument(nroDocument.trim()));
+    }
+
+    @Override
+    public ResponseListCustomerPaginationDto getCustomerPageable(Pageable pageable) {
+        List<Customer> customers = customerRepositoryFacade.findAllPageable(Status.ACTIVO,pageable);
+        List<ResponseCustomerDTO>  responseCustomers =  customers.stream().map(customerMapper::toCustomerDto).collect(Collectors.toList());
+
+        ResponseListCustomerPaginationDto responseListCustomerPaginationDto = new ResponseListCustomerPaginationDto();
+        responseListCustomerPaginationDto.setCustomers(responseCustomers);
+        responseListCustomerPaginationDto.setCount(customers.size());
+        return responseListCustomerPaginationDto;
     }
 
 
