@@ -93,7 +93,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public ResponseListCustomerPaginationDto getCustomerPageable() {
         List<Customer> customers = customerRepositoryFacade.getAllCustomers();
-        List<ResponseCustomerDTO>  responseCustomers =  customers.stream().map(customerMapper::toCustomerDto).collect(Collectors.toList());
+        return getResponseListCustomerPaginationDto(customers);
+    }
+
+    public ResponseListCustomerPaginationDto getResponseListCustomerPaginationDto(List<Customer> customers) {
+        List<ResponseCustomerDTO> responseCustomers = customers.stream().map(customerMapper::toCustomerDto).collect(Collectors.toList());
 
         ResponseListCustomerPaginationDto responseListCustomerPaginationDto = new ResponseListCustomerPaginationDto();
         responseListCustomerPaginationDto.setCustomers(responseCustomers);
@@ -104,12 +108,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public ResponseListCustomerPaginationDto getCustomerPageable(Pageable pageable) {
         List<Customer> customers = customerRepositoryFacade.findAllPageable(Status.ACTIVO,pageable);
-        List<ResponseCustomerDTO>  responseCustomers =  customers.stream().map(customerMapper::toCustomerDto).collect(Collectors.toList());
-
-        ResponseListCustomerPaginationDto responseListCustomerPaginationDto = new ResponseListCustomerPaginationDto();
-        responseListCustomerPaginationDto.setCustomers(responseCustomers);
-        responseListCustomerPaginationDto.setCount(customers.size());
-        return responseListCustomerPaginationDto;
+        return getResponseListCustomerPaginationDto(customers);
     }
 
 

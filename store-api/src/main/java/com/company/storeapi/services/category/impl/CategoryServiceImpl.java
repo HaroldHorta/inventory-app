@@ -8,15 +8,18 @@ import com.company.storeapi.core.util.StandNameUtil;
 import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.entity.Product;
+import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.category.RequestAddCategoryDTO;
 import com.company.storeapi.model.payload.request.category.RequestUpdateCategoryDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
+import com.company.storeapi.model.payload.response.category.ResponseListCategoryPaginationDto;
 import com.company.storeapi.repositories.category.facade.CategoryRepositoryFacade;
 import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import com.company.storeapi.services.category.CategoryService;
 import com.company.storeapi.services.product.impl.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
@@ -93,6 +96,29 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
 
+    }
+
+    @Override
+    public ResponseListCategoryPaginationDto getCategoryPageable() {
+        List<Category> categories = repositoryFacade.getAllCategory();
+
+        return getResponseListCategoryPaginationDto(categories);
+
+    }
+
+    @Override
+    public ResponseListCategoryPaginationDto getCategoryPageable(Pageable pageable) {
+        List<Category> categories = repositoryFacade.findAllByStatus(Status.ACTIVO, pageable);
+        return getResponseListCategoryPaginationDto(categories);
+    }
+
+    public ResponseListCategoryPaginationDto getResponseListCategoryPaginationDto(List<Category> categories) {
+        List<ResponseCategoryDTO> responseCustomers = categories.stream().map(categoryMapper::toCategoryDto).collect(Collectors.toList());
+
+        ResponseListCategoryPaginationDto responseListCategoryPaginationDto = new ResponseListCategoryPaginationDto();
+        responseListCategoryPaginationDto.setCustomers(responseCustomers);
+        responseListCategoryPaginationDto.setCount(categories.size());
+        return responseListCategoryPaginationDto;
     }
 
 }

@@ -1,6 +1,8 @@
 package com.company.storeapi.repositories.category.facade;
 
 import com.company.storeapi.model.entity.Category;
+import com.company.storeapi.model.enums.Status;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -16,6 +18,8 @@ public interface CategoryRepositoryFacade {
      * @ the service exception
      */
     List<Category> getAllCategory() ;
+
+    List<Category> findAllByStatus (Status status, Pageable pageable);
 
 
     /**
@@ -45,5 +49,7 @@ public interface CategoryRepositoryFacade {
     void deleteCategory(String  id) ;
 
     Boolean existsCategoryByDescription(String description);
+
+
 
 }
