@@ -52,6 +52,12 @@ public class CustomerRestApi {
         return customerService.getAllCustomers();
     }
 
+    @GetMapping(value = "/customerFilter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseListCustomerPaginationDto getAllCustomerFilter() {
+        return customerService.getCustomerPageable();
+    }
+
+
     @GetMapping(value = "/page", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseListCustomerPaginationDto getAllCustomerPage(@Param(value = "page") int page) {
         Pageable requestedPage = PageRequest.of(page, size);

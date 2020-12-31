@@ -57,5 +57,7 @@ public interface CustomerService {
 
     ResponseCustomerDTO getCustomerByNroDocument(String nroDocument);
 
+    ResponseListCustomerPaginationDto getCustomerPageable();
+
     ResponseListCustomerPaginationDto getCustomerPageable(Pageable pageable);
 }
