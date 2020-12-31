@@ -83,4 +83,9 @@ public class CustomerRepositoryFacadeImpl implements CustomerRepositoryFacade {
     public Boolean validateAndGetCustomerByEmail(String email) {
         return customerRepository.existsCustomerByEmail(email);
     }
+
+    @Override
+    public Boolean existsCustomerById(String id) {
+        return customerRepository.existsCustomerById(id);
+    }
 }

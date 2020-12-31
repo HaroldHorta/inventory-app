@@ -1,5 +1,7 @@
 package com.company.storeapi.services.customer.impl;
 
+import com.company.storeapi.core.exceptions.enums.LogRefServices;
+import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.core.mapper.CustomerMapper;
 import com.company.storeapi.model.entity.CountingGeneral;
 import com.company.storeapi.model.enums.Status;
@@ -63,6 +65,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void deleteCustomer(String id) {
+        Boolean customer = customerRepositoryFacade.existsCustomerById(id);
+        if(!customer){
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "El cliente no existe");
+        }
         customerRepositoryFacade.deleteCustomer(id);
     }
 

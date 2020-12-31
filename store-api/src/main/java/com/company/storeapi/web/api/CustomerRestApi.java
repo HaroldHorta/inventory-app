@@ -116,4 +116,9 @@ public class CustomerRestApi {
         ResponseCustomerDTO update= customerService.updateStatus(id,status);
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }
+
+    @DeleteMapping(value = {"/{id}"})
+    public void delete (@PathVariable String id){
+        customerService.deleteCustomer(id);
+    }
 }

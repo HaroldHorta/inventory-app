@@ -1,6 +1,5 @@
 package com.company.storeapi.repositories.customer.facade;
 
-import com.company.storeapi.core.exceptions.base.ServiceException;
 import com.company.storeapi.model.entity.Customer;
 import com.company.storeapi.model.enums.Status;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +14,7 @@ public interface CustomerRepositoryFacade {
 
     Customer saveCustomer(Customer customer);
 
-    void deleteCustomer(String id) throws ServiceException;
+    void deleteCustomer(String id);
 
     Customer validateAndGetCustomerById(String id);
 
@@ -24,4 +23,6 @@ public interface CustomerRepositoryFacade {
     Boolean validateAndGetCustomerByNroDocument(String id);
 
     Boolean validateAndGetCustomerByEmail(String email);
+
+    Boolean existsCustomerById (String id);
 }
