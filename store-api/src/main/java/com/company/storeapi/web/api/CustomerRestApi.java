@@ -105,9 +105,9 @@ public class CustomerRestApi {
      * @return the response entity
      * @throws ServiceException the service exception
      */
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCustomerDTO> update (@RequestBody RequestUpdateCustomerDTO requestUpdateCustomerDTO) {
-        ResponseCustomerDTO update = customerService.updateCustomer(requestUpdateCustomerDTO.getId(), requestUpdateCustomerDTO);
+    @PutMapping(value = "update/{id}" , consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseCustomerDTO> update (@PathVariable String id , @RequestBody RequestUpdateCustomerDTO requestUpdateCustomerDTO) {
+        ResponseCustomerDTO update = customerService.updateCustomer(id, requestUpdateCustomerDTO);
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }
 

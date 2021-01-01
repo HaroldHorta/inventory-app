@@ -31,12 +31,12 @@ public abstract class CustomerMapper {
 
     public Customer toCustomer(RequestAddCustomerDTO requestAddCustomerDTO){
 
-        Boolean existDocument = customerRepositoryFacade.validateAndGetCustomerByNroDocument(requestAddCustomerDTO.getNroDocument().trim());
+        boolean existDocument = customerRepositoryFacade.validateAndGetCustomerByNroDocument(requestAddCustomerDTO.getNroDocument().trim());
         if(existDocument){
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"El numero de cedula ya existe");
         }
 
-        Boolean existEmail = customerRepositoryFacade.validateAndGetCustomerByEmail(requestAddCustomerDTO.getEmail().trim());
+        boolean existEmail = customerRepositoryFacade.validateAndGetCustomerByEmail(requestAddCustomerDTO.getEmail().trim());
 
         if(existEmail){
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT,"El correo ya existe");

@@ -9,7 +9,6 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class RequestUpdateCustomerDTO {
 
-    private String id;
     @Schema(example = "Andres horta")
     @NotBlank
     private String name;
