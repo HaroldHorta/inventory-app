@@ -116,7 +116,7 @@ public class CategoryServiceImpl implements CategoryService {
         List<ResponseCategoryDTO> responseCustomers = categories.stream().map(categoryMapper::toCategoryDto).collect(Collectors.toList());
 
         ResponseListCategoryPaginationDto responseListCategoryPaginationDto = new ResponseListCategoryPaginationDto();
-        responseListCategoryPaginationDto.setCustomers(responseCustomers);
+        responseListCategoryPaginationDto.setCategories(responseCustomers);
         responseListCategoryPaginationDto.setCount(categories.size());
         return responseListCategoryPaginationDto;
     }
