@@ -8,5 +8,5 @@ import java.util.List;
 public class ResponseListCategoryPaginationDto {
 
     private int count;
-    private List<ResponseCategoryDTO> customers;
+    private List<ResponseCategoryDTO> categories;
 }
