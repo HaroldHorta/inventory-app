@@ -2,6 +2,7 @@ package com.company.storeapi.core.mapper;
 
 import com.company.storeapi.core.util.StandNameUtil;
 import com.company.storeapi.model.entity.Category;
+import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.category.RequestAddCategoryDTO;
 import com.company.storeapi.model.payload.request.category.RequestUpdateCategoryDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
@@ -18,6 +19,7 @@ public abstract class CategoryMapper {
    public Category toCategory(RequestAddCategoryDTO requestAddCategoryDTO){
        Category category = new Category();
        category.setDescription(StandNameUtil.toCapitalLetters(requestAddCategoryDTO.getDescription().trim()));
+       category.setStatus(Status.ACTIVO);
        return category;
    }
 
