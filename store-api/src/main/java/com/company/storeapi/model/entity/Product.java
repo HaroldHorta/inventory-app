@@ -2,7 +2,6 @@ package com.company.storeapi.model.entity;
 
 
 import com.company.storeapi.model.enums.Status;
-import com.company.storeapi.model.payload.request.user.FileInfo;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,5 +46,7 @@ public class Product {
     private int unit;
 
     private String photo;
+
+    private boolean pageable;
 
    }

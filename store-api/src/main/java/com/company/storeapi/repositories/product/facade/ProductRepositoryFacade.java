@@ -13,6 +13,8 @@ public interface ProductRepositoryFacade {
 
     List<Product> getAllProductFilters (Status status, Pageable pageable);
 
+    List<Product> findAllByPageable(boolean pag, Pageable pageable);
+
     Product saveProduct(Product product);
 
     Product validateAndGetProductById(String id);

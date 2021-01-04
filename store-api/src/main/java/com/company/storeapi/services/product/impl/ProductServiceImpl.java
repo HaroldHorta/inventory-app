@@ -50,12 +50,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResponseListProductPaginationDto getAllProductInventory(Pageable pageable) {
-        List<Product> products = productRepositoryFacade.getAllProduct();
-        List<ResponseProductDTO> responseProductDTOList = products.stream().filter(product -> product.getStatus() == Status.ACTIVO || product.getStatus() == Status.INACTIVO).map(productMapper::toProductDto).collect(Collectors.toList());
-        List<Product> productsFilter = productRepositoryFacade.getAllProduct().stream().filter(product -> product.getStatus() == Status.ACTIVO || product.getStatus() == Status.INACTIVO).collect(Collectors.toList());
+        List<Product> products = productRepositoryFacade.findAllByPageable(false, pageable);
+        List<ResponseProductDTO> responseProductDTOList = products.stream().map(productMapper::toProductDto).collect(Collectors.toList());
         ResponseListProductPaginationDto responseListProductPaginationDto = new ResponseListProductPaginationDto();
         responseListProductPaginationDto.setProducts(responseProductDTOList);
-        responseListProductPaginationDto.setCount(productsFilter.size());
+        responseListProductPaginationDto.setCount(products.size());
         return responseListProductPaginationDto;
     }
 

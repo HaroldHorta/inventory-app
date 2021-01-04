@@ -13,4 +13,6 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     @Query("{'category.id':?0}")
     List<Product> findProductByCategory_Description(String id);
     List<Product> findAllByStatus (Status status, Pageable pageable);
+    List<Product> findAllByPageable(boolean pag, Pageable pageable);
+
 }
