@@ -45,13 +45,6 @@ public class ProductRestApi {
         return service.getAllProductsFilters();
     }
 
-    @GetMapping(value = "/allProducts", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseListProductPaginationDto getAllProduct() {
-        return service.getAllProduct();
-    }
-
-
-
     @GetMapping(value = "/category/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ResponseProductDTO> getProductByCategory(@PathVariable("id") String id) {
         return service.findProductByCategory(id);
