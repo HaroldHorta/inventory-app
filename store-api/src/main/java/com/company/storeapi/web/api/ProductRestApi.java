@@ -33,7 +33,7 @@ public class ProductRestApi {
         this.service = service;
     }
 
-    @GetMapping(value = "/products", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/page", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseListProductPaginationDto getAllProductFilters(@Param(value = "page") int page) {
         Pageable requestedPage = PageRequest.of(page, size);
         return service.getAllProductsFilters(requestedPage);
@@ -45,8 +45,8 @@ public class ProductRestApi {
         return service.getAllProductsFilters();
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ResponseProductDTO> getAllProduct() {
+    @GetMapping(value = "/allProducts", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseListProductPaginationDto getAllProduct() {
         return service.getAllProduct();
     }
 
