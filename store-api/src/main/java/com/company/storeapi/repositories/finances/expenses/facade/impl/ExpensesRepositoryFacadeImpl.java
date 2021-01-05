@@ -9,6 +9,7 @@ import com.company.storeapi.repositories.finances.expenses.facade.ExpensesReposi
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,7 +28,18 @@ public class ExpensesRepositoryFacadeImpl implements ExpensesRepositoryFacade {
             return Optional.of(expensesRepository.findAll())
                     .orElseThrow(() -> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de gastos"));
         } catch (EmptyResultDataAccessException er) {
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encuentran registros de gastos");
+        } catch (DataAccessException er) {
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD, er);
+        }
+    }
+
+    @Override
+    public List<Expenses> findAllByPageable(boolean pag, Pageable pageable) {
+        try {
+            return expensesRepository.findAllByPageable(pag,pageable);
+        } catch (EmptyResultDataAccessException er) {
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encuentran registros de gastos");
         } catch (DataAccessException er) {
             throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD, er);
         }

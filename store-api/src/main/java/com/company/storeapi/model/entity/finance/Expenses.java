@@ -25,5 +25,6 @@ public class Expenses {
     private Set<String> images = new LinkedHashSet<>();
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date createAt;
+    private boolean pageable;
 
 }

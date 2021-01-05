@@ -9,11 +9,6 @@ import java.util.List;
 
 public interface CategoryRepository extends MongoRepository<Category,String> {
 
-
-    Category findCategoryById(String id);
-
-    Category findCategoriesByDescription(String description);
-
     Boolean existsCategoryByDescription(String description);
 
     List<Category> findAllByStatus (Status status, Pageable pageable);
