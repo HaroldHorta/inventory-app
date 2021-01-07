@@ -11,7 +11,7 @@ import com.company.storeapi.model.enums.OrderStatus;
 import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.services.countingGeneral.CountingGeneralService;
 import com.company.storeapi.services.order.OrderService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,12 +19,17 @@ import java.util.stream.Collectors;
 
 
 @Service
-@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepositoryFacade orderRepository;
     private final OrderMapper orderMapper;
     private final CountingGeneralService countingGeneralService;
+
+    public OrderServiceImpl(@Lazy OrderRepositoryFacade orderRepository, OrderMapper orderMapper, CountingGeneralService countingGeneralService) {
+        this.orderRepository = orderRepository;
+        this.orderMapper = orderMapper;
+        this.countingGeneralService = countingGeneralService;
+    }
 
 
     @Override
@@ -37,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toOrderDto(orderRepository.saveOrder(orderMapper.toOrder(requestAddOrderDTO)));
     }
 
-     @Override
+    @Override
     public ResponseOrderDTO updateOrder(String id, RequestUpdateOrderDTO requestUpdateCustomerDTO) {
         Order order = orderRepository.validateAndGetOrderById(id);
         if (order.getOrderStatus().equals(OrderStatus.PAGADA)) {
