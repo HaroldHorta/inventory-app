@@ -6,8 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Document(collection = "categories")
 @Data
@@ -20,6 +22,8 @@ public class Category {
     @NotNull
     private String description;
     private Status status;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private Date createAt;
 
 
 

@@ -10,6 +10,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
+import java.util.Date;
+
 @Mapper(
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
@@ -20,6 +22,7 @@ public abstract class CategoryMapper {
        Category category = new Category();
        category.setDescription(StandNameUtil.toCapitalLetters(requestAddCategoryDTO.getDescription().trim()));
        category.setStatus(Status.ACTIVO);
+       category.setCreateAt(new Date());
        return category;
    }
 
