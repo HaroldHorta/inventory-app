@@ -11,9 +11,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
-public abstract class CashRegisterMapper {
-    public abstract ResponseCashRegisterDTO DtoChasRegisterDocument(CashRegisterDaily cashRegister);
+public interface CashRegisterMapper {
 
-    public abstract ResponseCashBase getResponseCashBase (CashBase cashBase);
+    ResponseCashRegisterDTO DtoChasRegisterDocument(CashRegisterDaily cashRegister);
+
+    ResponseCashBase getResponseCashBase(CashBase cashBase);
 
 }

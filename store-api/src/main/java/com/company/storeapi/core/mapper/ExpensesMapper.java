@@ -10,8 +10,8 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
-public abstract class ExpensesMapper {
+public interface ExpensesMapper {
 
-    public abstract ResponseExpensesDTO DtoResponseExpenses(Expenses expenses);
+    ResponseExpensesDTO DtoResponseExpenses(Expenses expenses);
 
 }
