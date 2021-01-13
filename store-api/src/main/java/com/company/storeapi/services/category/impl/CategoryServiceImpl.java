@@ -57,6 +57,9 @@ public class CategoryServiceImpl implements CategoryService {
         if (isDescriptionCategory) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La categoría con el nombre " + description + " ya existe");
         }
+        if (requestAddCategoryDTO.getDescription().isEmpty()) {
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La categria no puede estar vacia");
+        }
         Category category = new Category();
         category.setDescription(StandNameUtil.toCapitalLetters(requestAddCategoryDTO.getDescription().trim()));
         category.setStatus(Status.ACTIVO);

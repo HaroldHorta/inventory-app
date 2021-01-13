@@ -87,7 +87,7 @@ public class CategoryRestApi {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCategoryDTO> create(@RequestBody RequestAddCategoryDTO requestAddCategoryDTO)  {
         ResponseCategoryDTO created = service.saveCategory(requestAddCategoryDTO);
-        return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.CREATED);
     }
 
     /**
