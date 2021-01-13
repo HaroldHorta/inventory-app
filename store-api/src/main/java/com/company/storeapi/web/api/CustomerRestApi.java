@@ -17,8 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * The type Customer rest api.
  */
@@ -47,10 +45,6 @@ public class CustomerRestApi {
      * @return the all product
      * @throws ServiceException the service exception
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ResponseCustomerDTO> getAllCustomer() {
-        return customerService.getAllCustomers();
-    }
 
     @GetMapping(value = "/customerFilter", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseListCustomerPaginationDto getAllCustomerFilter() {
@@ -95,7 +89,7 @@ public class CustomerRestApi {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCustomerDTO> create(@RequestBody RequestAddCustomerDTO customerDTO) {
         ResponseCustomerDTO created = customerService.saveCustomer(customerDTO);
-        return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.CREATED);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.company.storeapi.services.customer.impl;
 
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
+import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.core.mapper.CustomerMapper;
 import com.company.storeapi.model.entity.CountingGeneral;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -31,6 +34,11 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerMapper customerMapper;
     private final CountingGeneralService countingGeneralService;
 
+
+    Pattern patternEmail = Pattern
+            .compile("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@"
+                    + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+
     @Override
     public List<ResponseCustomerDTO> getAllCustomers() {
         List<Customer> customerList = customerRepositoryFacade.getAllCustomers();
@@ -40,33 +48,50 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public ResponseCustomerDTO saveCustomer(RequestAddCustomerDTO requestAddCustomerDTO) {
 
-        ResponseCustomerDTO responseCustomerDTO =   customerMapper.toCustomerDto(customerRepositoryFacade.saveCustomer(customerMapper.toCustomer(requestAddCustomerDTO)));
-
-        List<CountingGeneral> counting = countingGeneralService.getAllCountingGeneral();
-
-        if((counting.size() ==0)){
-            CountingGeneral c = new CountingGeneral();
-
-            c.setQuantity_of_customer(1);
-            countingGeneralService.saveCountingGeneral(c);
-
-        }  else{
-            counting.forEach(p->{
-                CountingGeneral countingGeneral = countingGeneralService.validateCountingGeneral(p.getId());
-
-                countingGeneral.setQuantity_of_customer(p.getQuantity_of_customer()+1);
-
-                countingGeneralService.saveCountingGeneral(countingGeneral);
-            });
+        boolean existDocument = customerRepositoryFacade.validateAndGetCustomerByNroDocument(requestAddCustomerDTO.getNroDocument().trim());
+        if (existDocument) {
+            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "El numero de cedula ya existe");
         }
 
-        return responseCustomerDTO;
+        boolean existEmail = customerRepositoryFacade.validateAndGetCustomerByEmail(requestAddCustomerDTO.getEmail().trim());
+        if (existEmail) {
+            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "El correo ya existe");
+        }
+
+        Customer customer = new Customer();
+        if (!requestAddCustomerDTO.getName().isEmpty() && !requestAddCustomerDTO.getTypeDocument().toString().isEmpty() && !requestAddCustomerDTO.getNroDocument().isEmpty()) {
+            customer.setName(requestAddCustomerDTO.getName());
+            customer.setTypeDocument(requestAddCustomerDTO.getTypeDocument());
+            customer.setNroDocument(requestAddCustomerDTO.getNroDocument().trim());
+            customer.setEmail("N/A");
+
+            if (!requestAddCustomerDTO.getEmail().isEmpty()) {
+                Matcher mather = patternEmail.matcher(requestAddCustomerDTO.getEmail().trim());
+                if (mather.find()) {
+                    customer.setEmail(requestAddCustomerDTO.getEmail().trim());
+                } else {
+                    throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "Email no valido");
+                }
+            }
+
+            customer.setAddress(requestAddCustomerDTO.getAddress().isEmpty() ? "N/A" : requestAddCustomerDTO.getAddress().trim());
+            customer.setPhone(requestAddCustomerDTO.getPhone().isEmpty() ? "N/A" : requestAddCustomerDTO.getPhone().trim());
+            customer.setStatus(Status.ACTIVO);
+
+        } else {
+            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "Los campos nombre, tipo de documento y numero de documento son obligatorios");
+        }
+
+        countingGeneralCustomer();
+
+        return customerMapper.toCustomerDto(customerRepositoryFacade.saveCustomer(customer));
     }
+
 
     @Override
     public void deleteCustomer(String id) {
         Boolean customer = customerRepositoryFacade.existsCustomerById(id);
-        if(!customer){
+        if (!customer) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "El cliente no existe");
         }
         customerRepositoryFacade.deleteCustomer(id);
@@ -80,7 +105,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ResponseCustomerDTO validateAndGetCustomerById(String  id) {
+    public ResponseCustomerDTO validateAndGetCustomerById(String id) {
         return customerMapper.toCustomerDto(customerRepositoryFacade.validateAndGetCustomerById(id.trim()));
     }
 
@@ -113,8 +138,28 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public ResponseListCustomerPaginationDto getCustomerPageable(Pageable pageable) {
-        List<Customer> customers = customerRepositoryFacade.findAllPageable(Status.ACTIVO,pageable);
+        List<Customer> customers = customerRepositoryFacade.findAllPageable(Status.ACTIVO, pageable);
         return getResponseListCustomerPaginationDto(customers);
+    }
+
+    private void countingGeneralCustomer() {
+        List<CountingGeneral> counting = countingGeneralService.getAllCountingGeneral();
+
+        if ((counting.size() == 0)) {
+            CountingGeneral c = new CountingGeneral();
+
+            c.setQuantity_of_customer(1);
+            countingGeneralService.saveCountingGeneral(c);
+
+        } else {
+            counting.forEach(p -> {
+                CountingGeneral countingGeneral = countingGeneralService.validateCountingGeneral(p.getId());
+
+                countingGeneral.setQuantity_of_customer(p.getQuantity_of_customer() + 1);
+
+                countingGeneralService.saveCountingGeneral(countingGeneral);
+            });
+        }
     }
 
 
