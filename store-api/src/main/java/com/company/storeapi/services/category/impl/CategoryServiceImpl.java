@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,10 +54,15 @@ public class CategoryServiceImpl implements CategoryService {
     public ResponseCategoryDTO saveCategory(RequestAddCategoryDTO requestAddCategoryDTO) {
         String description = StandNameUtil.toCapitalLetters(requestAddCategoryDTO.getDescription().trim());
         boolean isDescriptionCategory = repositoryFacade.existsCategoryByDescription(description);
-        if(isDescriptionCategory){
+        if (isDescriptionCategory) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La categoría con el nombre " + description + " ya existe");
         }
-        return categoryMapper.toCategoryDto(repositoryFacade.saveCategory(categoryMapper.toCategory(requestAddCategoryDTO)));
+        Category category = new Category();
+        category.setDescription(StandNameUtil.toCapitalLetters(requestAddCategoryDTO.getDescription().trim()));
+        category.setStatus(Status.ACTIVO);
+        category.setCreateAt(new Date());
+
+        return categoryMapper.toCategoryDto(repositoryFacade.saveCategory(category));
     }
 
     @Override
@@ -76,10 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
             productRepositoryFacade.saveProduct(product);
 
             List<Order> orderList = orderRepositoryFacade.findOrderByProducts(product.getId());
-
             ProductServiceImpl.updateOrderProduct(orderList, productRepositoryFacade, productMapper, orderRepositoryFacade);
-
-
         }
 
         categoryMapper.updateCategoryFromDto(requestUpdateCategoryDTO, category);
@@ -94,16 +97,12 @@ public class CategoryServiceImpl implements CategoryService {
         } else {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La categoría esta siendo usada no se puede eliminar");
         }
-
-
     }
 
     @Override
     public ResponseListCategoryPaginationDto getCategoryPageable() {
         List<Category> categories = repositoryFacade.getAllCategory();
-
         return getResponseListCategoryPaginationDto(categories);
-
     }
 
     @Override
