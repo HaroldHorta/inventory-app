@@ -25,4 +25,7 @@ public interface CustomerRepositoryFacade {
     Boolean validateAndGetCustomerByEmail(String email);
 
     Boolean existsCustomerById (String id);
+
+    int countByStatus (Status status);
+
 }

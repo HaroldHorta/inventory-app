@@ -21,5 +21,8 @@ public interface ProductRepositoryFacade {
 
     List<Product> findProductByCategory(String id);
 
+    int countByStatus (Status status);
+
+
 
 }

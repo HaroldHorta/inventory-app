@@ -1,6 +1,7 @@
 package com.company.storeapi.repositories.finances.cashRegisterDaily;
 
 import com.company.storeapi.model.entity.finance.CashRegisterDaily;
+import com.company.storeapi.model.enums.Status;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -15,4 +16,7 @@ public interface CashRegisterDailyRepository extends MongoRepository<CashRegiste
     boolean existsCashRegisterDailiesByCashRegister(boolean cash);
 
     List<CashRegisterDaily> findAllByPageable (boolean pag, Pageable pageable);
+
+    int countByPageable (boolean pag);
+
 }

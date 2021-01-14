@@ -14,4 +14,6 @@ public interface CustomerRepository extends MongoRepository<Customer,String> {
     Boolean existsCustomerByEmail(String email);
     Boolean existsCustomerById (String id);
     List<Customer> findAllByStatus (Status status, Pageable pageable);
+    int countByStatus (Status status);
+
 }

@@ -4,6 +4,7 @@ import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.core.mapper.CustomerMapper;
+import com.company.storeapi.core.util.StandNameUtil;
 import com.company.storeapi.model.entity.CountingGeneral;
 import com.company.storeapi.model.entity.Customer;
 import com.company.storeapi.model.enums.Status;
@@ -15,6 +16,7 @@ import com.company.storeapi.repositories.countingGeneral.facade.CountingGeneralR
 import com.company.storeapi.repositories.customer.facade.CustomerRepositoryFacade;
 import com.company.storeapi.services.customer.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +40,9 @@ public class CustomerServiceImpl implements CustomerService {
     Pattern patternEmail = Pattern
             .compile("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+
+    @Value("${spring.size.pagination}")
+    private int size;
 
     @Override
     public List<ResponseCustomerDTO> getAllCustomers() {
@@ -124,22 +129,34 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public ResponseListCustomerPaginationDto getCustomerPageable() {
         List<Customer> customers = customerRepositoryFacade.getAllCustomers();
-        return getResponseListCustomerPaginationDto(customers);
-    }
-
-    public ResponseListCustomerPaginationDto getResponseListCustomerPaginationDto(List<Customer> customers) {
         List<ResponseCustomerDTO> responseCustomers = customers.stream().map(customerMapper::toCustomerDto).collect(Collectors.toList());
 
         ResponseListCustomerPaginationDto responseListCustomerPaginationDto = new ResponseListCustomerPaginationDto();
         responseListCustomerPaginationDto.setCustomers(responseCustomers);
-        responseListCustomerPaginationDto.setCount(customers.size());
+        responseListCustomerPaginationDto.setLimitMax(customers.size());
         return responseListCustomerPaginationDto;
     }
+
+
 
     @Override
     public ResponseListCustomerPaginationDto getCustomerPageable(Pageable pageable) {
         List<Customer> customers = customerRepositoryFacade.findAllPageable(Status.ACTIVO, pageable);
-        return getResponseListCustomerPaginationDto(customers);
+        List<ResponseCustomerDTO> responseCustomers = customers.stream().map(customerMapper::toCustomerDto).collect(Collectors.toList());
+
+        ResponseListCustomerPaginationDto responseListCustomerPaginationDto = new ResponseListCustomerPaginationDto();
+        responseListCustomerPaginationDto.setCustomers(responseCustomers);
+        int totalData = customerRepositoryFacade.countByStatus(Status.ACTIVO);
+
+        int limitMin = StandNameUtil.getLimitPaginator(pageable, 1, (pageable.getPageNumber() * size) + 1);
+
+        int limitMax = StandNameUtil.getLimitPaginator(pageable, size, (pageable.getPageNumber() + 1) * size);
+
+        responseListCustomerPaginationDto.setLimitMin(limitMin);
+        responseListCustomerPaginationDto.setLimitMax(Math.min(totalData, limitMax));
+        responseListCustomerPaginationDto.setTotalData(totalData);
+        responseListCustomerPaginationDto.setSize(size);
+        return responseListCustomerPaginationDto;
     }
 
     private void countingGeneralCustomer() {

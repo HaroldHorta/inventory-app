@@ -54,4 +54,15 @@ public class ExpensesRepositoryFacadeImpl implements ExpensesRepositoryFacade {
     public Expenses findExpensesById(String id) {
         return expensesRepository.findById(id).orElseThrow(() -> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de gastos co el id: " + id));
     }
+
+    @Override
+    public int countByPageable(boolean pag) {
+        try {
+            return expensesRepository.countByPageable(pag);
+        } catch (EmptyResultDataAccessException er) {
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encuentran registros de gastos");
+        } catch (DataAccessException er) {
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD, er);
+        }
+    }
 }

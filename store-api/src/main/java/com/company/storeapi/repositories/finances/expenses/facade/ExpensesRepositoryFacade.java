@@ -15,5 +15,6 @@ public interface ExpensesRepositoryFacade {
 
     Expenses findExpensesById (String id);
 
+    int countByPageable (boolean pag);
 
 }

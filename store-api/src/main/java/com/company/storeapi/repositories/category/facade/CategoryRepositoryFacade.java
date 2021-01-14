@@ -21,6 +21,8 @@ public interface CategoryRepositoryFacade {
 
     List<Category> findAllByStatus (Status status, Pageable pageable);
 
+    int countByStatus (Status status);
+
 
     /**
      * Find category by id category.

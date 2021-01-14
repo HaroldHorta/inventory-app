@@ -7,7 +7,10 @@ import java.util.List;
 @Data
 public class ResponseListProductPaginationDto {
 
-    private int count;
+    private int limitMin;
+    private int limitMax;
+    private int totalData;
+    private int size;
     private List<ResponseProductDTO> products;
 
 }

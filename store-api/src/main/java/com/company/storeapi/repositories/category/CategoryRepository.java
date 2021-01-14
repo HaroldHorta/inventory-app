@@ -12,4 +12,7 @@ public interface CategoryRepository extends MongoRepository<Category,String> {
     Boolean existsCategoryByDescription(String description);
 
     List<Category> findAllByStatus (Status status, Pageable pageable);
+
+    int countByStatus (Status status);
+
 }

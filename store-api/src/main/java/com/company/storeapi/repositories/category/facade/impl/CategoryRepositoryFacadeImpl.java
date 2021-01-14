@@ -55,6 +55,17 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
     }
 
     @Override
+    public int countByStatus(Status status) {
+        try {
+            return repository.countByStatus(status);
+        }catch (EmptyResultDataAccessException er){
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+        }catch (DataAccessException er){
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+        }
+    }
+
+    @Override
     public Category validateAndGetCategoryById(String id)  {
 
             return  repository.findById(id)

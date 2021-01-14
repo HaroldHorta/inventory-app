@@ -82,4 +82,15 @@ public class ProductRepositoryFacadeImpl implements ProductRepositoryFacade {
       return Optional.of(repository.findProductByCategory_Description(id))
           .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND,"No se encontraron productos registrados con la categoria" +id));
     }
+
+    @Override
+    public int countByStatus(Status status) {
+        try {
+            return repository.countByStatus(status);
+        }catch (IllegalArgumentException ie){
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+        }catch (DataAccessException er){
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+        }
+    }
 }

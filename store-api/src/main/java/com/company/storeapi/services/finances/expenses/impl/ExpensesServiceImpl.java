@@ -1,6 +1,7 @@
 package com.company.storeapi.services.finances.expenses.impl;
 
 import com.company.storeapi.core.mapper.ExpensesMapper;
+import com.company.storeapi.core.util.StandNameUtil;
 import com.company.storeapi.model.entity.finance.CashRegisterDaily;
 import com.company.storeapi.model.entity.finance.Expenses;
 import com.company.storeapi.model.payload.request.finance.RequestAddExpensesDTO;
@@ -10,6 +11,7 @@ import com.company.storeapi.repositories.finances.cashRegisterDaily.facade.CashR
 import com.company.storeapi.repositories.finances.expenses.facade.ExpensesRepositoryFacade;
 import com.company.storeapi.services.finances.expenses.ExpensesService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,9 @@ public class ExpensesServiceImpl implements ExpensesService {
     private final ExpensesRepositoryFacade expensesRepositoryFacade;
     private final ExpensesMapper expensesMapper;
     private final CashRegisterDailyRepositoryFacade cashRegisterDailyRepositoryFacade;
+
+    @Value("${spring.size.pagination}")
+    private int size;
 
     @Override
     public List<ResponseExpensesDTO> findAllExpenses() {
@@ -67,22 +72,35 @@ public class ExpensesServiceImpl implements ExpensesService {
     @Override
     public ResponseListExpensesPaginationDto getExpensesPageable() {
         List<Expenses> expenses = expensesRepositoryFacade.findAllExpenses();
-        return getResponseListExpensesPaginationDto(expenses);
+        List<ResponseExpensesDTO> responseExpenses = expenses.stream().map(expensesMapper::DtoResponseExpenses).collect(Collectors.toList());
+        ResponseListExpensesPaginationDto responseListExpensesPaginationDto = new ResponseListExpensesPaginationDto();
+        responseListExpensesPaginationDto.setLimitMax(expenses.size());
+        responseListExpensesPaginationDto.setExpenses(responseExpenses);
+        return responseListExpensesPaginationDto;
     }
 
     @Override
     public ResponseListExpensesPaginationDto getExpensesPageable(Pageable pageable) {
         List<Expenses> expenses = expensesRepositoryFacade.findAllByPageable(false, pageable);
-        return getResponseListExpensesPaginationDto(expenses);
-    }
-
-    private ResponseListExpensesPaginationDto getResponseListExpensesPaginationDto(List<Expenses> expenses) {
         List<ResponseExpensesDTO> responseExpenses = expenses.stream().map(expensesMapper::DtoResponseExpenses).collect(Collectors.toList());
         ResponseListExpensesPaginationDto responseListExpensesPaginationDto = new ResponseListExpensesPaginationDto();
-        responseListExpensesPaginationDto.setCount(expenses.size());
         responseListExpensesPaginationDto.setExpenses(responseExpenses);
+        int limitMin = getLimitExp(pageable, 1, (pageable.getPageNumber() * size) + 1);
+
+        int limitMax = getLimitExp(pageable, size, (pageable.getPageNumber() + 1) * size);
+
+        int totalData = expensesRepositoryFacade.countByPageable(false);
+        responseListExpensesPaginationDto.setLimitMin(limitMin);
+        responseListExpensesPaginationDto.setLimitMax(Math.min(totalData, limitMax));
+        responseListExpensesPaginationDto.setTotalData(totalData);
+        responseListExpensesPaginationDto.setSize(size);
         return responseListExpensesPaginationDto;
     }
+
+    private int getLimitExp(Pageable pageable, int i, int i2) {
+        return StandNameUtil.getLimitPaginator(pageable, i, i2);
+    }
+
 
 
 }

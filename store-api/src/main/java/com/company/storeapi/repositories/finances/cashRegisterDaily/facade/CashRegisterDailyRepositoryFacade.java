@@ -1,6 +1,7 @@
 package com.company.storeapi.repositories.finances.cashRegisterDaily.facade;
 
 import com.company.storeapi.model.entity.finance.CashRegisterDaily;
+import com.company.storeapi.model.enums.Status;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public interface CashRegisterDailyRepositoryFacade {
     CashRegisterDaily save(CashRegisterDaily cashRegisterDaily);
 
     boolean existsCashRegisterDailiesByCashRegister(boolean cash);
+
+    int countByPageable (boolean pag);
 
 
 }
