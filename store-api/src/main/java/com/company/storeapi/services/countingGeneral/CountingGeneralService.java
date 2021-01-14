@@ -8,6 +8,7 @@ import java.util.List;
 public interface CountingGeneralService {
 
     List<CountingGeneral> getAllCountingGeneral();
+
     CountingGeneral saveCountingGeneral(CountingGeneral countingGeneral);
 
     void counting (String idOrder, OrderStatus orderStatus);
