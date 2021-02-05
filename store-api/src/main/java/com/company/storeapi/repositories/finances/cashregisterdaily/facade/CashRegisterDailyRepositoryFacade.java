@@ -1,7 +1,6 @@
-package com.company.storeapi.repositories.finances.cashRegisterDaily.facade;
+package com.company.storeapi.repositories.finances.cashregisterdaily.facade;
 
 import com.company.storeapi.model.entity.finance.CashRegisterDaily;
-import com.company.storeapi.model.enums.Status;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

@@ -1,11 +1,10 @@
 package com.company.storeapi.web.api;
 
-import com.company.storeapi.core.exceptions.base.ServiceException;
 import com.company.storeapi.model.payload.response.finance.ResponseCashBase;
 import com.company.storeapi.model.payload.response.finance.ResponseCashRegisterDTO;
 import com.company.storeapi.model.payload.response.finance.ResponseListCashRegisterDailyPaginationDto;
-import com.company.storeapi.services.finances.cashBase.CashBaseService;
-import com.company.storeapi.services.finances.cashRegister.CashRegisterService;
+import com.company.storeapi.services.finances.cashbase.CashBaseService;
+import com.company.storeapi.services.finances.cashregister.CashRegisterService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -46,18 +45,18 @@ public class CashBaseApi {
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseCashBase findCashBaseByUltimate() throws ServiceException {
+    public ResponseCashBase findCashBaseByUltimate() {
         return cashBaseService.findCashBaseByUltimate();
     }
 
     @PostMapping(value = "/{cashBase}")
-    public ResponseEntity<ResponseCashBase> create(@PathVariable double cashBase) throws ServiceException {
+    public ResponseEntity<ResponseCashBase> create(@PathVariable double cashBase) {
         ResponseCashBase created = cashBaseService.save(cashBase);
         return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/CashRegister")
-    public ResponseEntity<ResponseCashRegisterDTO> cashRegister() throws ServiceException {
+    public ResponseEntity<ResponseCashRegisterDTO> cashRegister() {
         ResponseCashRegisterDTO created = cashRegisterService.saveCashRegister();
         return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.OK);
     }

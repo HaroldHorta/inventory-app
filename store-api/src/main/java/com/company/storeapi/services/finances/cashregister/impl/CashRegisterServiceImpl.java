@@ -1,4 +1,4 @@
-package com.company.storeapi.services.finances.cashRegister.impl;
+package com.company.storeapi.services.finances.cashregister.impl;
 
 import com.company.storeapi.core.mapper.CashRegisterMapper;
 import com.company.storeapi.core.util.StandNameUtil;
@@ -7,8 +7,8 @@ import com.company.storeapi.model.entity.finance.CashRegisterDaily;
 import com.company.storeapi.model.payload.response.finance.ResponseCashRegisterDTO;
 import com.company.storeapi.model.payload.response.finance.ResponseListCashRegisterDailyPaginationDto;
 import com.company.storeapi.repositories.finances.cashBase.facade.CashBaseRepositoryFacade;
-import com.company.storeapi.repositories.finances.cashRegisterDaily.facade.CashRegisterDailyRepositoryFacade;
-import com.company.storeapi.services.finances.cashRegister.CashRegisterService;
+import com.company.storeapi.repositories.finances.cashregisterdaily.facade.CashRegisterDailyRepositoryFacade;
+import com.company.storeapi.services.finances.cashregister.CashRegisterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;

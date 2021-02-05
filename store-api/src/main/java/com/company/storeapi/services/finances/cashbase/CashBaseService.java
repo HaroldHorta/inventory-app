@@ -1,4 +1,4 @@
-package com.company.storeapi.services.finances.cashBase;
+package com.company.storeapi.services.finances.cashbase;
 
 import com.company.storeapi.model.payload.response.finance.ResponseCashBase;
 

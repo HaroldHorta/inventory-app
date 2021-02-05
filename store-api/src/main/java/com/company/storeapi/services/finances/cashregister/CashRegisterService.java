@@ -1,11 +1,8 @@
-package com.company.storeapi.services.finances.cashRegister;
+package com.company.storeapi.services.finances.cashregister;
 
 import com.company.storeapi.model.payload.response.finance.ResponseCashRegisterDTO;
 import com.company.storeapi.model.payload.response.finance.ResponseListCashRegisterDailyPaginationDto;
-import com.company.storeapi.model.payload.response.finance.ResponseListExpensesPaginationDto;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface CashRegisterService {
 

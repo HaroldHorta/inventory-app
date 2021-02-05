@@ -1,16 +1,14 @@
-package com.company.storeapi.services.finances.cashBase.impl;
+package com.company.storeapi.services.finances.cashbase.impl;
 
 import com.company.storeapi.core.mapper.CashRegisterMapper;
 import com.company.storeapi.model.entity.finance.CashBase;
 import com.company.storeapi.model.payload.response.finance.ResponseCashBase;
 import com.company.storeapi.repositories.finances.cashBase.facade.CashBaseRepositoryFacade;
-import com.company.storeapi.services.finances.cashBase.CashBaseService;
+import com.company.storeapi.services.finances.cashbase.CashBaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

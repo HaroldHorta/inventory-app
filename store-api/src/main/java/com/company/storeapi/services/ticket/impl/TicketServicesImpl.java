@@ -16,7 +16,7 @@ import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
 import com.company.storeapi.model.payload.response.finance.CreditCapital;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
-import com.company.storeapi.repositories.finances.cashRegisterDaily.facade.CashRegisterDailyRepositoryFacade;
+import com.company.storeapi.repositories.finances.cashregisterdaily.facade.CashRegisterDailyRepositoryFacade;
 import com.company.storeapi.repositories.order.facade.OrderRepositoryFacade;
 import com.company.storeapi.repositories.product.facade.ProductRepositoryFacade;
 import com.company.storeapi.repositories.tickey.facade.TicketRepositoryFacade;
@@ -67,7 +67,7 @@ public class TicketServicesImpl implements TicketServices {
 
         Order order = orderRepositoryFacade.validateAndGetOrderById(requestAddTicketDTO.getOrder());
 
-        if (!(order.getOrderStatus() == OrderStatus.ABIERTA)) {
+        if ((order.getOrderStatus() != OrderStatus.ABIERTA)) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "La orden ya esta pagada, no se puede generar ticket");
         }
 
@@ -225,6 +225,12 @@ public class TicketServicesImpl implements TicketServices {
         } else {
             CashRegisterDaily cashRegisterDaily = new CashRegisterDaily();
             cashRegisterDaily.setCreateAt(new Date());
+            cashRegisterDaily.setDailyCashSales(dailyCashSales);
+            cashRegisterDaily.setDailyTransactionsSales(dailyTransactionsSales);
+            cashRegisterDaily.setDailyCreditSales(dailyCreditSales);
+            cashRegisterDaily.setCashCreditCapital(cashCreditCapital);
+            cashRegisterDaily.setTransactionCreditCapital(transactionCreditCapital);
+            cashRegisterDaily.setCashRegister(false);
 
             cashRegisterDailyRepositoryFacade.save(cashRegisterDaily);
         }

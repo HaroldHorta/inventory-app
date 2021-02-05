@@ -7,7 +7,7 @@ import com.company.storeapi.model.entity.finance.Expenses;
 import com.company.storeapi.model.payload.request.finance.RequestAddExpensesDTO;
 import com.company.storeapi.model.payload.response.finance.ResponseExpensesDTO;
 import com.company.storeapi.model.payload.response.finance.ResponseListExpensesPaginationDto;
-import com.company.storeapi.repositories.finances.cashRegisterDaily.facade.CashRegisterDailyRepositoryFacade;
+import com.company.storeapi.repositories.finances.cashregisterdaily.facade.CashRegisterDailyRepositoryFacade;
 import com.company.storeapi.repositories.finances.expenses.facade.ExpensesRepositoryFacade;
 import com.company.storeapi.services.finances.expenses.ExpensesService;
 import lombok.RequiredArgsConstructor;

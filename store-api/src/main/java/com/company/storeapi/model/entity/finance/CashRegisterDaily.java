@@ -23,7 +23,6 @@ public class CashRegisterDaily {
     private double dailyCreditSales;
     private double totalSales;
     private double moneyOut;
-    //private double discounts;
     private double cashCreditCapital;
     private double transactionCreditCapital;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
