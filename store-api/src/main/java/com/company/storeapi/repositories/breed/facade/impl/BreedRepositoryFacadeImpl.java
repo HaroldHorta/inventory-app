@@ -32,7 +32,7 @@ public class BreedRepositoryFacadeImpl implements BreedRepositoryFacade {
     public List<Breed> getAllBreed() {
         try {
             return Optional.of(breedRepository.findAll())
-                    .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de categorias"));
+                    .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de raza"));
         }catch (EmptyResultDataAccessException er){
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
         }catch (DataAccessException er){
