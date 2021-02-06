@@ -41,13 +41,13 @@ public class CashRegisterServiceImpl implements CashRegisterService {
         cashRegisterDaily.setCreateAt(new Date());
         cashRegisterDaily.setCashRegister(true);
 
-        return cashRegisterMapper.DtoChasRegisterDocument( cashRegisterDailyRepositoryFacade.save(cashRegisterDaily));
+        return cashRegisterMapper.dtoChasRegisterDocument( cashRegisterDailyRepositoryFacade.save(cashRegisterDaily));
     }
 
     @Override
     public ResponseListCashRegisterDailyPaginationDto getCashRegisterPageable() {
         List<CashRegisterDaily> cashRegisterDailies = cashRegisterDailyRepositoryFacade.findAllCashRegisterDaily();
-        List<ResponseCashRegisterDTO> responseCashRegisters = cashRegisterDailies.stream().map(cashRegisterMapper::DtoChasRegisterDocument).collect(Collectors.toList());
+        List<ResponseCashRegisterDTO> responseCashRegisters = cashRegisterDailies.stream().map(cashRegisterMapper::dtoChasRegisterDocument).collect(Collectors.toList());
         ResponseListCashRegisterDailyPaginationDto responseListCashRegisterDailyPaginationDto = new ResponseListCashRegisterDailyPaginationDto();
         responseListCashRegisterDailyPaginationDto.setLimitMax(cashRegisterDailies.size());
         responseListCashRegisterDailyPaginationDto.setCashRegisters(responseCashRegisters);
@@ -57,7 +57,7 @@ public class CashRegisterServiceImpl implements CashRegisterService {
     @Override
     public ResponseListCashRegisterDailyPaginationDto getCashRegisterPageable(Pageable pageable) {
         List<CashRegisterDaily> cashRegisterDailies = cashRegisterDailyRepositoryFacade.findAllByPageable(false, pageable);
-        List<ResponseCashRegisterDTO> responseCashRegisters = cashRegisterDailies.stream().map(cashRegisterMapper::DtoChasRegisterDocument).collect(Collectors.toList());
+        List<ResponseCashRegisterDTO> responseCashRegisters = cashRegisterDailies.stream().map(cashRegisterMapper::dtoChasRegisterDocument).collect(Collectors.toList());
         ResponseListCashRegisterDailyPaginationDto responseListCashRegisterDailyPaginationDto = new ResponseListCashRegisterDailyPaginationDto();
 
         int limitMin = getLimitCash(pageable, 1, (pageable.getPageNumber() * size) + 1);

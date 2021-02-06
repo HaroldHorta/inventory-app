@@ -13,7 +13,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 )
 public interface CashRegisterMapper {
 
-    ResponseCashRegisterDTO DtoChasRegisterDocument(CashRegisterDaily cashRegister);
+    ResponseCashRegisterDTO dtoChasRegisterDocument(CashRegisterDaily cashRegister);
 
     ResponseCashBase getResponseCashBase(CashBase cashBase);
 
