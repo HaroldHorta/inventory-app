@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
         ProductRestApi.class,
         TicketRestApi.class,
         UserRestApi.class,
+        BreedRestApi.class,
+        VeterinaryRestApi.class,
 
 
 })

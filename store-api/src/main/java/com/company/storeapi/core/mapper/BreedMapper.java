@@ -14,8 +14,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 )
 public interface BreedMapper {
 
-    Breed toBreed(ResponseBreedDTO responseBreedDTO);
-
     ResponseBreedDTO toBreedDto(Breed breed);
 
     void updateBreedFromDto(RequestUpdateBreedDTO requestUpdateBreedDTO, @MappingTarget Breed breed);

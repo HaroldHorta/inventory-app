@@ -9,16 +9,12 @@ import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
-import javax.validation.constraints.Email;
-
 @Document(collection = "customer")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 
 public class Customer {
-
 
     @Id
     private String id;
@@ -34,6 +30,12 @@ public class Customer {
     private String address;
 
     private String phone;
+
+    private Integer stratum;
+
+    private String municipality;
+
+    private String occupation;
 
     private Status status;
 
