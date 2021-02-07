@@ -54,6 +54,7 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
         clinicHistory.setPet(pet);
         clinicHistory.setReasonOfConsultation(requestAddClinicHistoryDTO.getReasonOfConsultation());
         clinicHistory.setAnamnesis(requestAddClinicHistoryDTO.getAnamnesis());
+        clinicHistory.setRecipeBook(requestAddClinicHistoryDTO.getRecipeBook());
 
 
         return clinichistoryMapper.toClinichistoryDto(clinicHistoryRepositoryFacade.saveClinicHistory(clinicHistory));

@@ -24,5 +24,6 @@ public class ClinicHistory {
     private Pet pet;
     private String reasonOfConsultation;
     private String anamnesis;
+    private String recipeBook;
 
 }

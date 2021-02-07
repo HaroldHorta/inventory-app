@@ -108,12 +108,12 @@ public class PetServiceImpl implements PetService {
         Set<ResponseVaccination> vaccinations = pet.getVaccinations();
         requestPatientHistory.getVaccinations().forEach(vaccination -> {
             Vaccination vaccinationValidate = vaccinationRepositoryFacade.validateAndGetById(vaccination.getId());
-            if (!(vaccination.getId().equals(vaccinationValidate.getId()))) {
+
                 ResponseVaccination responseVaccination = new ResponseVaccination();
                 responseVaccination.setVaccination(vaccinationValidate);
                 responseVaccination.setVaccinationDate((vaccination.getVaccinationDate()));
                 vaccinations.add(responseVaccination);
-            }
+
         });
         pet.setVaccinations(vaccinations);
 

@@ -19,5 +19,8 @@ public class RequestAddClinicHistoryDTO {
     private String reasonOfConsultation;
     @Schema(example = "dolor abdominal")
     private String anamnesis;
+    @Schema(example = "dolor abdominal")
+    private String recipeBook;
+
 
 }
