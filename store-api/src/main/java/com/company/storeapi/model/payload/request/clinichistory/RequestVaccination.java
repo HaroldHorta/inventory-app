@@ -1,6 +1,6 @@
-package com.company.storeapi.model.payload.request.clinicalhistory;
+package com.company.storeapi.model.payload.request.clinichistory;
 
-import com.company.storeapi.model.entity.Vaccination;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +11,8 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestVaccination {
-    private Vaccination description;
+
+    @Schema(example = "601dfe2c718c722127fbd28e")
+    private String id;
     private Date vaccinationDate;
 }

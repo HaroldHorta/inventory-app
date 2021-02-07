@@ -9,9 +9,11 @@ import java.util.List;
 
 public interface BreedRepository extends MongoRepository<Breed,String > {
 
-    Boolean existsBreedByDescription(String description);
+    boolean existsBreedByDescription(String description);
 
     List<Breed> findAllByStatus (Status status, Pageable pageable);
 
     int countByStatus (Status status);
+
+    boolean existsBreedById(String id);
 }

@@ -12,7 +12,7 @@ import com.company.storeapi.model.payload.request.breed.RequestUpdateBreedDTO;
 import com.company.storeapi.model.payload.response.breed.ResponseBreedDTO;
 import com.company.storeapi.model.payload.response.breed.ResponseListBreedPaginationDto;
 import com.company.storeapi.repositories.breed.facade.BreedRepositoryFacade;
-import com.company.storeapi.repositories.clinicalhistory.facade.ClinicalHistoryRepositoryFacade;
+import com.company.storeapi.repositories.clinichistory.facade.ClinicHistoryRepositoryFacade;
 import com.company.storeapi.services.breed.BreedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class BreedServiceImpl implements BreedService {
 
     private final BreedRepositoryFacade repositoryFacade;
-    private final ClinicalHistoryRepositoryFacade clinicalHistoryRepositoryFacade;
+    private final ClinicHistoryRepositoryFacade clinicalHistoryRepositoryFacade;
     private final BreedMapper breedMapper;
 
     @Value("${spring.size.pagination}")
@@ -72,13 +72,7 @@ public class BreedServiceImpl implements BreedService {
 
     @Override
     public void deleteById(String id) {
-        boolean clinicHistories = clinicalHistoryRepositoryFacade.existsClinicHistoriesById(id);
-        if (!clinicHistories) {
             repositoryFacade.deleteBreed(id);
-        } else {
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La raza esta siendo usada no se puede eliminar");
-        }
-
     }
 
     @Override

@@ -52,7 +52,6 @@ public class VeterinaryRepositoryFacadeImpl implements VeterinaryRepositoryFacad
 
     @Override
     public void deleteVeterinary(String id) {
-
        boolean veterinary = veterinaryRepository.existsVeterinaryById(id);
         if(veterinary){
             veterinaryRepository.deleteById(id);
@@ -61,11 +60,6 @@ public class VeterinaryRepositoryFacadeImpl implements VeterinaryRepositoryFacad
         }
 
 
-    }
-
-    @Override
-    public Boolean existsVeterinaryById(String id) {
-        return veterinaryRepository.existsVeterinaryById(id);
     }
 
     @Override

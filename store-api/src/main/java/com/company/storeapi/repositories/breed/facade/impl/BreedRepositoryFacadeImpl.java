@@ -78,11 +78,11 @@ public class BreedRepositoryFacadeImpl implements BreedRepositoryFacade {
 
     @Override
     public void deleteBreed(String id) {
-        Optional<Breed> breed = breedRepository.findById(id);
-        if(breed.isPresent()){
+      boolean breed = breedRepository.existsBreedById(id);
+        if(breed){
             breedRepository.deleteById(id);
         }else {
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "Raza no existe");
         }
     }
 

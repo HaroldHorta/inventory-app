@@ -1,4 +1,4 @@
-package com.company.storeapi.model.payload.request.clinicalhistory;
+package com.company.storeapi.model.payload.request.clinichistory;
 
 import com.company.storeapi.model.enums.Habitat;
 import lombok.AllArgsConstructor;

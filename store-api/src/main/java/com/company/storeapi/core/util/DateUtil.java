@@ -31,7 +31,7 @@ public class DateUtil {
     /**
      * The constant YYYY_MM_DD_HH_MM_SS_STANDARD_FORMAT_NP.
      */
-    private static final String YYYY_MM_DD_HH_MM_SS_STANDARD_FORMAT_NP = "yyyy-MM-dd hh:mm:ss";
+    private static final String YYYY_MM_DD_HH_MM_SS_STANDARD_FORMAT_NP = "dd-M-yyyy hh:mm:ss";
 
     /**
      * To xml gregorian calendar xml gregorian calendar.
@@ -133,7 +133,8 @@ public class DateUtil {
      */
     public static String dateParseToString(Date parse) {
         try{
-            return new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS_STANDARD_FORMAT_NP).format(parse);
+            SimpleDateFormat sdf = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS_STANDARD_FORMAT_NP);
+            return sdf.format(parse);
         }catch (Exception e){
             log.error("No se puede aplicar el formato de fecha estandar: {}",parse);
             return null;

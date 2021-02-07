@@ -14,8 +14,6 @@ public interface VeterinaryRepositoryFacade {
 
     void deleteVeterinary(String  id) ;
 
-    Boolean existsVeterinaryById(String id);
-
     Boolean existsVeterinaryByProfessionalCard (String professionalCard);
 
 }

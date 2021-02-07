@@ -23,6 +23,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
         UserRestApi.class,
         BreedRestApi.class,
         VeterinaryRestApi.class,
+        SpeciesRestApi.class,
+        VaccinationRestApi.class,
+        PetRestApi.class,
+        ClinicHistoryRestApi.class,
 
 
 })
