@@ -45,6 +45,12 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
+    public List<ResponsePetDTO> findPetByCustomerNroDocument(String nroDocument) {
+        List<Pet> veterinaries = petRepositoryFacade.findPetByCustomerNroDocument(nroDocument);
+        return veterinaries.stream().map(petMapper::toPetDto).collect(Collectors.toList());
+    }
+
+    @Override
     public ResponsePetDTO validateAndGetPetById(String id) {
         return petMapper.toPetDto(petRepositoryFacade.validateAndGetPetById(id));
     }

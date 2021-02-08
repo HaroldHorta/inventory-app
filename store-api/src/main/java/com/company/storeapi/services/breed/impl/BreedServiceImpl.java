@@ -12,7 +12,6 @@ import com.company.storeapi.model.payload.request.breed.RequestUpdateBreedDTO;
 import com.company.storeapi.model.payload.response.breed.ResponseBreedDTO;
 import com.company.storeapi.model.payload.response.breed.ResponseListBreedPaginationDto;
 import com.company.storeapi.repositories.breed.facade.BreedRepositoryFacade;
-import com.company.storeapi.repositories.clinichistory.facade.ClinicHistoryRepositoryFacade;
 import com.company.storeapi.services.breed.BreedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 public class BreedServiceImpl implements BreedService {
 
     private final BreedRepositoryFacade repositoryFacade;
-    private final ClinicHistoryRepositoryFacade clinicalHistoryRepositoryFacade;
     private final BreedMapper breedMapper;
 
     @Value("${spring.size.pagination}")
@@ -81,7 +79,7 @@ public class BreedServiceImpl implements BreedService {
         List<ResponseBreedDTO> responseBreedDTOS = breeds.stream().map(breedMapper::toBreedDto).collect(Collectors.toList());
 
         ResponseListBreedPaginationDto responseListBreedPaginationDto = new ResponseListBreedPaginationDto();
-        responseListBreedPaginationDto.setBreedDTOS(responseBreedDTOS);
+        responseListBreedPaginationDto.setBreeds(responseBreedDTOS);
         responseListBreedPaginationDto.setLimitMax(breeds.size());
         return responseListBreedPaginationDto;
     }
@@ -92,7 +90,7 @@ public class BreedServiceImpl implements BreedService {
         List<ResponseBreedDTO> responseBreedDTOS = breeds.stream().map(breedMapper::toBreedDto).collect(Collectors.toList());
         int totalData = repositoryFacade.countByStatus(Status.ACTIVO);
         ResponseListBreedPaginationDto responseListBreedPaginationDto = new ResponseListBreedPaginationDto();
-        responseListBreedPaginationDto.setBreedDTOS(responseBreedDTOS);
+        responseListBreedPaginationDto.setBreeds(responseBreedDTOS);
 
         int limitMin = getLimit(pageable, 1, (pageable.getPageNumber() * size) + 1);
 

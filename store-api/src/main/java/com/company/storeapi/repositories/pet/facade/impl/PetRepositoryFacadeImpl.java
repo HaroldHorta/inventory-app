@@ -67,5 +67,11 @@ public class PetRepositoryFacadeImpl implements PetRepositoryFacade {
     public Boolean existsPetById(String id) {
         return petRepository.existsPetById(id);
     }
-    
+
+    @Override
+    public List<Pet> findPetByCustomerNroDocument(String nroDocument) {
+        return Optional.of(petRepository.findPetByCustomerNroDocument(nroDocument))
+                .orElseThrow(() -> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de mascotas"));
+    }
+
 }

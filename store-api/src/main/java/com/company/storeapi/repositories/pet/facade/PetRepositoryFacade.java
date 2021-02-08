@@ -15,5 +15,7 @@ public interface PetRepositoryFacade {
     void deletePet(String  id) ;
 
     Boolean existsPetById(String id);
+
+    List<Pet> findPetByCustomerNroDocument(String nroDocument);
     
 }

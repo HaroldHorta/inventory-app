@@ -1,6 +1,7 @@
 package com.company.storeapi.services.pet;
 
 
+import com.company.storeapi.model.entity.Pet;
 import com.company.storeapi.model.enums.Habitat;
 import com.company.storeapi.model.enums.ReproductiveStatus;
 import com.company.storeapi.model.payload.request.clinichistory.RequestFeeding;
@@ -12,6 +13,8 @@ import java.util.List;
 public interface PetService {
 
     List<ResponsePetDTO> getAllPet();
+
+    List<ResponsePetDTO> findPetByCustomerNroDocument(String nroDocument);
 
     ResponsePetDTO validateAndGetPetById(String id);
 

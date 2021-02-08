@@ -11,5 +11,5 @@ public class ResponseListBreedPaginationDto {
     private int limitMax;
     private int totalData;
     private int size;
-    private List<ResponseBreedDTO> breedDTOS;
+    private List<ResponseBreedDTO> breeds;
 }
