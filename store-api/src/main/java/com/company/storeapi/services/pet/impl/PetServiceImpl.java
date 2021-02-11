@@ -20,6 +20,9 @@ import com.company.storeapi.services.pet.PetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -61,6 +64,8 @@ public class PetServiceImpl implements PetService {
         Breed breed = breedRepositoryFacade.validateAndGetBreedById(requestAddPetDTO.getBreed());
         Customer customer = customerRepositoryFacade.validateAndGetCustomerById(requestAddPetDTO.getCustomer());
 
+        Integer age = getAge(requestAddPetDTO.getDateBirth());
+
         Pet pet = new Pet();
         pet.setName(requestAddPetDTO.getName());
         pet.setSpecies(specie);
@@ -68,7 +73,7 @@ public class PetServiceImpl implements PetService {
         pet.setColor(requestAddPetDTO.getColor());
         pet.setSex(requestAddPetDTO.getSex());
         pet.setDateBirth(requestAddPetDTO.getDateBirth());
-        pet.setAge(requestAddPetDTO.getAge());
+        pet.setAge(age);
         pet.setParticularSigns(requestAddPetDTO.getParticularSigns());
         pet.setOrigin(requestAddPetDTO.getOrigin());
         pet.setCustomer(customer);
@@ -78,12 +83,21 @@ public class PetServiceImpl implements PetService {
         return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
     }
 
+    private Integer getAge(Date date) {
+        LocalDate now = LocalDate.now();
+        LocalDate dateNac = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Period period = Period.between(dateNac, now);
+        return period.getYears();
+    }
+
     @Override
     public ResponsePetDTO updatePet(RequestUpdatePetDTO requestUpdatePetDTO) {
 
         Species specie = speciesRepositoryFacade.validateAndGetById(requestUpdatePetDTO.getSpecies());
         Breed breed = breedRepositoryFacade.validateAndGetBreedById(requestUpdatePetDTO.getBreed());
         Customer customer = customerRepositoryFacade.validateAndGetCustomerById(requestUpdatePetDTO.getCustomer());
+
+        Integer age = getAge(requestUpdatePetDTO.getDateBirth());
 
         Pet pet = petRepositoryFacade.validateAndGetPetById(requestUpdatePetDTO.getId());
         pet.setName(defaultIfNull(requestUpdatePetDTO.getName().trim(), pet.getName()));
@@ -92,7 +106,7 @@ public class PetServiceImpl implements PetService {
         pet.setColor(defaultIfNull(requestUpdatePetDTO.getColor(), pet.getColor()));
         pet.setSex(defaultIfNull(requestUpdatePetDTO.getSex(), pet.getSex()));
         pet.setDateBirth(defaultIfNull(requestUpdatePetDTO.getDateBirth(), pet.getDateBirth()));
-        pet.setAge(defaultIfNull(requestUpdatePetDTO.getAge(), pet.getAge()));
+        pet.setAge(defaultIfNull(age, pet.getAge()));
         pet.setParticularSigns(defaultIfNull(requestUpdatePetDTO.getParticularSigns(), pet.getParticularSigns()));
         pet.setOrigin(defaultIfNull(requestUpdatePetDTO.getOrigin(), pet.getOrigin()));
         pet.setCustomer(customer);
@@ -115,10 +129,10 @@ public class PetServiceImpl implements PetService {
         requestPatientHistory.getVaccinations().forEach(vaccination -> {
             Vaccination vaccinationValidate = vaccinationRepositoryFacade.validateAndGetById(vaccination.getId());
 
-                ResponseVaccination responseVaccination = new ResponseVaccination();
-                responseVaccination.setVaccination(vaccinationValidate);
-                responseVaccination.setVaccinationDate((vaccination.getVaccinationDate()));
-                vaccinations.add(responseVaccination);
+            ResponseVaccination responseVaccination = new ResponseVaccination();
+            responseVaccination.setVaccination(vaccinationValidate);
+            responseVaccination.setVaccinationDate((vaccination.getVaccinationDate()));
+            vaccinations.add(responseVaccination);
 
         });
         pet.setVaccinations(vaccinations);
@@ -274,7 +288,6 @@ public class PetServiceImpl implements PetService {
         pet.setHabitat(requestPatientHistory);
         return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
     }
-
 
 
 }

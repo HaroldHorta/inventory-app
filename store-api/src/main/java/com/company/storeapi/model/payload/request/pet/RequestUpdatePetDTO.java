@@ -32,8 +32,6 @@ public class RequestUpdatePetDTO {
     private Sex sex;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date dateBirth;
-    @Schema(example = "2")
-    private Integer age;
     @Schema(example = "Mancha cafe en el lomo")
     private String particularSigns;
     private Origin origin;
