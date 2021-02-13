@@ -4,7 +4,7 @@ import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.core.mapper.CustomerMapper;
-import com.company.storeapi.core.util.StandNameUtil;
+import com.company.storeapi.core.util.Util;
 import com.company.storeapi.model.entity.CountingGeneral;
 import com.company.storeapi.model.entity.Customer;
 import com.company.storeapi.model.enums.Status;
@@ -95,7 +95,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void deleteCustomer(String id) {
-        Boolean customer = customerRepositoryFacade.existsCustomerById(id);
+        boolean customer = customerRepositoryFacade.existsCustomerById(id);
         if (!customer) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "El cliente no existe");
         }
@@ -148,9 +148,9 @@ public class CustomerServiceImpl implements CustomerService {
         responseListCustomerPaginationDto.setCustomers(responseCustomers);
         int totalData = customerRepositoryFacade.countByStatus(Status.ACTIVO);
 
-        int limitMin = StandNameUtil.getLimitPaginator(pageable, 1, (pageable.getPageNumber() * size) + 1);
+        int limitMin = Util.getLimitPaginator(pageable, 1, (pageable.getPageNumber() * size) + 1);
 
-        int limitMax = StandNameUtil.getLimitPaginator(pageable, size, (pageable.getPageNumber() + 1) * size);
+        int limitMax = Util.getLimitPaginator(pageable, size, (pageable.getPageNumber() + 1) * size);
 
         responseListCustomerPaginationDto.setLimitMin(limitMin);
         responseListCustomerPaginationDto.setLimitMax(Math.min(totalData, limitMax));
@@ -162,7 +162,7 @@ public class CustomerServiceImpl implements CustomerService {
     private void countingGeneralCustomer() {
         List<CountingGeneral> counting = countingGeneralRepositoryFacade.getAllCountingGeneral();
 
-        if ((counting.size() == 0)) {
+        if ((counting.isEmpty())) {
             CountingGeneral c = new CountingGeneral();
 
             c.setQuantity_of_customer(1);

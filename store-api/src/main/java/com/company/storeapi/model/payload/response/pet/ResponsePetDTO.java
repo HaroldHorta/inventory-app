@@ -43,5 +43,6 @@ public class ResponsePetDTO {
     private Habitat habitat;
     private ReproductiveStatus reproductiveStatus;
     private String allergy;
+    private String updateAt;
 
 }

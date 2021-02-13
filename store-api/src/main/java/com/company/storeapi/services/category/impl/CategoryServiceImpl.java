@@ -4,7 +4,7 @@ import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.core.mapper.CategoryMapper;
 import com.company.storeapi.core.mapper.ProductMapper;
-import com.company.storeapi.core.util.StandNameUtil;
+import com.company.storeapi.core.util.Util;
 import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.model.entity.Order;
 import com.company.storeapi.model.entity.Product;
@@ -55,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseCategoryDTO saveCategory(RequestAddCategoryDTO requestAddCategoryDTO) {
-        String description = StandNameUtil.toCapitalLetters(requestAddCategoryDTO.getDescription().trim());
+        String description = Util.toCapitalLetters(requestAddCategoryDTO.getDescription().trim());
         boolean isDescriptionCategory = repositoryFacade.existsCategoryByDescription(description);
         if (isDescriptionCategory) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La categoría con el nombre " + description + " ya existe");
@@ -64,7 +64,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La categria no puede estar vacia");
         }
         Category category = new Category();
-        category.setDescription(StandNameUtil.toCapitalLetters(requestAddCategoryDTO.getDescription().trim()));
+        category.setDescription(Util.toCapitalLetters(requestAddCategoryDTO.getDescription().trim()));
         category.setStatus(Status.ACTIVO);
         category.setCreateAt(new Date());
 
@@ -136,7 +136,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private int getLimit(Pageable pageable, int i, int i2) {
-        return StandNameUtil.getLimitPaginator(pageable, i, i2);
+        return Util.getLimitPaginator(pageable, i, i2);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.company.storeapi.services.finances.cashregister.impl;
 
 import com.company.storeapi.core.mapper.CashRegisterMapper;
-import com.company.storeapi.core.util.StandNameUtil;
+import com.company.storeapi.core.util.Util;
 import com.company.storeapi.model.entity.finance.CashBase;
 import com.company.storeapi.model.entity.finance.CashRegisterDaily;
 import com.company.storeapi.model.payload.response.finance.ResponseCashRegisterDTO;
@@ -74,7 +74,7 @@ public class CashRegisterServiceImpl implements CashRegisterService {
     }
 
     private int getLimitCash(Pageable pageable, int i, int i2) {
-        return StandNameUtil.getLimitPaginator(pageable, i, i2);
+        return Util.getLimitPaginator(pageable, i, i2);
     }
 
 

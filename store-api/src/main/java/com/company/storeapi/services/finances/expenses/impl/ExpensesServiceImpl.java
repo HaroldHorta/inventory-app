@@ -1,7 +1,7 @@
 package com.company.storeapi.services.finances.expenses.impl;
 
 import com.company.storeapi.core.mapper.ExpensesMapper;
-import com.company.storeapi.core.util.StandNameUtil;
+import com.company.storeapi.core.util.Util;
 import com.company.storeapi.model.entity.finance.CashRegisterDaily;
 import com.company.storeapi.model.entity.finance.Expenses;
 import com.company.storeapi.model.payload.request.finance.RequestAddExpensesDTO;
@@ -98,7 +98,7 @@ public class ExpensesServiceImpl implements ExpensesService {
     }
 
     private int getLimitExp(Pageable pageable, int i, int i2) {
-        return StandNameUtil.getLimitPaginator(pageable, i, i2);
+        return Util.getLimitPaginator(pageable, i, i2);
     }
 
 

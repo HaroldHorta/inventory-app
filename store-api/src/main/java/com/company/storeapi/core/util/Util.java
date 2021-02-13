@@ -2,7 +2,10 @@ package com.company.storeapi.core.util;
 
 import org.springframework.data.domain.Pageable;
 
-public class StandNameUtil {
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class Util {
 
     public static String toCapitalLetters(String valor) {
         if (valor == null || valor.isEmpty()) {
@@ -18,5 +21,10 @@ public class StandNameUtil {
             limitMin = i2;
         }
         return limitMin;
+    }
+
+    public static String converterDate(Date date){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        return sdf.format(date);
     }
 }

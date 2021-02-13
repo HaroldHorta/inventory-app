@@ -36,7 +36,6 @@ public class Pet {
     private Sex sex;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date dateBirth;
-    private Integer age;
     private String particularSigns;
     private Origin origin;
     private Customer customer;

@@ -1,6 +1,8 @@
 package com.company.storeapi.services.pet.impl;
 
-import com.company.storeapi.core.mapper.PetMapper;
+import com.company.storeapi.core.exceptions.enums.LogRefServices;
+import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistenceException;
+import com.company.storeapi.core.util.Util;
 import com.company.storeapi.model.entity.*;
 import com.company.storeapi.model.enums.FeedingOption;
 import com.company.storeapi.model.enums.Habitat;
@@ -39,33 +41,33 @@ public class PetServiceImpl implements PetService {
     private final BreedRepositoryFacade breedRepositoryFacade;
     private final CustomerRepositoryFacade customerRepositoryFacade;
     private final VaccinationRepositoryFacade vaccinationRepositoryFacade;
-    private final PetMapper petMapper;
 
     @Override
     public List<ResponsePetDTO> getAllPet() {
         List<Pet> veterinaries = petRepositoryFacade.getAllPet();
-        return veterinaries.stream().map(petMapper::toPetDto).collect(Collectors.toList());
+        return veterinaries.stream().map(this::toPetDto).collect(Collectors.toList());
     }
 
     @Override
     public List<ResponsePetDTO> findPetByCustomerNroDocument(String nroDocument) {
         List<Pet> veterinaries = petRepositoryFacade.findPetByCustomerNroDocument(nroDocument);
-        return veterinaries.stream().map(petMapper::toPetDto).collect(Collectors.toList());
+        return veterinaries.stream().map(this::toPetDto).collect(Collectors.toList());
     }
 
     @Override
     public ResponsePetDTO validateAndGetPetById(String id) {
-        return petMapper.toPetDto(petRepositoryFacade.validateAndGetPetById(id));
+        return toPetDto(petRepositoryFacade.validateAndGetPetById(id));
     }
 
     @Override
     public ResponsePetDTO savePet(RequestAddPetDTO requestAddPetDTO) {
         Species specie = speciesRepositoryFacade.validateAndGetById(requestAddPetDTO.getSpecies());
         Breed breed = breedRepositoryFacade.validateAndGetBreedById(requestAddPetDTO.getBreed());
-        Customer customer = customerRepositoryFacade.validateAndGetCustomerById(requestAddPetDTO.getCustomer());
+        Customer customer = customerRepositoryFacade.findByNroDocument(requestAddPetDTO.getCustomer());
 
-        Integer age = getAge(requestAddPetDTO.getDateBirth());
-
+        if(requestAddPetDTO.getDateBirth().after(new Date())){
+            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La fecha de nacimiento no puede ser mayor a la fecha actual");
+        }
         Pet pet = new Pet();
         pet.setName(requestAddPetDTO.getName());
         pet.setSpecies(specie);
@@ -73,14 +75,13 @@ public class PetServiceImpl implements PetService {
         pet.setColor(requestAddPetDTO.getColor());
         pet.setSex(requestAddPetDTO.getSex());
         pet.setDateBirth(requestAddPetDTO.getDateBirth());
-        pet.setAge(age);
         pet.setParticularSigns(requestAddPetDTO.getParticularSigns());
         pet.setOrigin(requestAddPetDTO.getOrigin());
         pet.setCustomer(customer);
         pet.setCreateAt(new Date());
         pet.setUpdateAt(new Date());
 
-        return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
+        return toPetDto(petRepositoryFacade.savePet(pet));
     }
 
     private Integer getAge(Date date) {
@@ -90,14 +91,34 @@ public class PetServiceImpl implements PetService {
         return period.getYears();
     }
 
+    private ResponsePetDTO toPetDto (Pet pet){
+
+        Integer age = getAge(pet.getDateBirth());
+
+        ResponsePetDTO responsePetDTO = new ResponsePetDTO();
+
+        responsePetDTO.setName(pet.getName());
+        responsePetDTO.setSpecies(pet.getSpecies());
+        responsePetDTO.setBreed(pet.getBreed());
+        responsePetDTO.setColor(pet.getColor());
+        responsePetDTO.setSex(pet.getSex());
+        responsePetDTO.setDateBirth(pet.getDateBirth());
+        responsePetDTO.setAge(age);
+        responsePetDTO.setParticularSigns(pet.getParticularSigns());
+        responsePetDTO.setOrigin(pet.getOrigin());
+        responsePetDTO.setCustomer(pet.getCustomer());
+        responsePetDTO.setCreateAt(pet.getCreateAt());
+        responsePetDTO.setUpdateAt(Util.converterDate(pet.getUpdateAt()));
+
+        return responsePetDTO;
+    }
+
     @Override
     public ResponsePetDTO updatePet(RequestUpdatePetDTO requestUpdatePetDTO) {
 
         Species specie = speciesRepositoryFacade.validateAndGetById(requestUpdatePetDTO.getSpecies());
         Breed breed = breedRepositoryFacade.validateAndGetBreedById(requestUpdatePetDTO.getBreed());
         Customer customer = customerRepositoryFacade.validateAndGetCustomerById(requestUpdatePetDTO.getCustomer());
-
-        Integer age = getAge(requestUpdatePetDTO.getDateBirth());
 
         Pet pet = petRepositoryFacade.validateAndGetPetById(requestUpdatePetDTO.getId());
         pet.setName(defaultIfNull(requestUpdatePetDTO.getName().trim(), pet.getName()));
@@ -106,13 +127,12 @@ public class PetServiceImpl implements PetService {
         pet.setColor(defaultIfNull(requestUpdatePetDTO.getColor(), pet.getColor()));
         pet.setSex(defaultIfNull(requestUpdatePetDTO.getSex(), pet.getSex()));
         pet.setDateBirth(defaultIfNull(requestUpdatePetDTO.getDateBirth(), pet.getDateBirth()));
-        pet.setAge(defaultIfNull(age, pet.getAge()));
         pet.setParticularSigns(defaultIfNull(requestUpdatePetDTO.getParticularSigns(), pet.getParticularSigns()));
         pet.setOrigin(defaultIfNull(requestUpdatePetDTO.getOrigin(), pet.getOrigin()));
         pet.setCustomer(customer);
         pet.setCreateAt(pet.getCreateAt());
         pet.setUpdateAt(new Date());
-        return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
+        return toPetDto(petRepositoryFacade.savePet(pet));
     }
 
     @Override
@@ -137,7 +157,7 @@ public class PetServiceImpl implements PetService {
         });
         pet.setVaccinations(vaccinations);
 
-        return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
+        return toPetDto(petRepositoryFacade.savePet(pet));
     }
 
     @Override
@@ -158,7 +178,7 @@ public class PetServiceImpl implements PetService {
 
         pet.setPhysiologicalConstants(physiologicalConstants);
 
-        return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
+        return toPetDto(petRepositoryFacade.savePet(pet));
 
     }
 
@@ -170,7 +190,7 @@ public class PetServiceImpl implements PetService {
         getDewormings(requestPatientHistory, dewormings);
 
         pet.setDewormingInternal(dewormings);
-        return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
+        return toPetDto(petRepositoryFacade.savePet(pet));
     }
 
     public void getDewormings(RequestPatientHistoryDeworming requestPatientHistory, Set<RequestDeworming> dewormings) {
@@ -197,7 +217,7 @@ public class PetServiceImpl implements PetService {
         getDewormings(requestPatientHistory, dewormings);
 
         pet.setDewormingExternal(dewormings);
-        return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
+        return toPetDto(petRepositoryFacade.savePet(pet));
     }
 
     @Override
@@ -213,7 +233,7 @@ public class PetServiceImpl implements PetService {
         }
 
         pet.setFeeding(feeding);
-        return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
+        return toPetDto(petRepositoryFacade.savePet(pet));
 
     }
 
@@ -221,7 +241,7 @@ public class PetServiceImpl implements PetService {
     public ResponsePetDTO updateReproductiveStatus(String id, ReproductiveStatus requestPatientHistory) {
         Pet pet = petRepositoryFacade.validateAndGetPetById(id);
         pet.setReproductiveStatus(requestPatientHistory);
-        return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
+        return toPetDto(petRepositoryFacade.savePet(pet));
     }
 
     @Override
@@ -235,7 +255,7 @@ public class PetServiceImpl implements PetService {
 
         }
         pet.setPreviousIllnesses(previousIllnesses);
-        return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
+        return toPetDto(petRepositoryFacade.savePet(pet));
     }
 
     @Override
@@ -248,7 +268,7 @@ public class PetServiceImpl implements PetService {
             surgeries = pet.getSurgeries() + ", " + requestPatientHistory;
         }
         pet.setSurgeries(surgeries);
-        return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
+        return toPetDto(petRepositoryFacade.savePet(pet));
     }
 
     @Override
@@ -265,7 +285,7 @@ public class PetServiceImpl implements PetService {
 
         pet.setAllergy(allergy);
 
-        return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
+        return toPetDto(petRepositoryFacade.savePet(pet));
     }
 
     @Override
@@ -279,14 +299,14 @@ public class PetServiceImpl implements PetService {
 
         }
         pet.setFamilyBackground(familyBackground);
-        return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
+        return toPetDto(petRepositoryFacade.savePet(pet));
     }
 
     @Override
     public ResponsePetDTO updateHabitat(String id, Habitat requestPatientHistory) {
         Pet pet = petRepositoryFacade.validateAndGetPetById(id);
         pet.setHabitat(requestPatientHistory);
-        return petMapper.toPetDto(petRepositoryFacade.savePet(pet));
+        return toPetDto(petRepositoryFacade.savePet(pet));
     }
 
 

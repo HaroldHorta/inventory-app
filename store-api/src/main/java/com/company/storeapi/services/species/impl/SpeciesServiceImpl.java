@@ -3,7 +3,7 @@ package com.company.storeapi.services.species.impl;
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.core.mapper.SpeciesMapper;
-import com.company.storeapi.core.util.StandNameUtil;
+import com.company.storeapi.core.util.Util;
 import com.company.storeapi.model.entity.Species;
 import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.species.RequestAddSpeciesDTO;
@@ -40,7 +40,7 @@ public class SpeciesServiceImpl implements SpeciesService {
 
     @Override
     public ResponseSpeciesDTO save(RequestAddSpeciesDTO requestAddSpeciesDTO) {
-        String description = StandNameUtil.toCapitalLetters(requestAddSpeciesDTO.getDescription());
+        String description = Util.toCapitalLetters(requestAddSpeciesDTO.getDescription());
         boolean isDescription = speciesRepositoryFacade.existsSpeciesByDescription(description);
         if (isDescription) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "la especie con el nombre " + description + " ya existe");

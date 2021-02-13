@@ -5,7 +5,7 @@ import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistence
 import com.company.storeapi.core.mapper.CategoryMapper;
 import com.company.storeapi.core.mapper.ProductMapper;
 import com.company.storeapi.core.util.ImageDefault;
-import com.company.storeapi.core.util.StandNameUtil;
+import com.company.storeapi.core.util.Util;
 import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.model.entity.CountingGeneral;
 import com.company.storeapi.model.entity.Order;
@@ -87,7 +87,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private int getLimitInventory(Pageable pageable, int i, int i2) {
-        return StandNameUtil.getLimitPaginator(pageable, i, i2);
+        return Util.getLimitPaginator(pageable, i, i2);
     }
 
 
@@ -139,7 +139,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private int getLimit(Pageable pageable, int i, int i2) {
-        return StandNameUtil.getLimitPaginator(pageable, i, i2);
+        return Util.getLimitPaginator(pageable, i, i2);
     }
 
 
