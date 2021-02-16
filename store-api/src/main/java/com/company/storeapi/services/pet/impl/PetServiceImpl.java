@@ -65,7 +65,7 @@ public class PetServiceImpl implements PetService {
         Breed breed = breedRepositoryFacade.validateAndGetBreedById(requestAddPetDTO.getBreed());
         Customer customer = customerRepositoryFacade.findByNroDocument(requestAddPetDTO.getCustomer());
 
-        if(requestAddPetDTO.getDateBirth().after(new Date())){
+        if (requestAddPetDTO.getDateBirth().after(new Date())) {
             throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La fecha de nacimiento no puede ser mayor a la fecha actual");
         }
         Pet pet = new Pet();
@@ -92,7 +92,7 @@ public class PetServiceImpl implements PetService {
         return period.getYears();
     }
 
-    private ResponsePetDTO toPetDto (Pet pet){
+    private ResponsePetDTO toPetDto(Pet pet) {
 
         Pet getPet = petRepositoryFacade.validateAndGetPetById(pet.getId());
 
@@ -161,6 +161,14 @@ public class PetServiceImpl implements PetService {
 
         Set<ResponseVaccination> vaccinations = pet.getVaccinations();
         requestPatientHistory.getVaccinations().forEach(vaccination -> {
+
+            if (vaccination.getVaccinationDate() == null) {
+                throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "fecha de vacunación obligatoria");
+            }
+
+            if (vaccination.getVaccinationDate().after(new Date())) {
+                throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La fecha de vacunacion no puede ser superior a la fecha actual");
+            }
             Vaccination vaccinationValidate = vaccinationRepositoryFacade.validateAndGetById(vaccination.getId());
 
             ResponseVaccination responseVaccination = new ResponseVaccination();

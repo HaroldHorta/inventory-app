@@ -54,6 +54,7 @@ public class VaccinationServiceImpl implements VaccinationService {
         vaccination.setLot(requestAddVaccinationDTO.getLot());
         vaccination.setCreateAt(new Date());
         vaccination.setStatus(Status.ACTIVO);
+        vaccination.setObservation(requestAddVaccinationDTO.getObservation());
         return vaccinationMapper.toVaccinationDto(vaccinationRepositoryFacade.save(vaccination));
     }
 
@@ -63,7 +64,7 @@ public class VaccinationServiceImpl implements VaccinationService {
         Vaccination vaccination = vaccinationRepositoryFacade.validateAndGetById(requestUpdateVaccinationDTO.getId());
         vaccination.setDescription(defaultIfNull(requestUpdateVaccinationDTO.getDescription(), vaccination.getDescription()));
         vaccination.setLot(defaultIfNull(requestUpdateVaccinationDTO.getLot(), vaccination.getLot()));
-
+        vaccination.setObservation(defaultIfNull(requestUpdateVaccinationDTO.getObservation(), vaccination.getObservation()));
         return vaccinationMapper.toVaccinationDto(vaccinationRepositoryFacade.save(vaccination));
     }
 

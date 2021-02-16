@@ -11,5 +11,7 @@ public class ResponseVaccinationDTO {
     private Status status;
     private String createAt;
     private String lot;
+    private String observation;
+
 
 }

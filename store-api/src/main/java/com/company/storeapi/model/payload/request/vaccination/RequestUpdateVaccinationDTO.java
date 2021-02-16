@@ -14,5 +14,6 @@ public class RequestUpdateVaccinationDTO {
     @Schema(example = "Rabia")
     private String description;
     private String lot;
+    private String observation;
 
 }
