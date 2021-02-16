@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -96,7 +97,7 @@ public class PetServiceImpl implements PetService {
 
         Pet getPet = petRepositoryFacade.validateAndGetPetById(pet.getId());
 
-        Set<ResponseVaccination> vaccinations = getPet.getVaccinations();
+        Set<RequestPatientHistoryVaccinations> vaccinations = getPet.getVaccinations();
         Set<RequestPhysiologicalConstants> physiologicalConstants = pet.getPhysiologicalConstants();
         Set<RequestDeworming> dewormingsInternal = pet.getDewormingInternal();
         Set<RequestDeworming> dewormingsExternal = pet.getDewormingExternal();
@@ -159,24 +160,40 @@ public class PetServiceImpl implements PetService {
 
         Pet pet = petRepositoryFacade.validateAndGetPetById(id);
 
-        Set<ResponseVaccination> vaccinations = pet.getVaccinations();
+        Set<RequestPatientHistoryVaccinations> vaccinations = pet.getVaccinations();
+
+        Set<ResponseVaccination> responseVaccinations = new HashSet<>();
+
         requestPatientHistory.getVaccinations().forEach(vaccination -> {
 
             if (vaccination.getVaccinationDate() == null) {
                 throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "fecha de vacunación obligatoria");
             }
 
-            if (vaccination.getVaccinationDate().after(new Date())) {
-                throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La fecha de vacunacion no puede ser superior a la fecha actual");
-            }
-            Vaccination vaccinationValidate = vaccinationRepositoryFacade.validateAndGetById(vaccination.getId());
+
+            Vaccination vaccinationValidate = vaccinationRepositoryFacade.validateAndGetById(vaccination.getVaccination().getId());
 
             ResponseVaccination responseVaccination = new ResponseVaccination();
             responseVaccination.setVaccination(vaccinationValidate);
-            responseVaccination.setVaccinationDate(Util.converterDate(vaccination.getVaccinationDate()));
-            vaccinations.add(responseVaccination);
+            responseVaccination.setVaccinationDate((vaccination.getVaccinationDate()));
+
+            responseVaccinations.add(responseVaccination);
 
         });
+
+        RequestPhysiologicalConstants requestPhysiologicalConstants = new RequestPhysiologicalConstants();
+        requestPhysiologicalConstants.setCapillaryFillTime(requestPatientHistory.getPhysiologicalConstants().getCapillaryFillTime());
+        requestPhysiologicalConstants.setHeartRate(requestPatientHistory.getPhysiologicalConstants().getHeartRate());
+        requestPhysiologicalConstants.setRespiratoryFrequency(requestPatientHistory.getPhysiologicalConstants().getRespiratoryFrequency());
+        requestPhysiologicalConstants.setPulse(requestPatientHistory.getPhysiologicalConstants().getPulse());
+        requestPhysiologicalConstants.setTemperature(requestPatientHistory.getPhysiologicalConstants().getTemperature());
+        requestPhysiologicalConstants.setWeight(requestPatientHistory.getPhysiologicalConstants().getWeight());
+
+        RequestPatientHistoryVaccinations requestPatientHistoryVaccinations = new RequestPatientHistoryVaccinations();
+        requestPatientHistoryVaccinations.setVaccinations(responseVaccinations);
+        requestPatientHistoryVaccinations.setPhysiologicalConstants(requestPhysiologicalConstants);
+
+        vaccinations.add(requestPatientHistoryVaccinations);
         pet.setVaccinations(vaccinations);
 
         return toPetDto(petRepositoryFacade.savePet(pet));

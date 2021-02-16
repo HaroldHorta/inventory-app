@@ -7,7 +7,7 @@ import com.company.storeapi.model.enums.Sex;
 import com.company.storeapi.model.payload.request.clinichistory.RequestFeeding;
 import com.company.storeapi.model.payload.request.clinichistory.RequestPhysiologicalConstants;
 import com.company.storeapi.model.payload.request.pet.RequestDeworming;
-import com.company.storeapi.model.payload.response.vaccination.ResponseVaccination;
+import com.company.storeapi.model.payload.request.pet.RequestPatientHistoryVaccinations;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -46,7 +46,7 @@ public class Pet {
     private String photo;
 
 
-    private Set<ResponseVaccination> vaccinations = new LinkedHashSet<>();
+    private Set<RequestPatientHistoryVaccinations> vaccinations = new LinkedHashSet<>();
 
     private Set<RequestPhysiologicalConstants> physiologicalConstants = new LinkedHashSet<>();
     private Set<RequestDeworming> dewormingInternal = new LinkedHashSet<>();

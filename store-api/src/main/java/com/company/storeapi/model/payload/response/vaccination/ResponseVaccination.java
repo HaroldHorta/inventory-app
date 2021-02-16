@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseVaccination {
     private Vaccination vaccination;
-    private String vaccinationDate;
+    private Date vaccinationDate;
 }

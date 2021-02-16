@@ -4,9 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -24,8 +21,5 @@ public class RequestPhysiologicalConstants {
     private String temperature;
     @Schema(example = "operación corazón")
     private String weight;
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
-    private Date creatAt;
-
 
 }
