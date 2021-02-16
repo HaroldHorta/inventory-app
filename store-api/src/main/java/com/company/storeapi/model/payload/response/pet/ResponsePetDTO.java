@@ -13,7 +13,6 @@ import com.company.storeapi.model.payload.request.pet.RequestDeworming;
 import com.company.storeapi.model.payload.response.vaccination.ResponseVaccination;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -26,12 +25,12 @@ public class ResponsePetDTO {
     private Breed breed;
     private String color;
     private Sex sex;
-    private Date dateBirth;
+    private String dateBirth;
     private Integer age;
     private String particularSigns;
     private Origin origin;
     private Customer customer;
-    private Date createAt;
+    private String createAt;
     private Set<ResponseVaccination> vaccinations = new LinkedHashSet<>();
     private Set<RequestPhysiologicalConstants> physiologicalConstants = new LinkedHashSet<>();
     private Set<RequestDeworming> dewormingInternal = new LinkedHashSet<>();
@@ -44,5 +43,6 @@ public class ResponsePetDTO {
     private ReproductiveStatus reproductiveStatus;
     private String allergy;
     private String updateAt;
+    private String photo;
 
 }

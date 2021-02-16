@@ -13,4 +13,6 @@ public class RequestUpdateVaccinationDTO {
     private String id;
     @Schema(example = "Rabia")
     private String description;
+    private String lot;
+
 }

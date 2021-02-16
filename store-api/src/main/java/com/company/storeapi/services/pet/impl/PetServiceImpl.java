@@ -80,6 +80,7 @@ public class PetServiceImpl implements PetService {
         pet.setCustomer(customer);
         pet.setCreateAt(new Date());
         pet.setUpdateAt(new Date());
+        pet.setPhoto(requestAddPetDTO.getPhoto());
 
         return toPetDto(petRepositoryFacade.savePet(pet));
     }
@@ -93,22 +94,35 @@ public class PetServiceImpl implements PetService {
 
     private ResponsePetDTO toPetDto (Pet pet){
 
+        Pet getPet = petRepositoryFacade.validateAndGetPetById(pet.getId());
+
+        Set<ResponseVaccination> vaccinations = getPet.getVaccinations();
+        Set<RequestPhysiologicalConstants> physiologicalConstants = pet.getPhysiologicalConstants();
+        Set<RequestDeworming> dewormingsInternal = pet.getDewormingInternal();
+        Set<RequestDeworming> dewormingsExternal = pet.getDewormingExternal();
+
         Integer age = getAge(pet.getDateBirth());
 
         ResponsePetDTO responsePetDTO = new ResponsePetDTO();
 
+        responsePetDTO.setId(pet.getId());
         responsePetDTO.setName(pet.getName());
         responsePetDTO.setSpecies(pet.getSpecies());
         responsePetDTO.setBreed(pet.getBreed());
         responsePetDTO.setColor(pet.getColor());
         responsePetDTO.setSex(pet.getSex());
-        responsePetDTO.setDateBirth(pet.getDateBirth());
+        responsePetDTO.setDateBirth(Util.converterDate(pet.getDateBirth()));
         responsePetDTO.setAge(age);
         responsePetDTO.setParticularSigns(pet.getParticularSigns());
         responsePetDTO.setOrigin(pet.getOrigin());
         responsePetDTO.setCustomer(pet.getCustomer());
-        responsePetDTO.setCreateAt(pet.getCreateAt());
+        responsePetDTO.setCreateAt(Util.converterDate(pet.getCreateAt()));
         responsePetDTO.setUpdateAt(Util.converterDate(pet.getUpdateAt()));
+        responsePetDTO.setPhoto(pet.getPhoto());
+        responsePetDTO.setVaccinations(vaccinations);
+        responsePetDTO.setPhysiologicalConstants(physiologicalConstants);
+        responsePetDTO.setDewormingExternal(dewormingsExternal);
+        responsePetDTO.setDewormingInternal(dewormingsInternal);
 
         return responsePetDTO;
     }
@@ -151,7 +165,7 @@ public class PetServiceImpl implements PetService {
 
             ResponseVaccination responseVaccination = new ResponseVaccination();
             responseVaccination.setVaccination(vaccinationValidate);
-            responseVaccination.setVaccinationDate((vaccination.getVaccinationDate()));
+            responseVaccination.setVaccinationDate(Util.converterDate(vaccination.getVaccinationDate()));
             vaccinations.add(responseVaccination);
 
         });

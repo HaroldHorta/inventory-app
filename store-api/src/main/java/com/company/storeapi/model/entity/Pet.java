@@ -43,6 +43,8 @@ public class Pet {
     private Date createAt;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date updateAt;
+    private String photo;
+
 
     private Set<ResponseVaccination> vaccinations = new LinkedHashSet<>();
 

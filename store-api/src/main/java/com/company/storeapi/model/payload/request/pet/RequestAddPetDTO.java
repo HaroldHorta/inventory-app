@@ -31,5 +31,7 @@ public class RequestAddPetDTO {
     private Origin origin;
     @Schema(example = "601c835df4b9c71f38e3946e")
     private String customer;
+    @Schema(example = "img/java.jpg")
+    private String photo;
 
 }

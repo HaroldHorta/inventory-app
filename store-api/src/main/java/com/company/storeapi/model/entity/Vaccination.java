@@ -23,6 +23,6 @@ public class Vaccination {
     private Status status;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date createAt;
-    private String lote;
+    private String lot;
 
 }
