@@ -9,7 +9,7 @@ import com.company.storeapi.model.enums.ReproductiveStatus;
 import com.company.storeapi.model.enums.Sex;
 import com.company.storeapi.model.payload.request.clinichistory.RequestFeeding;
 import com.company.storeapi.model.payload.request.clinichistory.RequestPhysiologicalConstants;
-import com.company.storeapi.model.payload.request.pet.RequestDeworming;
+import com.company.storeapi.model.payload.request.pet.RequestPatientHistoryDeworming;
 import com.company.storeapi.model.payload.request.pet.RequestPatientHistoryVaccinations;
 import lombok.Data;
 
@@ -33,8 +33,8 @@ public class ResponsePetDTO {
     private String createAt;
     private Set<RequestPatientHistoryVaccinations> vaccinations = new LinkedHashSet<>();
     private Set<RequestPhysiologicalConstants> physiologicalConstants = new LinkedHashSet<>();
-    private Set<RequestDeworming> dewormingInternal = new LinkedHashSet<>();
-    private Set<RequestDeworming> dewormingExternal = new LinkedHashSet<>();
+    private Set<RequestPatientHistoryDeworming> dewormingInternal = new LinkedHashSet<>();
+    private Set<RequestPatientHistoryDeworming> dewormingExternal = new LinkedHashSet<>();
     private RequestFeeding feeding;
     private String previousIllnesses;
     private String surgeries;

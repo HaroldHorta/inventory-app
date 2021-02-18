@@ -61,12 +61,6 @@ public class PetRestApi {
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @PatchMapping(value = "physiologicalConstants/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponsePetDTO> physiologicalConstants(@PathVariable String id, @RequestBody RequestPatientHistoryPhysiologicalConstants requestPatientHistory) {
-        ResponsePetDTO update = service.updatePhysiologicalConstants(id, requestPatientHistory);
-        return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
-    }
-
     @PatchMapping(value = "dewormingInternal/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponsePetDTO> updateDewormingInternal(@PathVariable String id, @RequestBody RequestPatientHistoryDeworming requestPatientHistory) {
         ResponsePetDTO update = service.updateDewormingInternal(id, requestPatientHistory);

@@ -98,9 +98,8 @@ public class PetServiceImpl implements PetService {
         Pet getPet = petRepositoryFacade.validateAndGetPetById(pet.getId());
 
         Set<RequestPatientHistoryVaccinations> vaccinations = getPet.getVaccinations();
-        Set<RequestPhysiologicalConstants> physiologicalConstants = pet.getPhysiologicalConstants();
-        Set<RequestDeworming> dewormingsInternal = pet.getDewormingInternal();
-        Set<RequestDeworming> dewormingsExternal = pet.getDewormingExternal();
+        Set<RequestPatientHistoryDeworming> dewormingsInternal = pet.getDewormingInternal();
+        Set<RequestPatientHistoryDeworming> dewormingsExternal = pet.getDewormingExternal();
 
         Integer age = getAge(pet.getDateBirth());
 
@@ -121,7 +120,6 @@ public class PetServiceImpl implements PetService {
         responsePetDTO.setUpdateAt(Util.converterDate(pet.getUpdateAt()));
         responsePetDTO.setPhoto(pet.getPhoto());
         responsePetDTO.setVaccinations(vaccinations);
-        responsePetDTO.setPhysiologicalConstants(physiologicalConstants);
         responsePetDTO.setDewormingExternal(dewormingsExternal);
         responsePetDTO.setDewormingInternal(dewormingsInternal);
 
@@ -170,7 +168,6 @@ public class PetServiceImpl implements PetService {
                 throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "fecha de vacunación obligatoria");
             }
 
-
             Vaccination vaccinationValidate = vaccinationRepositoryFacade.validateAndGetById(vaccination.getVaccination().getId());
 
             ResponseVaccination responseVaccination = new ResponseVaccination();
@@ -181,13 +178,7 @@ public class PetServiceImpl implements PetService {
 
         });
 
-        RequestPhysiologicalConstants requestPhysiologicalConstants = new RequestPhysiologicalConstants();
-        requestPhysiologicalConstants.setCapillaryFillTime(requestPatientHistory.getPhysiologicalConstants().getCapillaryFillTime());
-        requestPhysiologicalConstants.setHeartRate(requestPatientHistory.getPhysiologicalConstants().getHeartRate());
-        requestPhysiologicalConstants.setRespiratoryFrequency(requestPatientHistory.getPhysiologicalConstants().getRespiratoryFrequency());
-        requestPhysiologicalConstants.setPulse(requestPatientHistory.getPhysiologicalConstants().getPulse());
-        requestPhysiologicalConstants.setTemperature(requestPatientHistory.getPhysiologicalConstants().getTemperature());
-        requestPhysiologicalConstants.setWeight(requestPatientHistory.getPhysiologicalConstants().getWeight());
+        RequestPhysiologicalConstants requestPhysiologicalConstants = getPhysiologicalConstants(requestPatientHistory.getPhysiologicalConstants());
 
         RequestPatientHistoryVaccinations requestPatientHistoryVaccinations = new RequestPatientHistoryVaccinations();
         requestPatientHistoryVaccinations.setVaccinations(responseVaccinations);
@@ -199,61 +190,59 @@ public class PetServiceImpl implements PetService {
         return toPetDto(petRepositoryFacade.savePet(pet));
     }
 
-    @Override
-    public ResponsePetDTO updatePhysiologicalConstants(String id, RequestPatientHistoryPhysiologicalConstants requestPatientHistory) {
-        Pet pet = petRepositoryFacade.validateAndGetPetById(id);
-        Set<RequestPhysiologicalConstants> physiologicalConstants = pet.getPhysiologicalConstants();
-
-        requestPatientHistory.getPhysiologicalConstants().forEach(physiological -> {
-            RequestPhysiologicalConstants requestPhysiologicalConstants = new RequestPhysiologicalConstants();
-            requestPhysiologicalConstants.setCapillaryFillTime(physiological.getCapillaryFillTime());
-            requestPhysiologicalConstants.setHeartRate(physiological.getHeartRate());
-            requestPhysiologicalConstants.setRespiratoryFrequency(physiological.getRespiratoryFrequency());
-            requestPhysiologicalConstants.setPulse(physiological.getPulse());
-            requestPhysiologicalConstants.setTemperature(physiological.getTemperature());
-            requestPhysiologicalConstants.setWeight(physiological.getWeight());
-            physiologicalConstants.add(requestPhysiologicalConstants);
-        });
-
-        pet.setPhysiologicalConstants(physiologicalConstants);
-
-        return toPetDto(petRepositoryFacade.savePet(pet));
-
+    private RequestPhysiologicalConstants getPhysiologicalConstants(RequestPhysiologicalConstants physiologicalConstants) {
+        RequestPhysiologicalConstants requestPhysiologicalConstants = new RequestPhysiologicalConstants();
+        requestPhysiologicalConstants.setCapillaryFillTime(physiologicalConstants.getCapillaryFillTime());
+        requestPhysiologicalConstants.setHeartRate(physiologicalConstants.getHeartRate());
+        requestPhysiologicalConstants.setRespiratoryFrequency(physiologicalConstants.getRespiratoryFrequency());
+        requestPhysiologicalConstants.setPulse(physiologicalConstants.getPulse());
+        requestPhysiologicalConstants.setTemperature(physiologicalConstants.getTemperature());
+        requestPhysiologicalConstants.setWeight(physiologicalConstants.getWeight());
+        return requestPhysiologicalConstants;
     }
 
     @Override
     public ResponsePetDTO updateDewormingInternal(String id, RequestPatientHistoryDeworming requestPatientHistory) {
         Pet pet = petRepositoryFacade.validateAndGetPetById(id);
-        Set<RequestDeworming> dewormings = pet.getDewormingInternal();
+        Set<RequestPatientHistoryDeworming> dewormings = pet.getDewormingInternal();
 
-        getDewormings(requestPatientHistory, dewormings);
+
+        getRequestDeworming(requestPatientHistory, dewormings);
+        pet.setDewormingInternal(dewormings);
 
         pet.setDewormingInternal(dewormings);
         return toPetDto(petRepositoryFacade.savePet(pet));
     }
 
-    public void getDewormings(RequestPatientHistoryDeworming requestPatientHistory, Set<RequestDeworming> dewormings) {
-        requestPatientHistory.getDeworming().forEach(physiological -> {
-            RequestDeworming requestDeworming = new RequestDeworming();
-            if (physiological.getOption() == Option.SI) {
-                requestDeworming.setDescription(physiological.getDescription());
-                requestDeworming.setDewormingDate(physiological.getDewormingDate());
-                requestDeworming.setProduct(physiological.getProduct());
-            } else {
-                requestDeworming.setDescription("N/A");
-                requestDeworming.setProduct("N/A");
-            }
+    private void getRequestDeworming(RequestPatientHistoryDeworming requestPatientHistory, Set<RequestPatientHistoryDeworming> dewormings) {
+        RequestDeworming requestDeworming = new RequestDeworming();
+        if (requestPatientHistory.getDeworming().getOption() == Option.SI) {
+            requestDeworming.setDescription(requestPatientHistory.getDeworming().getDescription());
+            requestDeworming.setDewormingDate(requestPatientHistory.getDeworming().getDewormingDate());
+            requestDeworming.setProduct(requestPatientHistory.getDeworming().getProduct());
+        } else {
+            requestDeworming.setDescription("N/A");
+            requestDeworming.setProduct("N/A");
+        }
 
-            dewormings.add(requestDeworming);
-        });
+        RequestPhysiologicalConstants requestPhysiologicalConstants = getPhysiologicalConstants(requestPatientHistory.getPhysiologicalConstants());
+
+
+        RequestPatientHistoryDeworming requestPatientHistoryVaccinations = new RequestPatientHistoryDeworming();
+        requestPatientHistoryVaccinations.setDeworming(requestDeworming);
+        requestPatientHistoryVaccinations.setPhysiologicalConstants(requestPhysiologicalConstants);
+
+        dewormings.add(requestPatientHistoryVaccinations);
     }
+
 
     @Override
     public ResponsePetDTO updateDewormingExternal(String id, RequestPatientHistoryDeworming requestPatientHistory) {
         Pet pet = petRepositoryFacade.validateAndGetPetById(id);
-        Set<RequestDeworming> dewormings = pet.getDewormingExternal();
+        Set<RequestPatientHistoryDeworming> dewormings = pet.getDewormingExternal();
 
-        getDewormings(requestPatientHistory, dewormings);
+        getRequestDeworming(requestPatientHistory, dewormings);
+        pet.setDewormingExternal(dewormings);
 
         pet.setDewormingExternal(dewormings);
         return toPetDto(petRepositoryFacade.savePet(pet));

@@ -1,7 +1,6 @@
 package com.company.storeapi.services.pet;
 
 
-import com.company.storeapi.model.entity.Pet;
 import com.company.storeapi.model.enums.Habitat;
 import com.company.storeapi.model.enums.ReproductiveStatus;
 import com.company.storeapi.model.payload.request.clinichistory.RequestFeeding;
@@ -25,8 +24,6 @@ public interface PetService {
     void deletePet(String id);
 
     ResponsePetDTO updateVaccination(String id, RequestPatientHistoryVaccinations requestPatientHistory);
-
-    ResponsePetDTO updatePhysiologicalConstants(String id, RequestPatientHistoryPhysiologicalConstants requestPatientHistory);
 
     ResponsePetDTO updateDewormingInternal(String id, RequestPatientHistoryDeworming requestPatientHistory);
 
