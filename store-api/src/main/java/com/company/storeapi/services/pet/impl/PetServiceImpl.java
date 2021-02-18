@@ -168,6 +168,9 @@ public class PetServiceImpl implements PetService {
                 throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "fecha de vacunación obligatoria");
             }
 
+            if (vaccination.getVaccinationDate().after(new Date())) {
+                throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "La fecha de vacunación no puede ser superior a la fecha actual");
+            }
             Vaccination vaccinationValidate = vaccinationRepositoryFacade.validateAndGetById(vaccination.getVaccination().getId());
 
             ResponseVaccination responseVaccination = new ResponseVaccination();
@@ -216,6 +219,9 @@ public class PetServiceImpl implements PetService {
 
     private void getRequestDeworming(RequestPatientHistoryDeworming requestPatientHistory, Set<RequestPatientHistoryDeworming> dewormings) {
         RequestDeworming requestDeworming = new RequestDeworming();
+        if (requestPatientHistory.getDeworming().getDewormingDate() == null) {
+            throw new DataCorruptedPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "fecha de desparasitación obligatoria");
+        }
         if (requestPatientHistory.getDeworming().getOption() == Option.SI) {
             requestDeworming.setDescription(requestPatientHistory.getDeworming().getDescription());
             requestDeworming.setDewormingDate(requestPatientHistory.getDeworming().getDewormingDate());
