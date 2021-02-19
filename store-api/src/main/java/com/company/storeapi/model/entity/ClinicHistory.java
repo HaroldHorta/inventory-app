@@ -1,5 +1,6 @@
 package com.company.storeapi.model.entity;
 
+import com.company.storeapi.model.payload.request.clinichistory.RequestPhysiologicalConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,8 +21,8 @@ public class ClinicHistory {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date createAt;
     private Veterinary veterinary;
-    private Customer customer;
     private Pet pet;
+    private RequestPhysiologicalConstants physiologicalConstants;
     private String reasonOfConsultation;
     private String anamnesis;
     private String recipeBook;

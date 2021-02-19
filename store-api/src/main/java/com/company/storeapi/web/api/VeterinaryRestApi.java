@@ -25,31 +25,36 @@ public class VeterinaryRestApi {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ResponseVeterinaryDTO> getAllVeterinary()  {
+    public List<ResponseVeterinaryDTO> getAllVeterinary() {
         return service.getAllVeterinary();
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseVeterinaryDTO> getById(@PathVariable("id") String id)
-    {
+    public ResponseEntity<ResponseVeterinaryDTO> getById(@PathVariable("id") String id) {
         ResponseVeterinaryDTO entity = service.validateAndGetVeterinaryById(id);
         return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/professionalCard/{professionalCard}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseVeterinaryDTO> getByProfessionalCard(@PathVariable("professionalCard") String professionalCard) {
+        ResponseVeterinaryDTO entity = service.validateAndGetVeterinaryByProfessionalCard(professionalCard);
+        return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.OK);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseVeterinaryDTO> create(@RequestBody RequestAddVeterinaryDTO requestAddVeterinaryDTO)  {
+    public ResponseEntity<ResponseVeterinaryDTO> create(@RequestBody RequestAddVeterinaryDTO requestAddVeterinaryDTO) {
         ResponseVeterinaryDTO created = service.saveVeterinary(requestAddVeterinaryDTO);
         return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.CREATED);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseVeterinaryDTO> update (@RequestBody RequestUpdateVeterinaryDTO requestUpdateVeterinaryDTO) {
+    public ResponseEntity<ResponseVeterinaryDTO> update(@RequestBody RequestUpdateVeterinaryDTO requestUpdateVeterinaryDTO) {
         ResponseVeterinaryDTO update = service.updateVeterinary(requestUpdateVeterinaryDTO);
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void delete(@PathVariable String id)  {
+    public void delete(@PathVariable String id) {
         service.deleteVeterinary(id);
     }
 }

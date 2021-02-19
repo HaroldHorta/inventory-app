@@ -1,10 +1,10 @@
 package com.company.storeapi.model.entity;
 
-import com.company.storeapi.model.enums.Habitat;
 import com.company.storeapi.model.enums.Origin;
 import com.company.storeapi.model.enums.ReproductiveStatus;
 import com.company.storeapi.model.enums.Sex;
 import com.company.storeapi.model.payload.request.clinichistory.RequestFeeding;
+import com.company.storeapi.model.payload.request.clinichistory.RequestHabitat;
 import com.company.storeapi.model.payload.request.pet.RequestPatientHistoryDeworming;
 import com.company.storeapi.model.payload.request.pet.RequestPatientHistoryVaccinations;
 import lombok.AllArgsConstructor;
@@ -51,7 +51,7 @@ public class Pet {
     private String previousIllnesses;
     private String surgeries;
     private String familyBackground;
-    private Habitat habitat;
+    private RequestHabitat habitat;
     private String allergy;
 
 

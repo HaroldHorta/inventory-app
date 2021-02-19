@@ -12,6 +12,9 @@ public interface VeterinaryService {
 
     ResponseVeterinaryDTO validateAndGetVeterinaryById(String id);
 
+    ResponseVeterinaryDTO validateAndGetVeterinaryByProfessionalCard(String professionalCard);
+
+
     ResponseVeterinaryDTO saveVeterinary(RequestAddVeterinaryDTO entity) ;
 
     ResponseVeterinaryDTO updateVeterinary(RequestUpdateVeterinaryDTO requestUpdateVeterinaryDTO) ;

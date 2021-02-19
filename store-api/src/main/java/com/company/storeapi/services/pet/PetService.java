@@ -1,9 +1,9 @@
 package com.company.storeapi.services.pet;
 
 
-import com.company.storeapi.model.enums.Habitat;
-import com.company.storeapi.model.enums.ReproductiveStatus;
 import com.company.storeapi.model.payload.request.clinichistory.RequestFeeding;
+import com.company.storeapi.model.payload.request.clinichistory.RequestHabitat;
+import com.company.storeapi.model.payload.request.clinichistory.RequestReproductiveStatus;
 import com.company.storeapi.model.payload.request.pet.*;
 import com.company.storeapi.model.payload.response.pet.ResponsePetDTO;
 
@@ -31,7 +31,7 @@ public interface PetService {
 
     ResponsePetDTO updateFeeding(String id, RequestFeeding requestPatientHistory);
 
-    ResponsePetDTO updateReproductiveStatus(String id, ReproductiveStatus requestPatientHistory);
+    ResponsePetDTO updateReproductiveStatus(String id, RequestReproductiveStatus requestPatientHistory);
 
     ResponsePetDTO updatePreviousIllnesses(String id, String requestPatientHistory);
 
@@ -41,7 +41,7 @@ public interface PetService {
 
     ResponsePetDTO updateFamilyBackground(String id, String requestPatientHistory);
 
-    ResponsePetDTO updateHabitat(String id, Habitat requestPatientHistory);
+    ResponsePetDTO updateHabitat(String id, RequestHabitat requestPatientHistory);
 
 
 }

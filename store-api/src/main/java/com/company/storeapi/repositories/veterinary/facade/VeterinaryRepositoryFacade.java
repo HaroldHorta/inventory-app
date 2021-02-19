@@ -10,6 +10,8 @@ public interface VeterinaryRepositoryFacade {
 
     Veterinary validateAndGetVeterinaryById(String id);
 
+    Veterinary findVeterinaryByTAndProfessionalCard(String professionalCard);
+
     Veterinary saveVeterinary(Veterinary entity) ;
 
     void deleteVeterinary(String  id) ;

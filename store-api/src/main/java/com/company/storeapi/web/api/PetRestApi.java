@@ -1,8 +1,8 @@
 package com.company.storeapi.web.api;
 
-import com.company.storeapi.model.enums.Habitat;
-import com.company.storeapi.model.enums.ReproductiveStatus;
 import com.company.storeapi.model.payload.request.clinichistory.RequestFeeding;
+import com.company.storeapi.model.payload.request.clinichistory.RequestHabitat;
+import com.company.storeapi.model.payload.request.clinichistory.RequestReproductiveStatus;
 import com.company.storeapi.model.payload.request.pet.*;
 import com.company.storeapi.model.payload.response.pet.ResponsePetDTO;
 import com.company.storeapi.services.pet.PetService;
@@ -79,8 +79,8 @@ public class PetRestApi {
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @PatchMapping(value = "reproductiveStatus/{id}/{reproductiveStatus}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponsePetDTO> updateReproductiveStatus(@PathVariable String id, @PathVariable ReproductiveStatus reproductiveStatus) {
+    @PatchMapping(value = "reproductiveStatus/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponsePetDTO> updateReproductiveStatus(@PathVariable String id, @RequestBody RequestReproductiveStatus reproductiveStatus) {
         ResponsePetDTO update = service.updateReproductiveStatus(id, reproductiveStatus);
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }
@@ -109,8 +109,8 @@ public class PetRestApi {
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @PatchMapping(value = "habitat/{id}/{habitat}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponsePetDTO> updateHabitat(@PathVariable String id, @PathVariable Habitat habitat) {
+    @PatchMapping(value = "habitat/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponsePetDTO> updateHabitat(@PathVariable String id, @RequestBody RequestHabitat habitat) {
         ResponsePetDTO update = service.updateHabitat(id, habitat);
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }

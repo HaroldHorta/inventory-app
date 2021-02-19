@@ -8,4 +8,6 @@ public interface VeterinaryRepository extends MongoRepository<Veterinary, String
     Boolean existsVeterinaryById(String id);
 
     Boolean existsVeterinaryByProfessionalCard (String professionalCard);
+
+    Veterinary findVeterinaryByProfessionalCard(String professionalCard);
 }

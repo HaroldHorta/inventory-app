@@ -38,6 +38,11 @@ public class VeterinaryServiceImpl implements VeterinaryService {
     }
 
     @Override
+    public ResponseVeterinaryDTO validateAndGetVeterinaryByProfessionalCard(String professionalCard) {
+        return veterinaryMapper.toVeterinaryDto(veterinaryRepositoryFacade.findVeterinaryByTAndProfessionalCard(professionalCard));
+    }
+
+    @Override
     public ResponseVeterinaryDTO saveVeterinary(RequestAddVeterinaryDTO requestAddVeterinaryDTO) {
         String professionalCard = Util.toCapitalLetters(requestAddVeterinaryDTO.getProfessionalCard().trim());
         boolean isProfessionalCard = veterinaryRepositoryFacade.existsVeterinaryByProfessionalCard(professionalCard);

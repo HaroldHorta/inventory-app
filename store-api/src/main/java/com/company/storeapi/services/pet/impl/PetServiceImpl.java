@@ -7,9 +7,10 @@ import com.company.storeapi.model.entity.*;
 import com.company.storeapi.model.enums.FeedingOption;
 import com.company.storeapi.model.enums.Habitat;
 import com.company.storeapi.model.enums.Option;
-import com.company.storeapi.model.enums.ReproductiveStatus;
 import com.company.storeapi.model.payload.request.clinichistory.RequestFeeding;
+import com.company.storeapi.model.payload.request.clinichistory.RequestHabitat;
 import com.company.storeapi.model.payload.request.clinichistory.RequestPhysiologicalConstants;
+import com.company.storeapi.model.payload.request.clinichistory.RequestReproductiveStatus;
 import com.company.storeapi.model.payload.request.pet.*;
 import com.company.storeapi.model.payload.response.pet.ResponsePetDTO;
 import com.company.storeapi.model.payload.response.vaccination.ResponseVaccination;
@@ -122,6 +123,13 @@ public class PetServiceImpl implements PetService {
         responsePetDTO.setVaccinations(vaccinations);
         responsePetDTO.setDewormingExternal(dewormingsExternal);
         responsePetDTO.setDewormingInternal(dewormingsInternal);
+        responsePetDTO.setFeeding(pet.getFeeding());
+        responsePetDTO.setReproductiveStatus(pet.getReproductiveStatus());
+        responsePetDTO.setHabitat(pet.getHabitat());
+        responsePetDTO.setAllergy(pet.getAllergy());
+        responsePetDTO.setPreviousIllnesses(pet.getPreviousIllnesses());
+        responsePetDTO.setSurgeries(pet.getSurgeries());
+        responsePetDTO.setHabitat(pet.getHabitat());
 
         return responsePetDTO;
     }
@@ -272,9 +280,9 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public ResponsePetDTO updateReproductiveStatus(String id, ReproductiveStatus requestPatientHistory) {
+    public ResponsePetDTO updateReproductiveStatus(String id, RequestReproductiveStatus requestPatientHistory) {
         Pet pet = petRepositoryFacade.validateAndGetPetById(id);
-        pet.setReproductiveStatus(requestPatientHistory);
+        pet.setReproductiveStatus(requestPatientHistory.getReproductiveStatus());
         return toPetDto(petRepositoryFacade.savePet(pet));
     }
 
@@ -337,9 +345,16 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public ResponsePetDTO updateHabitat(String id, Habitat requestPatientHistory) {
+    public ResponsePetDTO updateHabitat(String id, RequestHabitat requestPatientHistory) {
         Pet pet = petRepositoryFacade.validateAndGetPetById(id);
-        pet.setHabitat(requestPatientHistory);
+
+        RequestHabitat requestHabitat = new RequestHabitat();
+
+        requestHabitat.setHabitat(requestPatientHistory.getHabitat());
+        if (requestPatientHistory.getHabitat().equals(Habitat.OTRO)) {
+            requestHabitat.setDescription(requestPatientHistory.getDescription());
+        }
+        pet.setHabitat(requestHabitat);
         return toPetDto(petRepositoryFacade.savePet(pet));
     }
 

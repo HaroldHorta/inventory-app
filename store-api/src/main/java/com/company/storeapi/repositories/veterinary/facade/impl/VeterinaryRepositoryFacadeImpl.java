@@ -45,6 +45,13 @@ public class VeterinaryRepositoryFacadeImpl implements VeterinaryRepositoryFacad
     }
 
     @Override
+    public Veterinary findVeterinaryByTAndProfessionalCard(String professionalCard) {
+        return Optional.of(veterinaryRepository.findVeterinaryByProfessionalCard(professionalCard))
+                .orElseThrow(() -> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "veterinario con el id: " + professionalCard + " no encontrada"));
+
+    }
+
+    @Override
     public Veterinary saveVeterinary(Veterinary entity) {
         return veterinaryRepository.save(entity);
 
