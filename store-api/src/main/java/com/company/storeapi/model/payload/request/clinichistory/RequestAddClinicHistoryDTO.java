@@ -17,6 +17,8 @@ public class RequestAddClinicHistoryDTO {
     @Schema(example = "dolor abdominal")
     private String recipeBook;
     private RequestPhysiologicalConstants physiologicalConstants;
+    private RequestClinicExamClinicHistory clinicExam;
+
 
 
 

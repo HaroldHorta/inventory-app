@@ -1,5 +1,6 @@
 package com.company.storeapi.model.entity;
 
+import com.company.storeapi.model.payload.request.clinichistory.RequestClinicExamClinicHistory;
 import com.company.storeapi.model.payload.request.clinichistory.RequestPhysiologicalConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,5 +27,6 @@ public class ClinicHistory {
     private String reasonOfConsultation;
     private String anamnesis;
     private String recipeBook;
+    private RequestClinicExamClinicHistory clinicExam;
 
 }

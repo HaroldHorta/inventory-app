@@ -1,6 +1,7 @@
 package com.company.storeapi.model.payload.response.clinichistory;
 
 import com.company.storeapi.model.entity.*;
+import com.company.storeapi.model.payload.request.clinichistory.RequestClinicExamClinicHistory;
 import com.company.storeapi.model.payload.request.clinichistory.RequestPhysiologicalConstants;
 import lombok.Data;
 
@@ -17,6 +18,8 @@ public class ResponseClinicHistoryDTO {
     private String anamnesis;
     private String recipeBook;
     private RequestPhysiologicalConstants physiologicalConstants;
+    private RequestClinicExamClinicHistory clinicExam;
+
 
 
 }
