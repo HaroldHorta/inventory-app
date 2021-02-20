@@ -130,6 +130,7 @@ public class PetServiceImpl implements PetService {
         responsePetDTO.setPreviousIllnesses(pet.getPreviousIllnesses());
         responsePetDTO.setSurgeries(pet.getSurgeries());
         responsePetDTO.setHabitat(pet.getHabitat());
+        responsePetDTO.setFamilyBackground(pet.getFamilyBackground());
 
         return responsePetDTO;
     }

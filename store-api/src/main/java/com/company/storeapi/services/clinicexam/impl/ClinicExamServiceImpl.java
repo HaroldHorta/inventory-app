@@ -47,20 +47,6 @@ public class ClinicExamServiceImpl implements ClinicExamService {
     }
 
     @Override
-    public ResponseClinicExam updateClinicExam(String id, RequestAddClinicExam requestAddClinicExam) {
-
-        if (requestAddClinicExam.getExam().isEmpty()) {
-            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "el campo no pueden estar vacia");
-        }
-
-        ClinicExam clinicExam = clinicExamRepositoryFacade.validateAndGetClinicExamById(id);
-        clinicExam.setExam(requestAddClinicExam.getExam());
-
-        return clinicExamMapper.toClinicExamDto(clinicExamRepositoryFacade.saveClinicExam(clinicExam));
-
-    }
-
-    @Override
     public void deleteClinicExam(String id) {
         clinicExamRepositoryFacade.deleteClinicExam(id);
     }

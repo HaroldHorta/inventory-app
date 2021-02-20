@@ -13,8 +13,6 @@ public interface ClinicExamService {
 
     ResponseClinicExam saveClinicExam(RequestAddClinicExam requestAddClinicExam);
 
-    ResponseClinicExam updateClinicExam(String id, RequestAddClinicExam requestAddClinicExam);
-
     void deleteClinicExam(String id);
 
 }

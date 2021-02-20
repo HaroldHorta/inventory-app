@@ -39,12 +39,6 @@ public class ClinicExamApiRest {
         return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseClinicExam> update(@PathVariable("id") String id, @RequestBody RequestAddClinicExam requestAddClinicExam) {
-        ResponseClinicExam update = clinicExamService.updateClinicExam(id, requestAddClinicExam);
-        return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
-    }
-
     @DeleteMapping(value = "/{id}")
     public void delete(@PathVariable String id) {
         clinicExamService.deleteClinicExam(id);
