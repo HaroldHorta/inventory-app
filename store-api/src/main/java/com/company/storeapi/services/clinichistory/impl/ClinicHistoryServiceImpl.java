@@ -1,16 +1,17 @@
 package com.company.storeapi.services.clinichistory.impl;
 
-import com.company.storeapi.core.mapper.ClinichistoryMapper;
-import com.company.storeapi.model.entity.ClinicExam;
-import com.company.storeapi.model.entity.ClinicHistory;
-import com.company.storeapi.model.entity.Pet;
-import com.company.storeapi.model.entity.Veterinary;
+import com.company.storeapi.core.exceptions.enums.LogRefServices;
+import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
+import com.company.storeapi.core.mapper.ClinicHistoryMapper;
+import com.company.storeapi.model.entity.*;
 import com.company.storeapi.model.enums.OptionClinicExam;
 import com.company.storeapi.model.payload.request.clinichistory.*;
 import com.company.storeapi.model.payload.response.clinicexam.ResponseClinicExam;
 import com.company.storeapi.model.payload.response.clinichistory.ResponseClinicHistoryDTO;
+import com.company.storeapi.model.payload.response.diagnosticplan.ResponseDiagnosticPlan;
 import com.company.storeapi.repositories.clicexam.facade.ClinicExamRepositoryFacade;
 import com.company.storeapi.repositories.clinichistory.facade.ClinicHistoryRepositoryFacade;
+import com.company.storeapi.repositories.diagnosticplan.facade.DiagnosticPlanRepositoryFacade;
 import com.company.storeapi.repositories.pet.facade.PetRepositoryFacade;
 import com.company.storeapi.repositories.veterinary.facade.VeterinaryRepositoryFacade;
 import com.company.storeapi.services.clinichistory.ClinicHistoryService;
@@ -28,17 +29,19 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
     private final ClinicHistoryRepositoryFacade clinicHistoryRepositoryFacade;
     private final VeterinaryRepositoryFacade veterinaryRepositoryFacade;
     private final PetRepositoryFacade petRepositoryFacade;
-    private final ClinichistoryMapper clinichistoryMapper;
+    private final ClinicHistoryMapper clinichistoryMapper;
     private final ClinicExamRepositoryFacade clinicExamRepositoryFacade;
+    private final DiagnosticPlanRepositoryFacade diagnosticPlanRepositoryFacade;
 
 
     @Override
     public ResponseClinicHistoryDTO validateAndGetClinicHistoryById(String id) {
-        return clinichistoryMapper.toClinichistoryDto(clinicHistoryRepositoryFacade.validateAndGetClinicHistoryById(id));
+        return clinichistoryMapper.toClinicHistoryDto(clinicHistoryRepositoryFacade.validateAndGetClinicHistoryById(id));
     }
 
     @Override
     public ResponseClinicHistoryDTO saveClinicHistory(RequestAddClinicHistoryDTO requestAddClinicHistoryDTO) {
+
         Veterinary veterinary = veterinaryRepositoryFacade.validateAndGetVeterinaryById(requestAddClinicHistoryDTO.getVeterinary());
         Pet pet = petRepositoryFacade.validateAndGetPetById(requestAddClinicHistoryDTO.getPet());
 
@@ -52,8 +55,11 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
 
 
         Set<RequestAddClinicExamClinicHistory> clinicExamClinicHistories = new LinkedHashSet<>();
+        Set<RequestListProblems> listProblems = new LinkedHashSet<>();
+        Set<ResponseDiagnosticPlan> diagnosticPlans = new LinkedHashSet<>();
 
-        requestAddClinicHistoryDTO.getClinicExam().getClinicExamClinicHistories().forEach(exam ->{
+
+        requestAddClinicHistoryDTO.getClinicExam().getClinicExamClinicHistories().forEach(exam -> {
 
             RequestAddClinicExamClinicHistory requestAddClinicExamClinicHistory = new RequestAddClinicExamClinicHistory();
 
@@ -64,7 +70,10 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
 
             requestAddClinicExamClinicHistory.setOptionClinicExam(exam.getOptionClinicExam());
 
-            if(exam.getOptionClinicExam() == OptionClinicExam.ANORMAL){
+            if (exam.getOptionClinicExam() == OptionClinicExam.ANORMAL && exam.getObservation().isEmpty()) {
+                throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "la observación no debe estar vacia");
+            }
+            if (exam.getOptionClinicExam() == OptionClinicExam.ANORMAL) {
                 requestAddClinicExamClinicHistory.setObservation(exam.getObservation());
 
             }
@@ -79,6 +88,27 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
         requestClinicExamClinicHistory.setStateDehydration(requestAddClinicHistoryDTO.getClinicExam().getStateDehydration());
         requestClinicExamClinicHistory.setClinicExamClinicHistories(clinicExamClinicHistories);
 
+        requestAddClinicHistoryDTO.getListProblems().forEach(problems -> {
+            RequestListProblems requestListProblems = new RequestListProblems();
+            requestListProblems.setProblem(problems.getProblem());
+            requestListProblems.setListMaster(problems.getListMaster());
+            requestListProblems.setDifferentialDiagnosis(problems.getDifferentialDiagnosis());
+
+            listProblems.add(requestListProblems);
+        });
+
+        requestAddClinicHistoryDTO.getDiagnosticPlans().forEach(requestDiagnosticPlan -> {
+            DiagnosticPlan responseDiagnosticPlan = diagnosticPlanRepositoryFacade.validateAndGetById(requestDiagnosticPlan.getId());
+
+            ResponseDiagnosticPlan diagnosticPlan = new ResponseDiagnosticPlan();
+            diagnosticPlan.setId(responseDiagnosticPlan.getId());
+            diagnosticPlan.setDescription(responseDiagnosticPlan.getDescription());
+            diagnosticPlan.setCreateAt(responseDiagnosticPlan.getCreateAt());
+
+            diagnosticPlans.add(diagnosticPlan);
+        });
+
+
         ClinicHistory clinicHistory = new ClinicHistory();
         clinicHistory.setCreateAt(new Date());
         clinicHistory.setVeterinary(veterinary);
@@ -88,9 +118,10 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
         clinicHistory.setAnamnesis(requestAddClinicHistoryDTO.getAnamnesis());
         clinicHistory.setRecipeBook(requestAddClinicHistoryDTO.getRecipeBook());
         clinicHistory.setClinicExam(requestClinicExamClinicHistory);
+        clinicHistory.setListProblems(listProblems);
+        clinicHistory.setDiagnosticPlans(diagnosticPlans);
 
-
-        return clinichistoryMapper.toClinichistoryDto(clinicHistoryRepositoryFacade.saveClinicHistory(clinicHistory));
+        return clinichistoryMapper.toClinicHistoryDto(clinicHistoryRepositoryFacade.saveClinicHistory(clinicHistory));
     }
 
     @Override

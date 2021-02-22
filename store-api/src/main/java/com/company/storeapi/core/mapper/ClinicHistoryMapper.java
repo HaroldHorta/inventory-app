@@ -9,7 +9,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
-public interface ClinichistoryMapper {
+public interface ClinicHistoryMapper {
 
-    ResponseClinicHistoryDTO toClinichistoryDto (ClinicHistory clinicHistory);
+    ResponseClinicHistoryDTO toClinicHistoryDto(ClinicHistory clinicHistory);
 }
