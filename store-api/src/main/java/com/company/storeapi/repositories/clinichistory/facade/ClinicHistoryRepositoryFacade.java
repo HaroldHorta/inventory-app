@@ -10,4 +10,6 @@ public interface ClinicHistoryRepositoryFacade {
 
     ClinicHistory saveClinicHistory(ClinicHistory clinicHistory) ;
 
+    List<ClinicHistory> findClinicHistoryByCustomer(String nroDocument);
+
 }

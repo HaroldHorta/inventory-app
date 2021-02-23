@@ -14,4 +14,6 @@ public interface ClinicHistoryService {
 
     ResponseClinicHistoryDTO updateClinicHistory(RequestUpdateClinicHistoryDTO requestUpdateClinicHistoryDTO) ;
 
+    List<ResponseClinicHistoryDTO> findClinicHistoryByCustomer(String nroDocument);
+
 }

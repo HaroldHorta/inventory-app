@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ClinicHistoryRepository extends MongoRepository<ClinicHistory, String> {
 
+    List<ClinicHistory> findClinicHistoryByPet_Customer_NroDocument(String nroDocument);
 }

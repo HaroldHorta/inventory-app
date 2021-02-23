@@ -4,6 +4,7 @@ import com.company.storeapi.model.entity.*;
 import com.company.storeapi.model.payload.request.clinichistory.RequestClinicExamClinicHistory;
 import com.company.storeapi.model.payload.request.clinichistory.RequestListProblems;
 import com.company.storeapi.model.payload.request.clinichistory.RequestPhysiologicalConstants;
+import com.company.storeapi.model.payload.response.diagnosticplan.ResponseDiagnosticPlan;
 import lombok.Data;
 
 import java.util.Date;
@@ -23,6 +24,8 @@ public class ResponseClinicHistoryDTO {
     private RequestPhysiologicalConstants physiologicalConstants;
     private RequestClinicExamClinicHistory clinicExam;
     private Set<RequestListProblems> listProblems = new LinkedHashSet<>();
+    private Set<ResponseDiagnosticPlan> diagnosticPlans = new LinkedHashSet<>();
+
 
 
 

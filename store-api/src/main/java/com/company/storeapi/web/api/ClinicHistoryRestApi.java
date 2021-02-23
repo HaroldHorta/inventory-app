@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/clinic-history")
 @CrossOrigin({"*"})
@@ -26,6 +28,11 @@ public class ClinicHistoryRestApi {
     {
         ResponseClinicHistoryDTO entity = service.validateAndGetClinicHistoryById(id);
         return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "customer/{nroDocument}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ResponseClinicHistoryDTO> getByCustomer(@PathVariable("nroDocument") String nroDocument) {
+        return service.findClinicHistoryByCustomer(nroDocument);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

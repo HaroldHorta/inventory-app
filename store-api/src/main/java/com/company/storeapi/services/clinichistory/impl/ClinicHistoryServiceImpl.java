@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -42,6 +44,9 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
     @Override
     public ResponseClinicHistoryDTO saveClinicHistory(RequestAddClinicHistoryDTO requestAddClinicHistoryDTO) {
 
+        if(requestAddClinicHistoryDTO.getPhysiologicalConstants() == null){
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "EL campo de constantes fisiologicas es obligatorio");
+        }
         Veterinary veterinary = veterinaryRepositoryFacade.validateAndGetVeterinaryById(requestAddClinicHistoryDTO.getVeterinary());
         Pet pet = petRepositoryFacade.validateAndGetPetById(requestAddClinicHistoryDTO.getPet());
 
@@ -127,5 +132,11 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
     @Override
     public ResponseClinicHistoryDTO updateClinicHistory(RequestUpdateClinicHistoryDTO requestUpdateClinicHistoryDTO) {
         return null;
+    }
+
+    @Override
+    public List<ResponseClinicHistoryDTO> findClinicHistoryByCustomer(String nroDocument) {
+        List<ClinicHistory> clinicHistories = clinicHistoryRepositoryFacade.findClinicHistoryByCustomer(nroDocument);
+        return clinicHistories.stream().map(clinichistoryMapper::toClinicHistoryDto).collect(Collectors.toList());
     }
 }
