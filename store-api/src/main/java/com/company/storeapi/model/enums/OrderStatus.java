@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum OrderStatus {
-    OPEN(1), PENDING(2), PAYED(3), CANCELLED(4);
+    ABIERTA(1), PAGADA(3), CANCELADA(4);
 
     @Getter
     private final Integer id;

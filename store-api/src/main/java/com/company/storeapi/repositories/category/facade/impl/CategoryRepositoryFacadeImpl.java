@@ -1,21 +1,24 @@
 package com.company.storeapi.repositories.category.facade.impl;
 
 import com.company.storeapi.core.constants.MessageError;
-import com.company.storeapi.core.exceptions.base.ServiceException;
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.model.entity.Category;
+import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.repositories.category.CategoryRepository;
 import com.company.storeapi.repositories.category.facade.CategoryRepositoryFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The type Category repository.
@@ -29,7 +32,7 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
     private final CategoryRepository repository;
 
     @Override
-    public List<Category> getAllCategory() throws ServiceException {
+    public List<Category> getAllCategory()  {
         try {
             return Optional.of(repository.findAll())
                     .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "No se encontraron registros de categorias"));
@@ -41,17 +44,9 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
     }
 
     @Override
-    public Category validateAndGetCategoryById(String id) throws ServiceException {
-
-            return  repository.findById(id)
-                    .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "Categoria con el id: "+ id + " no encontrada" ));
-
-    }
-
-    @Override
-    public Category findCategoryByDescription(String description) throws ServiceException {
+    public List<Category> findAllByStatus(Status status, Pageable pageable) {
         try {
-            return  repository.findCategoryById(description);
+            return repository.findAllByStatus(status , pageable).stream().sorted(Comparator.comparing(Category::getCreateAt).reversed()).collect(Collectors.toList());
         }catch (EmptyResultDataAccessException er){
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
         }catch (DataAccessException er){
@@ -60,12 +55,31 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
     }
 
     @Override
-    public Category saveCategory(Category entity) throws ServiceException {
+    public int countByStatus(Status status) {
+        try {
+            return repository.countByStatus(status);
+        }catch (EmptyResultDataAccessException er){
+            throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
+        }catch (DataAccessException er){
+            throw new DataNotFoundPersistenceException(LogRefServices.LOG_REF_SERVICES, MessageError.ERROR_EN_EL_ACCESO_LA_ENTIDAD,er);
+        }
+    }
+
+    @Override
+    public Category validateAndGetCategoryById(String id)  {
+
+            return  repository.findById(id)
+                    .orElseThrow(()-> new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, "Categoria con el id: "+ id + " no encontrada" ));
+
+    }
+
+    @Override
+    public Category saveCategory(Category entity)  {
         return repository.save(entity);
     }
 
     @Override
-    public void deleteCategory(String id) throws ServiceException {
+    public void deleteCategory(String id)  {
             Optional<Category> category = repository.findById(id);
         if(category.isPresent()){
             repository.deleteById(id);
@@ -73,5 +87,10 @@ public class CategoryRepositoryFacadeImpl implements CategoryRepositoryFacade {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_NOT_FOUND, MessageError.NO_SE_HA_ENCONTRADO_LA_ENTIDAD);
         }
 
+    }
+
+    @Override
+    public Boolean existsCategoryByDescription(String description) {
+        return repository.existsCategoryByDescription(description);
     }
 }

@@ -1,17 +1,21 @@
 package com.company.storeapi.web.api;
 
 import com.company.storeapi.core.exceptions.base.ServiceException;
+import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.customer.RequestAddCustomerDTO;
 import com.company.storeapi.model.payload.request.customer.RequestUpdateCustomerDTO;
 import com.company.storeapi.model.payload.response.customer.ResponseCustomerDTO;
+import com.company.storeapi.model.payload.response.customer.ResponseListCustomerPaginationDto;
 import com.company.storeapi.services.customer.CustomerService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * The type Customer rest api.
@@ -20,6 +24,9 @@ import java.util.List;
 @RequestMapping(value = "/api/customer")
 @CrossOrigin({"*"})
 public class CustomerRestApi {
+
+    @Value("${spring.size.pagination}")
+    private int size;
 
     private final CustomerService customerService;
 
@@ -38,11 +45,18 @@ public class CustomerRestApi {
      * @return the all product
      * @throws ServiceException the service exception
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ResponseCustomerDTO> getAllProduct() throws ServiceException {
-        return customerService.getAllCustomers();
+
+    @GetMapping(value = "/customerFilter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseListCustomerPaginationDto getAllCustomerFilter() {
+        return customerService.getCustomerPageable();
     }
 
+
+    @GetMapping(value = "/page", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseListCustomerPaginationDto getAllCustomerPage(@Param(value = "page") int page) {
+        Pageable requestedPage = PageRequest.of(page, size);
+        return customerService.getCustomerPageable(requestedPage);
+    }
 
     /**
      * Gets product by id.
@@ -52,9 +66,16 @@ public class CustomerRestApi {
      * @throws ServiceException the service exception
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCustomerDTO> getProductById(@PathVariable("id") String  id)
-            throws ServiceException {
+    public ResponseEntity<ResponseCustomerDTO> getCustomerById(@PathVariable("id") String  id)
+            {
         ResponseCustomerDTO entity = customerService.validateAndGetCustomerById(id);
+        return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/nroDocument/{nroDocument}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseCustomerDTO> getCustomerByNroDocument(@PathVariable("nroDocument") String  nroDocument)
+    {
+        ResponseCustomerDTO entity = customerService.getCustomerByNroDocument(nroDocument);
         return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.OK);
     }
 
@@ -66,22 +87,32 @@ public class CustomerRestApi {
      * @throws ServiceException the service exception
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCustomerDTO> create(@RequestBody RequestAddCustomerDTO customerDTO) throws ServiceException {
+    public ResponseEntity<ResponseCustomerDTO> create(@RequestBody RequestAddCustomerDTO customerDTO) {
         ResponseCustomerDTO created = customerService.saveCustomer(customerDTO);
-        return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.CREATED);
     }
 
     /**
      * Update product response entity.
      *
-     * @param id                       the id
      * @param requestUpdateCustomerDTO the request update customer dto
      * @return the response entity
      * @throws ServiceException the service exception
      */
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCustomerDTO> updateProduct (@PathVariable String id, @RequestBody RequestUpdateCustomerDTO requestUpdateCustomerDTO) throws ServiceException{
+    @PutMapping(value = "update/{id}" , consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseCustomerDTO> update (@PathVariable String id , @RequestBody RequestUpdateCustomerDTO requestUpdateCustomerDTO) {
         ResponseCustomerDTO update = customerService.updateCustomer(id, requestUpdateCustomerDTO);
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @PatchMapping(value = "/{id}/status/{status}")
+    public  ResponseEntity<ResponseCustomerDTO> updateStatus(@PathVariable String id, @PathVariable Status status){
+        ResponseCustomerDTO update= customerService.updateStatus(id,status);
+        return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = {"/{id}"})
+    public void delete (@PathVariable String id){
+        customerService.deleteCustomer(id);
     }
 }

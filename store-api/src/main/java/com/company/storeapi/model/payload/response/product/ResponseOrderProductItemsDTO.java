@@ -9,15 +9,15 @@ import javax.validation.constraints.Positive;
 @Data
 public class ResponseOrderProductItemsDTO {
 
-    @Schema(example = "15")
+    @Schema()
     @NotNull
-    private String id;
+    private ResponseProductDTO product;
 
     @Schema(example = "1")
     @NotNull
     @Positive
     private Integer unit;
 
-    private Double total;
+    private double total;
 
 }

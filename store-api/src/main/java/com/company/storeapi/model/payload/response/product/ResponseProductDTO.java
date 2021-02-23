@@ -6,6 +6,7 @@ import com.company.storeapi.model.enums.Status;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 
 @Data
@@ -17,7 +18,7 @@ public class ResponseProductDTO {
 
     private String description;
 
-    private List<ResponseCategoryDTO> category;
+    private Set<ResponseCategoryDTO> category;
 
     private Status status;
 
@@ -25,12 +26,12 @@ public class ResponseProductDTO {
 
     private String updateAt;
 
-    private Double priceBuy;
+    private double priceBuy;
 
-    private Double priceSell;
+    private double priceSell;
 
     private int unit;
 
-    private FileInfo photo;
+    private String photo;
 
 }

@@ -11,9 +11,8 @@ import java.util.List;
 public class ResponseOrderDTO {
 
     private String id;
-    private String customerId;
+    private List<ResponseOrderProductItemsDTO> products;
     private PaymentType paymentType;
     private OrderStatus orderStatus;
-    private List<ResponseOrderProductItemsDTO> products;
 
 }

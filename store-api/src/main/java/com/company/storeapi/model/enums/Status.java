@@ -3,8 +3,8 @@ package com.company.storeapi.model.enums;
 public enum Status {
 
 
-    ACTIVE(1),
-    INACTIVE(2);
+    ACTIVO(1),
+    INACTIVO(2);
 
     private final Integer id;
 

@@ -2,9 +2,10 @@ package com.company.storeapi.model.entity;
 
 
 import com.company.storeapi.model.enums.Status;
-import com.company.storeapi.model.payload.request.user.FileInfo;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,6 +17,8 @@ import java.util.Set;
 
 @Document(collection = "product")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
 
     @Id
@@ -36,16 +39,14 @@ public class Product {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date updateAt;
 
-    private Double priceBuy;
+    private double priceBuy;
 
-    private Double priceSell;
+    private double priceSell;
 
     private int unit;
 
-    private FileInfo photo;
+    private String photo;
 
-    public Product() {
-
-    }
+    private boolean pageable;
 
    }

@@ -1,5 +1,6 @@
 package com.company.storeapi.model.payload.request.customer;
 
+import com.company.storeapi.model.enums.TypeDocument;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -13,6 +14,14 @@ public class RequestAddCustomerDTO {
     @NotBlank
     private String name;
 
+    @Schema()
+    @NotBlank
+    private TypeDocument typeDocument;
+
+    @Schema(example = "123456789")
+    @NotBlank
+    private String nroDocument;
+
     @Schema(example = "harold.horta@test.com")
     @NotBlank
     @Email
@@ -25,4 +34,5 @@ public class RequestAddCustomerDTO {
     @Schema(example = "44556677")
     @NotBlank
     private String phone;
+
 }

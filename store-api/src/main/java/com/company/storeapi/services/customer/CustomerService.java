@@ -1,8 +1,11 @@
 package com.company.storeapi.services.customer;
 
+import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.customer.RequestAddCustomerDTO;
 import com.company.storeapi.model.payload.request.customer.RequestUpdateCustomerDTO;
 import com.company.storeapi.model.payload.response.customer.ResponseCustomerDTO;
+import com.company.storeapi.model.payload.response.customer.ResponseListCustomerPaginationDto;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -49,4 +52,12 @@ public interface CustomerService {
      * @return the response customer dto
      */
     ResponseCustomerDTO validateAndGetCustomerById(String id);
+
+    ResponseCustomerDTO updateStatus(String id, Status status);
+
+    ResponseCustomerDTO getCustomerByNroDocument(String nroDocument);
+
+    ResponseListCustomerPaginationDto getCustomerPageable();
+
+    ResponseListCustomerPaginationDto getCustomerPageable(Pageable pageable);
 }

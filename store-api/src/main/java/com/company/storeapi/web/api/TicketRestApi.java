@@ -1,6 +1,7 @@
 package com.company.storeapi.web.api;
 
 import com.company.storeapi.core.exceptions.base.ServiceException;
+import com.company.storeapi.model.enums.PaymentType;
 import com.company.storeapi.model.payload.request.ticket.RequestAddTicketDTO;
 import com.company.storeapi.model.payload.response.ticket.ResponseTicketDTO;
 import com.company.storeapi.services.ticket.TicketServices;
@@ -32,9 +33,20 @@ public class TicketRestApi {
         return new ResponseEntity<>(responseTicketDTO,new HttpHeaders(), HttpStatus.OK);
     }
 
+    @GetMapping(value = "nroDocument/{nroDocument}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ResponseTicketDTO> findTicketByCustomerNroDocument(@PathVariable String nroDocument) throws ServiceException{
+        return ticketServices.findTicketByCustomer_NroDocument(nroDocument);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseTicketDTO> saveTicket(@RequestBody RequestAddTicketDTO requestAddTicketDTO) throws ServiceException{
         ResponseTicketDTO entity = ticketServices.saveTicket(requestAddTicketDTO);
+        return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.CREATED);
+    }
+
+    @PatchMapping(value = "/{idTicket}/{creditCapital}/{creditPayment}")
+    public ResponseEntity<ResponseTicketDTO> updateCredit(@PathVariable String idTicket, @PathVariable double creditCapital, @PathVariable PaymentType creditPayment) throws ServiceException{
+        ResponseTicketDTO entity = ticketServices.updateCreditCapital(idTicket, creditCapital, creditPayment);
         return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.CREATED);
     }
 
