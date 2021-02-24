@@ -2,19 +2,20 @@ package com.company.storeapi.services.clinichistory.impl;
 
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
-import com.company.storeapi.core.mapper.ClinicHistoryMapper;
 import com.company.storeapi.model.entity.*;
 import com.company.storeapi.model.enums.OptionClinicExam;
 import com.company.storeapi.model.payload.request.clinichistory.*;
 import com.company.storeapi.model.payload.response.clinicexam.ResponseClinicExam;
 import com.company.storeapi.model.payload.response.clinichistory.ResponseClinicHistoryDTO;
 import com.company.storeapi.model.payload.response.diagnosticplan.ResponseDiagnosticPlan;
+import com.company.storeapi.model.payload.response.pet.ResponsePetDTO;
 import com.company.storeapi.repositories.clicexam.facade.ClinicExamRepositoryFacade;
 import com.company.storeapi.repositories.clinichistory.facade.ClinicHistoryRepositoryFacade;
 import com.company.storeapi.repositories.diagnosticplan.facade.DiagnosticPlanRepositoryFacade;
 import com.company.storeapi.repositories.pet.facade.PetRepositoryFacade;
 import com.company.storeapi.repositories.veterinary.facade.VeterinaryRepositoryFacade;
 import com.company.storeapi.services.clinichistory.ClinicHistoryService;
+import com.company.storeapi.services.pet.PetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,20 +32,20 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
     private final ClinicHistoryRepositoryFacade clinicHistoryRepositoryFacade;
     private final VeterinaryRepositoryFacade veterinaryRepositoryFacade;
     private final PetRepositoryFacade petRepositoryFacade;
-    private final ClinicHistoryMapper clinichistoryMapper;
     private final ClinicExamRepositoryFacade clinicExamRepositoryFacade;
     private final DiagnosticPlanRepositoryFacade diagnosticPlanRepositoryFacade;
+    private final PetService petService;
 
 
     @Override
     public ResponseClinicHistoryDTO validateAndGetClinicHistoryById(String id) {
-        return clinichistoryMapper.toClinicHistoryDto(clinicHistoryRepositoryFacade.validateAndGetClinicHistoryById(id));
+        return toClinicHistoryDto(clinicHistoryRepositoryFacade.validateAndGetClinicHistoryById(id));
     }
 
     @Override
     public ResponseClinicHistoryDTO saveClinicHistory(RequestAddClinicHistoryDTO requestAddClinicHistoryDTO) {
 
-        if(requestAddClinicHistoryDTO.getPhysiologicalConstants() == null){
+        if (requestAddClinicHistoryDTO.getPhysiologicalConstants() == null) {
             throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "EL campo de constantes fisiologicas es obligatorio");
         }
         Veterinary veterinary = veterinaryRepositoryFacade.validateAndGetVeterinaryById(requestAddClinicHistoryDTO.getVeterinary());
@@ -126,7 +127,7 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
         clinicHistory.setListProblems(listProblems);
         clinicHistory.setDiagnosticPlans(diagnosticPlans);
 
-        return clinichistoryMapper.toClinicHistoryDto(clinicHistoryRepositoryFacade.saveClinicHistory(clinicHistory));
+        return toClinicHistoryDto(clinicHistoryRepositoryFacade.saveClinicHistory(clinicHistory));
     }
 
     @Override
@@ -137,6 +138,26 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
     @Override
     public List<ResponseClinicHistoryDTO> findClinicHistoryByCustomer(String nroDocument) {
         List<ClinicHistory> clinicHistories = clinicHistoryRepositoryFacade.findClinicHistoryByCustomer(nroDocument);
-        return clinicHistories.stream().map(clinichistoryMapper::toClinicHistoryDto).collect(Collectors.toList());
+        return clinicHistories.stream().map(this::toClinicHistoryDto).collect(Collectors.toList());
     }
+
+    ResponseClinicHistoryDTO toClinicHistoryDto(ClinicHistory clinicHistory) {
+        ResponsePetDTO pet = petService.validateAndGetPetById(clinicHistory.getPet().getId());
+
+        ResponseClinicHistoryDTO responseClinicHistoryDTO = new ResponseClinicHistoryDTO();
+        responseClinicHistoryDTO.setId(clinicHistory.getId());
+        responseClinicHistoryDTO.setCreateAt(clinicHistory.getCreateAt());
+        responseClinicHistoryDTO.setVeterinary(clinicHistory.getVeterinary());
+        responseClinicHistoryDTO.setPet(pet);
+        responseClinicHistoryDTO.setReasonOfConsultation(clinicHistory.getReasonOfConsultation());
+        responseClinicHistoryDTO.setAnamnesis(clinicHistory.getAnamnesis());
+        responseClinicHistoryDTO.setRecipeBook(clinicHistory.getRecipeBook());
+        responseClinicHistoryDTO.setPhysiologicalConstants(responseClinicHistoryDTO.getPhysiologicalConstants());
+        responseClinicHistoryDTO.setClinicExam(clinicHistory.getClinicExam());
+        responseClinicHistoryDTO.setListProblems(clinicHistory.getListProblems());
+        responseClinicHistoryDTO.setDiagnosticPlans(clinicHistory.getDiagnosticPlans());
+        return responseClinicHistoryDTO;
+    }
+
+
 }

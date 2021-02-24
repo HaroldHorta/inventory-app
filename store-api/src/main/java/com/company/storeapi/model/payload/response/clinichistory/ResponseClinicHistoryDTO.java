@@ -5,6 +5,7 @@ import com.company.storeapi.model.payload.request.clinichistory.RequestClinicExa
 import com.company.storeapi.model.payload.request.clinichistory.RequestListProblems;
 import com.company.storeapi.model.payload.request.clinichistory.RequestPhysiologicalConstants;
 import com.company.storeapi.model.payload.response.diagnosticplan.ResponseDiagnosticPlan;
+import com.company.storeapi.model.payload.response.pet.ResponsePetDTO;
 import lombok.Data;
 
 import java.util.Date;
@@ -17,7 +18,7 @@ public class ResponseClinicHistoryDTO {
     private String id;
     private Date createAt;
     private Veterinary veterinary;
-    private Pet pet;
+    private ResponsePetDTO pet;
     private String reasonOfConsultation;
     private String anamnesis;
     private String recipeBook;
