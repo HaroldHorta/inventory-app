@@ -152,7 +152,7 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
         responseClinicHistoryDTO.setReasonOfConsultation(clinicHistory.getReasonOfConsultation());
         responseClinicHistoryDTO.setAnamnesis(clinicHistory.getAnamnesis());
         responseClinicHistoryDTO.setRecipeBook(clinicHistory.getRecipeBook());
-        responseClinicHistoryDTO.setPhysiologicalConstants(responseClinicHistoryDTO.getPhysiologicalConstants());
+        responseClinicHistoryDTO.setPhysiologicalConstants(clinicHistory.getPhysiologicalConstants());
         responseClinicHistoryDTO.setClinicExam(clinicHistory.getClinicExam());
         responseClinicHistoryDTO.setListProblems(clinicHistory.getListProblems());
         responseClinicHistoryDTO.setDiagnosticPlans(clinicHistory.getDiagnosticPlans());
