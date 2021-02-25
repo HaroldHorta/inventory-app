@@ -9,7 +9,7 @@ import com.company.storeapi.model.payload.response.clinicexam.ResponseClinicExam
 import com.company.storeapi.model.payload.response.clinichistory.ResponseClinicHistoryDTO;
 import com.company.storeapi.model.payload.response.diagnosticplan.ResponseDiagnosticPlan;
 import com.company.storeapi.model.payload.response.pet.ResponsePetDTO;
-import com.company.storeapi.repositories.clicexam.facade.ClinicExamRepositoryFacade;
+import com.company.storeapi.repositories.clinicexam.facade.ClinicExamRepositoryFacade;
 import com.company.storeapi.repositories.clinichistory.facade.ClinicHistoryRepositoryFacade;
 import com.company.storeapi.repositories.diagnosticplan.facade.DiagnosticPlanRepositoryFacade;
 import com.company.storeapi.repositories.pet.facade.PetRepositoryFacade;
@@ -110,6 +110,8 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
             diagnosticPlan.setId(responseDiagnosticPlan.getId());
             diagnosticPlan.setDescription(responseDiagnosticPlan.getDescription());
             diagnosticPlan.setCreateAt(responseDiagnosticPlan.getCreateAt());
+            diagnosticPlan.setPdfs("N/A");
+            diagnosticPlan.setLabs("N/A");
 
             diagnosticPlans.add(diagnosticPlan);
         });
@@ -130,9 +132,32 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
         return toClinicHistoryDto(clinicHistoryRepositoryFacade.saveClinicHistory(clinicHistory));
     }
 
+
     @Override
-    public ResponseClinicHistoryDTO updateClinicHistory(RequestUpdateClinicHistoryDTO requestUpdateClinicHistoryDTO) {
-        return null;
+    public ResponseClinicHistoryDTO updateDiagnosticPlanClinicHistory(String id, RequestDiagnosticPlan requestDiagnosticPlan) {
+
+        ClinicHistory clinicHistory = clinicHistoryRepositoryFacade.validateAndGetClinicHistoryById(id);
+        Set<ResponseDiagnosticPlan> diagnosticPlans =  new LinkedHashSet<>();
+
+        requestDiagnosticPlan.getDiagnosticPlans().forEach(diagnosticPlan -> {
+
+            if(!(diagnosticPlanRepositoryFacade.existsDiagnosticPlanById(diagnosticPlan.getId()))){
+                throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "No se encontraron planes diagnosticos" );
+            }
+            DiagnosticPlan responseDiagnosticPlan = diagnosticPlanRepositoryFacade.validateAndGetById(diagnosticPlan.getId());
+
+            ResponseDiagnosticPlan responseDiagnostic = new ResponseDiagnosticPlan();
+            responseDiagnostic.setId(responseDiagnosticPlan.getId());
+            responseDiagnostic.setDescription(responseDiagnosticPlan.getDescription());
+            responseDiagnostic.setCreateAt(responseDiagnosticPlan.getCreateAt());
+
+            diagnosticPlans.add(diagnosticPlan);
+        });
+
+        clinicHistory.setDiagnosticPlans(diagnosticPlans);
+
+        return toClinicHistoryDto(clinicHistoryRepositoryFacade.saveClinicHistory(clinicHistory));
+
     }
 
     @Override

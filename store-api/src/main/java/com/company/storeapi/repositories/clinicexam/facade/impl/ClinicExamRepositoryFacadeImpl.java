@@ -1,11 +1,11 @@
-package com.company.storeapi.repositories.clicexam.facade.impl;
+package com.company.storeapi.repositories.clinicexam.facade.impl;
 
 import com.company.storeapi.core.constants.MessageError;
 import com.company.storeapi.core.exceptions.enums.LogRefServices;
 import com.company.storeapi.core.exceptions.persistence.DataNotFoundPersistenceException;
 import com.company.storeapi.model.entity.ClinicExam;
-import com.company.storeapi.repositories.clicexam.ClinicExamRepository;
-import com.company.storeapi.repositories.clicexam.facade.ClinicExamRepositoryFacade;
+import com.company.storeapi.repositories.clinicexam.ClinicExamRepository;
+import com.company.storeapi.repositories.clinicexam.facade.ClinicExamRepositoryFacade;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;

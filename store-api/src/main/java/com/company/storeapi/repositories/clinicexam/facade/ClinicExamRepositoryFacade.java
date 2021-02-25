@@ -1,4 +1,4 @@
-package com.company.storeapi.repositories.clicexam.facade;
+package com.company.storeapi.repositories.clinicexam.facade;
 
 import com.company.storeapi.model.entity.ClinicExam;
 

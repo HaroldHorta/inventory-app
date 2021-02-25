@@ -62,4 +62,9 @@ public class DiagnosticPlanRepositoryFacadeImpl implements DiagnosticPlanReposit
     public boolean existsDiagnosticPlanByDescription(String description) {
         return diagnosticPlanRepository.existsDiagnosticPlanByDescription(description);
     }
+
+    @Override
+    public boolean existsDiagnosticPlanById(String id) {
+        return diagnosticPlanRepository.existsDiagnosticPlanById(id);
+    }
 }

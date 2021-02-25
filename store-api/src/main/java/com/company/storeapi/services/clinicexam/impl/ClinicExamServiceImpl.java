@@ -6,7 +6,7 @@ import com.company.storeapi.core.mapper.ClinicExamMapper;
 import com.company.storeapi.model.entity.ClinicExam;
 import com.company.storeapi.model.payload.request.clinicaexam.RequestAddClinicExam;
 import com.company.storeapi.model.payload.response.clinicexam.ResponseClinicExam;
-import com.company.storeapi.repositories.clicexam.facade.ClinicExamRepositoryFacade;
+import com.company.storeapi.repositories.clinicexam.facade.ClinicExamRepositoryFacade;
 import com.company.storeapi.services.clinicexam.ClinicExamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

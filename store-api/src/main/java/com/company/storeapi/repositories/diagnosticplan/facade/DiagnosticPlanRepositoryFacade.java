@@ -17,4 +17,6 @@ public interface DiagnosticPlanRepositoryFacade {
     void delete(String  id) ;
 
     boolean existsDiagnosticPlanByDescription(String description);
+
+    boolean existsDiagnosticPlanById(String id);
 }

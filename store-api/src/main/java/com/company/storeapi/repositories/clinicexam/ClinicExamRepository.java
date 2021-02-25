@@ -1,4 +1,4 @@
-package com.company.storeapi.repositories.clicexam;
+package com.company.storeapi.repositories.clinicexam;
 
 import com.company.storeapi.model.entity.ClinicExam;
 import org.springframework.data.mongodb.repository.MongoRepository;

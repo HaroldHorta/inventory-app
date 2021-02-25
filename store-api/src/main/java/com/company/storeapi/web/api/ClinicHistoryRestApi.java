@@ -1,7 +1,7 @@
 package com.company.storeapi.web.api;
 
 import com.company.storeapi.model.payload.request.clinichistory.RequestAddClinicHistoryDTO;
-import com.company.storeapi.model.payload.request.clinichistory.RequestUpdateClinicHistoryDTO;
+import com.company.storeapi.model.payload.request.clinichistory.RequestDiagnosticPlan;
 import com.company.storeapi.model.payload.response.clinichistory.ResponseClinicHistoryDTO;
 import com.company.storeapi.services.clinichistory.ClinicHistoryService;
 import org.springframework.http.HttpHeaders;
@@ -24,8 +24,7 @@ public class ClinicHistoryRestApi {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseClinicHistoryDTO> getById(@PathVariable("id") String id)
-    {
+    public ResponseEntity<ResponseClinicHistoryDTO> getById(@PathVariable("id") String id) {
         ResponseClinicHistoryDTO entity = service.validateAndGetClinicHistoryById(id);
         return new ResponseEntity<>(entity, new HttpHeaders(), HttpStatus.OK);
     }
@@ -36,14 +35,14 @@ public class ClinicHistoryRestApi {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseClinicHistoryDTO> create(@RequestBody RequestAddClinicHistoryDTO requestAddClinicHistoryDTO)  {
+    public ResponseEntity<ResponseClinicHistoryDTO> create(@RequestBody RequestAddClinicHistoryDTO requestAddClinicHistoryDTO) {
         ResponseClinicHistoryDTO created = service.saveClinicHistory(requestAddClinicHistoryDTO);
         return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.CREATED);
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseClinicHistoryDTO> update (@RequestBody RequestUpdateClinicHistoryDTO requestUpdateClinicHistoryDTO) {
-        ResponseClinicHistoryDTO update = service.updateClinicHistory(requestUpdateClinicHistoryDTO);
+    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseClinicHistoryDTO> update(@PathVariable String id, @RequestBody RequestDiagnosticPlan requestDiagnosticPlan) {
+        ResponseClinicHistoryDTO update = service.updateDiagnosticPlanClinicHistory(id, requestDiagnosticPlan);
         return new ResponseEntity<>(update, new HttpHeaders(), HttpStatus.OK);
     }
 }

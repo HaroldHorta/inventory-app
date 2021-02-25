@@ -8,4 +8,7 @@ public class ResponseDiagnosticPlan {
     private String id;
     private String description;
     private Date createAt;
+    private String pdfs;
+    private String labs;
+
 }
