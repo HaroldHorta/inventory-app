@@ -24,5 +24,6 @@ public class RequestAddClinicHistoryDTO {
     private RequestClinicExamClinicHistory clinicExam;
     private Set<RequestListProblems> listProblems = new LinkedHashSet<>();
     private Set<ResponseDiagnosticPlan> diagnosticPlans = new LinkedHashSet<>();
+    private ResultClinic resultClinic;
 
 }

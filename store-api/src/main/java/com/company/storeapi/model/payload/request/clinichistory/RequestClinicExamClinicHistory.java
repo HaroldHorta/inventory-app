@@ -2,7 +2,6 @@ package com.company.storeapi.model.payload.request.clinichistory;
 
 import com.company.storeapi.model.enums.Attitude;
 import com.company.storeapi.model.enums.BodyCondition;
-import com.company.storeapi.model.enums.StateDehydration;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ public class RequestClinicExamClinicHistory {
 
     private Attitude attitude;
     private BodyCondition bodyCondition;
-    private StateDehydration stateDehydration;
+    private String stateDehydration;
     private Set<RequestAddClinicExamClinicHistory> clinicExamClinicHistories = new LinkedHashSet<>();
 
 

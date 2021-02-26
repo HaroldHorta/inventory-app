@@ -116,6 +116,9 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
             diagnosticPlans.add(diagnosticPlan);
         });
 
+        ResultClinic resultClinic = new ResultClinic();
+        resultClinic.setInterpretationResults("N/A");
+        resultClinic.setDiagnosticImpression("N/A");
 
         ClinicHistory clinicHistory = new ClinicHistory();
         clinicHistory.setCreateAt(new Date());
@@ -128,6 +131,7 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
         clinicHistory.setClinicExam(requestClinicExamClinicHistory);
         clinicHistory.setListProblems(listProblems);
         clinicHistory.setDiagnosticPlans(diagnosticPlans);
+        clinicHistory.setResultClinic(resultClinic);
 
         return toClinicHistoryDto(clinicHistoryRepositoryFacade.saveClinicHistory(clinicHistory));
     }
@@ -137,12 +141,12 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
     public ResponseClinicHistoryDTO updateDiagnosticPlanClinicHistory(String id, RequestDiagnosticPlan requestDiagnosticPlan) {
 
         ClinicHistory clinicHistory = clinicHistoryRepositoryFacade.validateAndGetClinicHistoryById(id);
-        Set<ResponseDiagnosticPlan> diagnosticPlans =  new LinkedHashSet<>();
+        Set<ResponseDiagnosticPlan> diagnosticPlans = new LinkedHashSet<>();
 
         requestDiagnosticPlan.getDiagnosticPlans().forEach(diagnosticPlan -> {
 
-            if(!(diagnosticPlanRepositoryFacade.existsDiagnosticPlanById(diagnosticPlan.getId()))){
-                throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "No se encontraron planes diagnosticos" );
+            if (!(diagnosticPlanRepositoryFacade.existsDiagnosticPlanById(diagnosticPlan.getId()))) {
+                throw new DataNotFoundPersistenceException(LogRefServices.ERROR_DATA_CORRUPT, "No se encontraron planes diagnosticos");
             }
             DiagnosticPlan responseDiagnosticPlan = diagnosticPlanRepositoryFacade.validateAndGetById(diagnosticPlan.getId());
 
@@ -156,6 +160,38 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
 
         clinicHistory.setDiagnosticPlans(diagnosticPlans);
 
+        return toClinicHistoryDto(clinicHistoryRepositoryFacade.saveClinicHistory(clinicHistory));
+
+    }
+
+    @Override
+    public ResponseClinicHistoryDTO updateResultClinicHistory(String id, ResultClinic resultClinic) {
+        ClinicHistory clinicHistory = clinicHistoryRepositoryFacade.validateAndGetClinicHistoryById(id);
+        clinicHistory.setResultClinic(resultClinic);
+        return toClinicHistoryDto(clinicHistoryRepositoryFacade.saveClinicHistory(clinicHistory));
+    }
+
+    @Override
+        public ResponseClinicHistoryDTO updateTherapeuticPlan(String id, RequestTherapeuticPlan requestTherapeuticPlan) {
+
+        ClinicHistory clinicHistory = clinicHistoryRepositoryFacade.validateAndGetClinicHistoryById(id);
+        Set<TherapeuticPlan> therapeuticPlans = clinicHistory.getTherapeuticPlan();
+
+        requestTherapeuticPlan.getTherapeuticPlans().forEach(therapeuticPlan -> {
+
+            TherapeuticPlan therapeutic = new TherapeuticPlan();
+            therapeutic.setTherapeuticPlanOption(therapeuticPlan.getTherapeuticPlanOption());
+            therapeutic.setActivePrincipleManage(therapeuticPlan.getActivePrincipleManage());
+            therapeutic.setPresentation(therapeuticPlan.getPresentation());
+            therapeutic.setPosology(therapeuticPlan.getPosology());
+            therapeutic.setTotalDose(therapeuticPlan.getTotalDose());
+            therapeutic.setVia(therapeuticPlan.getVia());
+            therapeutic.setFrequencyDuration(therapeuticPlan.getFrequencyDuration());
+
+            therapeuticPlans.add(therapeutic);
+        });
+
+        clinicHistory.setTherapeuticPlan(therapeuticPlans);
         return toClinicHistoryDto(clinicHistoryRepositoryFacade.saveClinicHistory(clinicHistory));
 
     }
@@ -181,6 +217,8 @@ public class ClinicHistoryServiceImpl implements ClinicHistoryService {
         responseClinicHistoryDTO.setClinicExam(clinicHistory.getClinicExam());
         responseClinicHistoryDTO.setListProblems(clinicHistory.getListProblems());
         responseClinicHistoryDTO.setDiagnosticPlans(clinicHistory.getDiagnosticPlans());
+        responseClinicHistoryDTO.setResultClinic(clinicHistory.getResultClinic());
+        responseClinicHistoryDTO.setTherapeuticPlan(clinicHistory.getTherapeuticPlan());
         return responseClinicHistoryDTO;
     }
 

@@ -1,8 +1,6 @@
 package com.company.storeapi.model.entity;
 
-import com.company.storeapi.model.payload.request.clinichistory.RequestClinicExamClinicHistory;
-import com.company.storeapi.model.payload.request.clinichistory.RequestListProblems;
-import com.company.storeapi.model.payload.request.clinichistory.RequestPhysiologicalConstants;
+import com.company.storeapi.model.payload.request.clinichistory.*;
 import com.company.storeapi.model.payload.response.diagnosticplan.ResponseDiagnosticPlan;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,6 +32,8 @@ public class ClinicHistory {
     private RequestClinicExamClinicHistory clinicExam;
     private Set<RequestListProblems> listProblems = new LinkedHashSet<>();
     private Set<ResponseDiagnosticPlan> diagnosticPlans = new LinkedHashSet<>();
+    private ResultClinic resultClinic;
+    private Set<TherapeuticPlan> therapeuticPlan = new LinkedHashSet<>();
 
 
 }
