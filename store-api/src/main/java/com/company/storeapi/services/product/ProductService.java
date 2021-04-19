@@ -4,23 +4,17 @@ import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateUnitDTO;
-import com.company.storeapi.model.payload.response.product.ResponseListProductPaginationDto;
 import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
-import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
 import java.util.List;
 
 public interface ProductService {
 
-    ResponseListProductPaginationDto getAllProductInventory();
+    List<ResponseProductDTO> getAllProductInventory();
 
-    ResponseListProductPaginationDto getAllProductInventory(Pageable pageable);
-
-    ResponseListProductPaginationDto getAllProductsFilters ();
-
-    ResponseListProductPaginationDto getAllProductsFilters (Pageable pageable);
+    List<ResponseProductDTO> getAllProducts ();
 
     ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO) throws IOException;
 

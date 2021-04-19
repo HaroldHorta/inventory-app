@@ -5,7 +5,6 @@ import com.company.storeapi.core.exceptions.persistence.DataCorruptedPersistence
 import com.company.storeapi.core.mapper.CategoryMapper;
 import com.company.storeapi.core.mapper.ProductMapper;
 import com.company.storeapi.core.util.ImageDefault;
-import com.company.storeapi.core.util.Util;
 import com.company.storeapi.model.entity.Category;
 import com.company.storeapi.model.entity.CountingGeneral;
 import com.company.storeapi.model.entity.Order;
@@ -17,7 +16,6 @@ import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateUnitDTO;
 import com.company.storeapi.model.payload.response.category.ResponseCategoryDTO;
-import com.company.storeapi.model.payload.response.product.ResponseListProductPaginationDto;
 import com.company.storeapi.model.payload.response.product.ResponseOrderProductItemsDTO;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.repositories.finances.assets.facade.AssetRepositoryFacade;
@@ -27,14 +25,9 @@ import com.company.storeapi.services.category.CategoryService;
 import com.company.storeapi.services.countingGeneral.CountingGeneralService;
 import com.company.storeapi.services.product.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,96 +45,18 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
 
-    @Value("${spring.size.pagination}")
-    private int size;
-
     @Override
-    public ResponseListProductPaginationDto getAllProductInventory() {
+    public List<ResponseProductDTO> getAllProductInventory() {
         List<Product> products = productRepositoryFacade.getAllProduct();
-        List<ResponseProductDTO> responseProductDTOList = products.stream().map(productMapper::toProductDto).collect(Collectors.toList());
-        ResponseListProductPaginationDto responseListProductPaginationDto = new ResponseListProductPaginationDto();
-        responseListProductPaginationDto.setProducts(responseProductDTOList);
-        responseListProductPaginationDto.setLimitMax(products.size());
-        return responseListProductPaginationDto;
+        return products.stream().map(productMapper::toProductDto).collect(Collectors.toList());
 
     }
 
     @Override
-    public ResponseListProductPaginationDto getAllProductInventory(Pageable pageable) {
-        List<Product> products = productRepositoryFacade.findAllByPageable(false, pageable);
-        List<ResponseProductDTO> responseProductDTOList = products.stream().map(productMapper::toProductDto).collect(Collectors.toList());
-        ResponseListProductPaginationDto responseListProductPaginationDto = new ResponseListProductPaginationDto();
-        responseListProductPaginationDto.setProducts(responseProductDTOList);
-
-        int totalData = productRepositoryFacade.getAllProduct().size();
-
-        int limitMin = getLimitInventory(pageable, 1, (pageable.getPageNumber() * size) + 1);
-
-        int limitMax = getLimitInventory(pageable, size, (pageable.getPageNumber() + 1) * size);
-
-        responseListProductPaginationDto.setLimitMin(limitMin);
-        responseListProductPaginationDto.setLimitMax(Math.min(totalData, limitMax));
-        responseListProductPaginationDto.setTotalData(totalData);
-        responseListProductPaginationDto.setSize(size);
-        return responseListProductPaginationDto;
-    }
-
-    private int getLimitInventory(Pageable pageable, int i, int i2) {
-        return Util.getLimitPaginator(pageable, i, i2);
-    }
-
-
-    @Override
-    public ResponseListProductPaginationDto getAllProductsFilters() {
+    public List<ResponseProductDTO> getAllProducts() {
         List<Product> products = productRepositoryFacade.getAllProduct();
-        List<ResponseProductDTO> responseProductDTOList = getResponseProduct(products);
-        List<Product> productsFilter = productRepositoryFacade.getAllProduct().stream().filter(p -> p.getStatus() == Status.ACTIVO && p.getUnit() != 0).collect(Collectors.toList());
-        ResponseListProductPaginationDto responseListProductPaginationDto = new ResponseListProductPaginationDto();
-        responseListProductPaginationDto.setProducts(responseProductDTOList);
-        responseListProductPaginationDto.setLimitMax(productsFilter.size());
-        return responseListProductPaginationDto;
+        return products.stream().filter(product -> product.getStatus()==Status.ACTIVO).sorted(Comparator.comparing(Product::getName)).map(productMapper::toProductDto).collect(Collectors.toList());
     }
-
-    private List<ResponseProductDTO> getResponseProduct(List<Product> products) {
-        return getResponseProductDTOS(products);
-    }
-
-    @Override
-    public ResponseListProductPaginationDto getAllProductsFilters(Pageable pageable) {
-        List<Product> products = productRepositoryFacade.getAllProductFilters(Status.ACTIVO, pageable);
-        List<ResponseProductDTO> responseProductDTOList = getResponseProductDTOS(products);
-        ResponseListProductPaginationDto responseListProductPaginationDto = new ResponseListProductPaginationDto();
-        responseListProductPaginationDto.setProducts(responseProductDTOList);
-
-        int totalData = productRepositoryFacade.countByStatus(Status.ACTIVO);
-
-        return getResponseListProductPaginationDto(pageable, responseListProductPaginationDto, totalData);
-    }
-
-    private ResponseListProductPaginationDto getResponseListProductPaginationDto(Pageable pageable, ResponseListProductPaginationDto responseListProductPaginationDto, int totalData) {
-        int limitMin = getLimitMin(pageable, 1, (pageable.getPageNumber() * size) + 1);
-
-        int limitMax = getLimitMin(pageable, size, (pageable.getPageNumber() + 1) * size);
-
-        responseListProductPaginationDto.setLimitMin(limitMin);
-        responseListProductPaginationDto.setLimitMax(Math.min(totalData, limitMax));
-        responseListProductPaginationDto.setTotalData(totalData);
-        responseListProductPaginationDto.setSize(size);
-        return responseListProductPaginationDto;
-    }
-
-    private int getLimitMin(Pageable pageable, int i, int i2) {
-        return getLimit(pageable, i, i2);
-    }
-
-    private List<ResponseProductDTO> getResponseProductDTOS(List<Product> products) {
-        return products.stream().filter(product -> product.getUnit() != 0 && product.getStatus() == Status.ACTIVO).map(productMapper::toProductDto).collect(Collectors.toList());
-    }
-
-    private int getLimit(Pageable pageable, int i, int i2) {
-        return Util.getLimitPaginator(pageable, i, i2);
-    }
-
 
     @Override
     public ResponseProductDTO saveProduct(RequestAddProductDTO requestAddProductDTO) {

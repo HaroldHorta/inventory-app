@@ -4,13 +4,8 @@ package com.company.storeapi.web.api;
 import com.company.storeapi.model.enums.Status;
 import com.company.storeapi.model.payload.request.product.RequestAddProductDTO;
 import com.company.storeapi.model.payload.request.product.RequestUpdateProductDTO;
-import com.company.storeapi.model.payload.response.product.ResponseListProductPaginationDto;
 import com.company.storeapi.model.payload.response.product.ResponseProductDTO;
 import com.company.storeapi.services.product.ProductService;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,24 +20,15 @@ import java.util.List;
 @CrossOrigin({"*"})
 public class ProductRestApi {
 
-    @Value("${spring.size.pagination}")
-    private int size;
     private final ProductService service;
 
     public ProductRestApi(ProductService service) {
         this.service = service;
     }
 
-    @GetMapping(value = "/page", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseListProductPaginationDto getAllProductFilters(@Param(value = "page") int page) {
-        Pageable requestedPage = PageRequest.of(page, size);
-        return service.getAllProductsFilters(requestedPage);
-    }
-
-
-    @GetMapping(value = "/productsFilter", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseListProductPaginationDto getAllProductFilter() {
-        return service.getAllProductsFilters();
+     @GetMapping(value = "/products", produces = MediaType.APPLICATION_JSON_VALUE)
+    public  List<ResponseProductDTO> getAllProduct() {
+        return service.getAllProducts();
     }
 
     @GetMapping(value = "/category/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
