@@ -55,7 +55,7 @@ public class CashBaseApi {
         return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/CashRegister")
+    @PostMapping(value = "/cashRegister")
     public ResponseEntity<ResponseCashRegisterDTO> cashRegister() {
         ResponseCashRegisterDTO created = cashRegisterService.saveCashRegister();
         return new ResponseEntity<>(created, new HttpHeaders(), HttpStatus.OK);
